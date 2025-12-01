@@ -14,7 +14,6 @@ public abstract partial class ContextBase(DbContextOptions options) : DbContext(
 
         base.OnModelCreating(builder);
         OnModelExtendCreating(builder);
-        ConfigureMultiTenantUniqueIndexes(builder);
         OnSQLiteModelCreating(builder);
     }
 
@@ -24,6 +23,12 @@ public abstract partial class ContextBase(DbContextOptions options) : DbContext(
             modelBuilder.Model.GetEntityTypes();
         foreach (Microsoft.EntityFrameworkCore.Metadata.IMutableEntityType entityType in entityTypes)
         {
+            // Skip entity types without a CLR type (shadow/relational types)
+            if (entityType.ClrType == null)
+            {
+                continue;
+            }
+
             if (typeof(EntityBase).IsAssignableFrom(entityType.ClrType))
             {
                 modelBuilder.Entity(entityType.Name).HasKey(nameof(EntityBase.Id));
@@ -32,58 +37,6 @@ public abstract partial class ContextBase(DbContextOptions options) : DbContext(
                     .HasQueryFilter(
                         ConvertFilterExpression<EntityBase>(e => !e.IsDeleted, entityType.ClrType)
                     );
-            }
-        }
-    }
-
-    /// <summary>
-    /// 基于已有索引扩展添加 TenantId；使用原索引名称覆盖，避免重复。同时为唯一索引添加软删除过滤器。
-    /// </summary>
-    private void ConfigureMultiTenantUniqueIndexes(ModelBuilder modelBuilder)
-    {
-        var entityTypes = modelBuilder
-            .Model.GetEntityTypes()
-            .Where(e => typeof(EntityBase).IsAssignableFrom(e.ClrType))
-            .ToList();
-
-        var uniqueFilter = Database.IsNpgsql() ? $"\"{nameof(EntityBase.IsDeleted)}\" = false"
-            : Database.IsSqlServer() ? $"[{nameof(EntityBase.IsDeleted)}] = 0"
-            : $"`{nameof(EntityBase.IsDeleted)}` = 0";
-
-        foreach (var entityType in entityTypes)
-        {
-            if (entityType.FindProperty(nameof(EntityBase.TenantId)) is null)
-            {
-                continue;
-            }
-
-            // 复制集合防止迭代期间修改
-            var originalIndexes = entityType.GetIndexes().ToList();
-            foreach (var index in originalIndexes)
-            {
-                // 已含 TenantId 不处理
-                if (index.Properties.Any(p => p.Name == nameof(EntityBase.TenantId)))
-                {
-                    continue;
-                }
-
-                var propertyNames = new List<string> { nameof(EntityBase.TenantId) };
-                propertyNames.AddRange(index.Properties.Select(p => p.Name));
-
-                // 保存原索引数据库名称以覆盖替换
-                var originalDbName = index.GetDatabaseName();
-
-                if (index is Microsoft.EntityFrameworkCore.Metadata.IMutableIndex mutableIndex)
-                {
-                    entityType.RemoveIndex(mutableIndex);
-                }
-
-                var entityBuilder = modelBuilder.Entity(entityType.ClrType);
-                var newIndexBuilder = entityBuilder.HasIndex(propertyNames.ToArray()).HasDatabaseName(originalDbName);
-                if (index.IsUnique)
-                {
-                    newIndexBuilder.IsUnique().HasFilter(uniqueFilter);
-                }
             }
         }
     }

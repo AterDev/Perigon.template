@@ -44,7 +44,7 @@ public class SystemMenu : EntityBase, ITreeNode<SystemMenu>
     /// <summary>
     /// 所属角色
     /// </summary>
-    public ICollection<SystemRole> Roles { get; set; } = [];
+    public ICollection<SystemRole> SystemRoles { get; set; } = [];
 
     /// <summary>
     /// 权限编码

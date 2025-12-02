@@ -34,10 +34,8 @@ public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
         builder.Entity<SystemLogs>().Ignore(e => e.IsDeleted);
 
-        // 配置SystemUser和SystemRole的多对多关系
         builder
             .Entity<SystemUser>()
             .HasMany(u => u.SystemRoles)
@@ -48,7 +46,18 @@ public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options
                 j =>
                 {
                     j.HasKey(ur => ur.Id);
-                    j.ToTable("SystemUserRoles");
+                }
+            );
+        builder
+            .Entity<SystemMenu>()
+            .HasMany(u => u.SystemRoles)
+            .WithMany(r => r.SystemMenus)
+            .UsingEntity<SystemMenuRole>(
+                j => j.HasOne(ur => ur.SystemRole).WithMany().HasForeignKey(ur => ur.RoleId),
+                j => j.HasOne(ur => ur.SystemMenu).WithMany().HasForeignKey(ur => ur.MenuId),
+                j =>
+                {
+                    j.HasKey(ur => ur.Id);
                 }
             );
     }

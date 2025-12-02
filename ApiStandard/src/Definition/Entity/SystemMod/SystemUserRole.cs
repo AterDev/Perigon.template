@@ -4,8 +4,6 @@ namespace Entity.SystemMod;
 /// 系统用户角色关联表
 /// </summary>
 [Index(nameof(UserId), nameof(RoleId), IsUnique = true)]
-[Index(nameof(UserId))]
-[Index(nameof(RoleId))]
 public class SystemUserRole : EntityBase
 {
     /// <summary>

@@ -3,10 +3,31 @@
 param (
     [Parameter()]
     [string]
-    $Name = $null
+    $Name = $null,
+    [Parameter()]
+    [string]
+    $DatabaseType = "PostgreSQL"
 )
 
 dotnet tool restore
+# 从 appsettings.Development.json 读取数据库类型
+$appSettingsPath = "../src/AppHost/appsettings.Development.json"
+if (Test-Path $appSettingsPath) {
+    try {
+        $config = Get-Content $appSettingsPath | ConvertFrom-Json
+        if ($null -ne $config.Components.Database) {
+            $DatabaseType = $config.Components.Database
+            Write-Host "✅ Database type from appsettings: $DatabaseType"
+        }
+    }
+    catch {
+        Write-Warning "Failed to read or parse $appSettingsPath. Using default database type: $DatabaseType"
+    }
+}
+
+$env:Components__Database = $DatabaseType
+Write-Host "✅ Set environment variable 'Components__Database' to '$DatabaseType' for this session."
+
 $location = Get-Location
 
 Set-Location ../src/Services/MigrationService

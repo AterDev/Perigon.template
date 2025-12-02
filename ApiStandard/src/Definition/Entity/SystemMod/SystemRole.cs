@@ -39,5 +39,5 @@ public class SystemRole : EntityBase
     /// <summary>
     /// 菜单权限
     /// </summary>
-    public ICollection<SystemMenu> Menus { get; set; } = [];
+    public ICollection<SystemMenu> SystemMenus { get; set; } = [];
 }

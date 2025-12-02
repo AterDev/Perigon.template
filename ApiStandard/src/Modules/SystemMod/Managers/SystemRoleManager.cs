@@ -39,7 +39,7 @@ public class SystemRoleManager(
     {
         IEnumerable<Guid> ids = systemRoles.Select(r => r.Id);
         return await _dbContext
-            .SystemMenus.Where(m => m.Roles.Any(r => ids.Contains(r.Id)))
+            .SystemMenus.Where(m => m.SystemRoles.Any(r => ids.Contains(r.Id)))
             .ToListAsync();
     }
 
@@ -146,13 +146,13 @@ public class SystemRoleManager(
                 );
             }
 
-            await _dbContext.Entry(current).Collection(r => r.Menus).LoadAsync();
+            await _dbContext.Entry(current).Collection(r => r.SystemMenus).LoadAsync();
 
             var menus = await _dbContext
                 .SystemMenus.Where(m => dto.MenuIds.Contains(m.Id))
                 .ToListAsync();
 
-            current.Menus = menus;
+            current.SystemMenus = menus;
             await InsertAsync(current);
 
             return current;

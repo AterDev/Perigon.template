@@ -22,8 +22,8 @@ public class SystemUserController(
 ) : RestControllerBase<SystemUserManager>(localizer, manager, user, logger)
 {
     private readonly SystemConfigManager _systemConfig = systemConfig;
-    private readonly CacheService _cache = cache;
-    private readonly SystemRoleManager _roleManager = roleManager;
+    private readonly CacheService        _cache        = cache;
+    private readonly SystemRoleManager   _roleManager  = roleManager;
 
     /// <summary>
     /// 登录时，发送邮箱验证码 ✅
@@ -41,7 +41,7 @@ public class SystemUserController(
         }
 
         var captcha = SystemUserManager.GetCaptcha();
-        var key = WebConst.VerifyCodeCachePrefix + email;
+        var key     = WebConst.VerifyCodeCachePrefix + email;
         if (await _cache.GetValueAsync<string>(key) != null)
         {
             return Conflict(Localizer.VerifyCodeAlreadySent);
@@ -98,7 +98,7 @@ public class SystemUserController(
             return NotFound(Localizer.NotFoundUser);
         }
 
-        var menus = new List<SystemMenu>();
+        var menus            = new List<SystemMenu>();
         var permissionGroups = new List<SystemPermissionGroup>();
         if (user.SystemRoles != null)
         {
@@ -109,7 +109,7 @@ public class SystemUserController(
         return new UserInfoDto
         {
             Id               = user.Id,
-            Username         = user.UserName,
+            Username         = user.UserName ?? string.Empty,
             Roles            = user.SystemRoles?.Select(r => r.NameValue).ToArray() ?? [WebConst.AdminUser],
             Menus            = menus,
             PermissionGroups = permissionGroups,

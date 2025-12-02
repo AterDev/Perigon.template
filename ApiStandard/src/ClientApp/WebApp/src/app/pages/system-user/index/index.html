@@ -8,7 +8,7 @@
           <mat-label>{{i18nKeys.login.username | translate}}</mat-label>
           <input matInput placeholder="" [(ngModel)]='filter.userName'>
           @if (filter.userName) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.userName = null">
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.userName = ''">
             <mat-icon>close</mat-icon>
           </button>
           }

@@ -81,6 +81,7 @@ var apiService = builder.AddProject<Projects.ApiService>("ApiService").WaitForCo
 var adminService = builder.AddProject<Projects.AdminService>("AdminService").WaitForCompletion(migration)
     .WithParentRelationship(serviceGroup);
 var webApp = builder.AddNpmApp("frontend", "../ClientApp/WebApp")
+    .WithUrl("http://localhost:4200")
     .WaitFor(adminService)
     .WithParentRelationship(serviceGroup);
 

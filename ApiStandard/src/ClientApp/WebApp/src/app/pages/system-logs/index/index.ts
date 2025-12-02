@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/share/components/confirm-dialog/confirm-dialog.component';
-import { SystemLogsService } from 'src/app/services/admin/system-logs.service';
-import { SystemLogsItemDto } from 'src/app/services/admin/models/system-logs-item-dto.model';
-import { SystemLogsFilterDto } from 'src/app/services/admin/models/system-logs-filter-dto.model';
+import { AdminClient } from 'src/app/services/admin/admin-client';
+import { SystemLogsItemDto } from 'src/app/services/admin/models/system-mod/system-logs-item-dto.model';
+import { SystemLogsFilterDto } from 'src/app/services/admin/models/system-mod/system-logs-filter-dto.model';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,10 +12,10 @@ import { FormGroup } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
 import { CommonFormModules, CommonListModules } from 'src/app/share/shared-modules';
 import { TypedCellDefDirective } from 'src/app/share/typed-cell-def.directive';
-import { UserActionType } from 'src/app/services/admin/enum/user-action-type.model';
+import { UserActionType } from 'src/app/services/admin/models/ater/user-action-type.model';
 import { EnumTextPipe } from 'src/app/pipe/admin/enum-text.pipe';
 import { ToKeyValuePipe } from 'src/app/share/pipe/to-key-value.pipe';
-import { PageListOfSystemLogsItemDto } from 'src/app/services/admin/models/page-list-of-system-logs-item-dto.model';
+import { PageList } from 'src/app/services/admin/models/ater/page-list.model';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
 
@@ -41,8 +41,9 @@ export class Index implements OnInit {
   mydialogForm!: FormGroup;
   filter: SystemLogsFilterDto;
   pageSizeOption = [12, 20, 50];
+  private adminClient = inject(AdminClient);
+
   constructor(
-    private service: SystemLogsService,
     private snb: MatSnackBar,
     private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -77,8 +78,8 @@ export class Index implements OnInit {
     });
   }
 
-  getListAsync(): Observable<PageListOfSystemLogsItemDto> {
-    return this.service.filter(this.filter);
+  getListAsync(): Observable<PageList<SystemLogsItemDto>> {
+    return this.adminClient.systemLogs.filter(this.filter);
   }
 
   getList(event?: PageEvent): void {
@@ -86,7 +87,7 @@ export class Index implements OnInit {
       this.filter.pageIndex = event.pageIndex + 1;
       this.filter.pageSize = event.pageSize;
     }
-    this.service.filter(this.filter)
+    this.adminClient.systemLogs.filter(this.filter)
       .subscribe({
         next: (res) => {
           if (res) {

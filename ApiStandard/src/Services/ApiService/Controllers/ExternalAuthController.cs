@@ -46,7 +46,7 @@ public class ExternalAuthController(ILogger<ExternalAuthController> logger) : Co
     }
 
     /// <summary>
-    ///
+    /// GetToken
     /// </summary>
     /// <param name="type"></param>
     /// <param name="returnUrl"></param>

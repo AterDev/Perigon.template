@@ -1,17 +1,17 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SystemUserService } from 'src/app/services/admin/system-user.service';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemUserUpdateDto } from
-  'src/app/services/admin/models/system-user-update-dto.model';
+  'src/app/services/admin/models/system-mod/system-user-update-dto.model';
 import { SystemUserDetailDto } from
-  'src/app/services/admin/models/system-user-detail-dto.model';
+  'src/app/services/admin/models/system-mod/system-user-detail-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonFormModules } from 'src/app/share/shared-modules';
 import { ToKeyValuePipe } from 'src/app/share/pipe/to-key-value.pipe';
-import { GenderType } from 'src/app/services/admin/enum/gender-type.model';
+import { GenderType } from 'src/app/services/admin/models/ater/gender-type.model';
 import { TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
@@ -25,6 +25,7 @@ import { I18N_KEYS } from 'src/app/share/i18n-keys';
 export class Edit implements OnInit {
   i18nKeys = I18N_KEYS;
   GenderType = GenderType;
+  private adminClient = inject(AdminClient);
 
   formGroup!: FormGroup;
   id!: string;
@@ -34,7 +35,6 @@ export class Edit implements OnInit {
   isProcessing = false;
 
   constructor(
-    private service: SystemUserService,
     public snb: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
@@ -65,7 +65,7 @@ export class Edit implements OnInit {
   }
 
   getDetail(): void {
-    this.service.getDetail(this.id)
+    this.adminClient.systemUser.getDetail(this.id)
       .subscribe({
         next: (res) => {
           if (res) {
@@ -116,7 +116,7 @@ export class Edit implements OnInit {
       this.isProcessing = true;
       this.updateData = this.formGroup.value as SystemUserUpdateDto;
 
-      this.service.update(this.id, this.updateData)
+      this.adminClient.systemUser.update(this.id, this.updateData)
         .subscribe({
           next: (res) => {
             if (res) {

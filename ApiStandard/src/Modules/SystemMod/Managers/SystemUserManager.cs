@@ -19,10 +19,10 @@ public class SystemUserManager(
     SystemUserRoleManager userRoleManager
 ) : ManagerBase<DefaultDbContext, SystemUser>(dbContextFactory, userContext, logger)
 {
-    private readonly SystemConfigManager   _systemConfig    = systemConfig;
-    private readonly CacheService          _cache           = cache;
-    private readonly SystemLogService      _logService      = logService;
-    private readonly Localizer             _localizer       = localizer;
+    private readonly SystemConfigManager _systemConfig = systemConfig;
+    private readonly CacheService _cache = cache;
+    private readonly SystemLogService _logService = logService;
+    private readonly Localizer _localizer = localizer;
     private readonly SystemUserRoleManager _userRoleManager = userRoleManager;
 
     /// <summary>
@@ -43,7 +43,7 @@ public class SystemUserManager(
     /// <returns></returns>
     public byte[] GetCaptchaImage(int length = 4)
     {
-        var code  = GetCaptcha(length);
+        var code = GetCaptcha(length);
         var width = length * 20;
         return ImageHelper.GenerateImageCaptcha(code, width);
     }
@@ -61,58 +61,57 @@ public class SystemUserManager(
         LoginSecurityPolicyOption loginPolicy
     )
     {
-        if (loginPolicy == null || !loginPolicy.IsEnable)
-        {
-            return;
-        }
-        // 刷新锁定状态
-        var lastLoginTime = user.LastLoginTime?.ToLocalTime() ?? DateTimeOffset.Now;
-        if ((DateTimeOffset.Now - lastLoginTime).Days >= 1)
-        {
-            user.RetryCount = 0;
-            if (user.LockoutEnabled)
-            {
-                user.LockoutEnabled = false;
-            }
-        }
-
         user.LastLoginTime = DateTimeOffset.UtcNow;
 
-        // 锁定状态
-        if (user.LockoutEnabled || user.RetryCount >= loginPolicy.LoginRetry)
+        if (loginPolicy.IsEnable)
         {
-            user.LockoutEnabled = true;
-            throw new BusinessException(Localizer.LockAccountForManyTimes);
-        }
+            // 刷新锁定状态
+            var lastLoginTime = user.LastLoginTime?.ToLocalTime() ?? DateTimeOffset.Now;
+            if ((DateTimeOffset.Now - lastLoginTime).Days >= 1)
+            {
+                user.RetryCount = 0;
+                if (user.LockoutEnabled)
+                {
+                    user.LockoutEnabled = false;
+                }
+            }
 
-        // 验证码处理
-        if (loginPolicy.IsNeedVerifyCode)
-        {
-            if (dto.VerifyCode == null)
+            // 锁定状态
+            if (user.LockoutEnabled || user.RetryCount >= loginPolicy.LoginRetry)
             {
-                user.RetryCount++;
-                throw new BusinessException(Localizer.InvalidVerifyCode);
+                user.LockoutEnabled = true;
+                throw new BusinessException(Localizer.LockAccountForManyTimes);
             }
-            var key = WebConst.VerifyCodeCachePrefix + user.Email;
-            var code = await _cache.GetValueAsync<string>(key);
-            if (code == null)
-            {
-                user.RetryCount++;
-                throw new BusinessException(Localizer.VerifyCodeExpired);
-            }
-            if (!code.Equals(dto.VerifyCode))
-            {
-                await _cache.RemoveAsync(key);
-                user.RetryCount++;
-                throw new BusinessException(Localizer.InvalidVerifyCode);
-            }
-        }
 
-        // 密码过期时间
-        if ((DateTimeOffset.UtcNow - user.LastPwdEditTime).TotalDays > loginPolicy.PasswordExpired)
-        {
-            user.RetryCount++;
-            throw new BusinessException(Localizer.PasswordExpired);
+            // 验证码处理
+            if (loginPolicy.IsNeedVerifyCode)
+            {
+                if (dto.VerifyCode == null)
+                {
+                    user.RetryCount++;
+                    throw new BusinessException(Localizer.InvalidVerifyCode);
+                }
+                var key = WebConst.VerifyCodeCachePrefix + user.Email;
+                var code = await _cache.GetValueAsync<string>(key);
+                if (code == null)
+                {
+                    user.RetryCount++;
+                    throw new BusinessException(Localizer.VerifyCodeExpired);
+                }
+                if (!code.Equals(dto.VerifyCode))
+                {
+                    await _cache.RemoveAsync(key);
+                    user.RetryCount++;
+                    throw new BusinessException(Localizer.InvalidVerifyCode);
+                }
+            }
+
+            // 密码过期时间
+            if ((DateTimeOffset.UtcNow - user.LastPwdEditTime).TotalDays > loginPolicy.PasswordExpired)
+            {
+                user.RetryCount++;
+                throw new BusinessException(Localizer.PasswordExpired);
+            }
         }
 
         if (!HashCrypto.Validate(dto.Password, user.PasswordSalt, user.PasswordHash))
@@ -145,9 +144,9 @@ public class SystemUserManager(
 
         return new AccessTokenDto
         {
-            AccessToken      = token,
-            ExpiresIn        = jwtService.ExpiredSecond,
-            RefreshToken     = JwtService.GetRefreshToken(),
+            AccessToken = token,
+            ExpiresIn = jwtService.ExpiredSecond,
+            RefreshToken = JwtService.GetRefreshToken(),
             RefreshExpiresIn = jwtService.RefreshExpiredSecond,
         };
     }
@@ -270,10 +269,8 @@ public class SystemUserManager(
             await _dbContext.Tenants.Where(t => t.Domain == domain).FirstOrDefaultAsync()
             ?? throw new BusinessException(Localizer.TenantNotExist);
 
-        tenantContext.TenantId   = tenant.Id;
-        tenantContext.TenantType = tenant
-            .Type
-            .ToString();
+        tenantContext.TenantId = tenant.Id;
+        tenantContext.TenantType = tenant.Type.ToString();
 
         // 查询用户
         var user = await _dbSet
@@ -284,11 +281,13 @@ public class SystemUserManager(
         {
             throw new BusinessException(Localizer.UserNotExists);
         }
-        user.LastLoginTime = DateTimeOffset.UtcNow;
+
         try
         {
             var loginPolicy = await _systemConfig.GetLoginSecurityPolicyAsync();
             await ValidateLoginAsync(dto, user, loginPolicy);
+
+            // 验证成功，生成token
             AccessTokenDto jwtToken = GenerateJwtToken(user);
             if (loginPolicy.SessionLevel == SessionLevel.OnlyOne)
             {
@@ -305,9 +304,7 @@ public class SystemUserManager(
             await _cache.SetValueAsync(key, jwtToken.AccessToken, expiredSeconds);
             await _cache.SetValueAsync(
                 jwtToken.RefreshToken,
-                user
-                    .Id
-                    .ToString(),
+                user.Id.ToString(),
                 jwtToken.RefreshExpiresIn
             );
 
@@ -318,15 +315,22 @@ public class SystemUserManager(
                 user.UserName,
                 user.Id
             );
-
             return jwtToken;
         }
-        catch (Exception)
+        catch (BusinessException)
         {
+            // 密码错误等业务异常，直接抛出
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // 其他异常
+            _logger.LogError(ex, "An unexpected error occurred during login.");
             throw;
         }
         finally
         {
+            // 确保用户信息（如重试次数、最后登录时间）被保存
             await _dbContext.SaveChangesAsync();
         }
     }

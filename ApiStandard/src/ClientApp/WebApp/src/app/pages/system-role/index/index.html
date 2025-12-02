@@ -8,7 +8,7 @@
           <mat-label>{{i18nKeys.systemRole.name | translate}}</mat-label>
           <input matInput placeholder="" [(ngModel)]='filter.name'>
           @if (filter.name) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.name = null">
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.name = ''">
             <mat-icon>close</mat-icon>
           </button>
           }
@@ -18,7 +18,7 @@
           <mat-label>{{i18nKeys.systemRole.nameValue | translate}}</mat-label>
           <input matInput placeholder="" [(ngModel)]='filter.nameValue'>
           @if (filter.nameValue) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.nameValue = null">
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="filter.nameValue = ''">
             <mat-icon>close</mat-icon>
           </button>
           }

@@ -1,18 +1,17 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SystemUserService } from 'src/app/services/admin/system-user.service';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemUserAddDto } from
-  'src/app/services/admin/models/system-user-add-dto.model';
+  'src/app/services/admin/models/system-mod/system-user-add-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonFormModules } from 'src/app/share/shared-modules';
-import { GenderType } from 'src/app/services/admin/enum/gender-type.model';
-import { SystemRoleService } from 'src/app/services/admin/system-role.service';
+import { GenderType } from 'src/app/services/admin/models/ater/gender-type.model';
 import { forkJoin, Observable } from 'rxjs';
-import { SystemRoleItemDto } from 'src/app/services/admin/models/system-role-item-dto.model';
-import { PageListOfSystemRoleItemDto } from 'src/app/services/admin/models/page-list-of-system-role-item-dto.model';
+import { SystemRoleItemDto } from 'src/app/services/admin/models/system-mod/system-role-item-dto.model';
+import { PageList } from 'src/app/services/admin/models/ater/page-list.model';
 import { TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
@@ -32,9 +31,9 @@ export class Add implements OnInit {
   roles = [] as SystemRoleItemDto[];
   isLoading = true;
   isProcessing = false;
+  private adminClient = inject(AdminClient);
+
   constructor(
-    private service: SystemUserService,
-    private roleService: SystemRoleService,
     public snb: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
@@ -72,12 +71,9 @@ export class Add implements OnInit {
         }
       });
   }
-  getRoles(): Observable<PageListOfSystemRoleItemDto> {
+  getRoles(): Observable<PageList<SystemRoleItemDto>> {
     {
-      return this.roleService.filter({
-        pageIndex: 1,
-        pageSize: 99
-      });
+      return this.adminClient.systemRole.list(null, null, 1, 99, null);
     }
   }
 
@@ -110,7 +106,7 @@ export class Add implements OnInit {
     if (this.formGroup.valid) {
       this.isProcessing = true;
       const data = this.formGroup.value as SystemUserAddDto;
-      this.service.add(data)
+      this.adminClient.systemUser.add(data)
         .subscribe({
           next: (res) => {
             if (res) {

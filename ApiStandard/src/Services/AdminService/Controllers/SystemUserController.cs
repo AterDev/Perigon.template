@@ -18,12 +18,11 @@ public class SystemUserController(
         SystemUserManager manager,
         IUserContext user,
         ILogger<SystemUserController> logger
-
 ) : RestControllerBase<SystemUserManager>(localizer, manager, user, logger)
 {
     private readonly SystemConfigManager _systemConfig = systemConfig;
-    private readonly CacheService        _cache        = cache;
-    private readonly SystemRoleManager   _roleManager  = roleManager;
+    private readonly CacheService _cache = cache;
+    private readonly SystemRoleManager _roleManager = roleManager;
 
     /// <summary>
     /// 登录时，发送邮箱验证码 ✅
@@ -41,7 +40,7 @@ public class SystemUserController(
         }
 
         var captcha = SystemUserManager.GetCaptcha();
-        var key     = WebConst.VerifyCodeCachePrefix + email;
+        var key = WebConst.VerifyCodeCachePrefix + email;
         if (await _cache.GetValueAsync<string>(key) != null)
         {
             return Conflict(Localizer.VerifyCodeAlreadySent);
@@ -65,12 +64,11 @@ public class SystemUserController(
     }
 
     /// <summary>
-    /// 登录获取Token ✅
-    /// 返回仅包含 token 信息和用户 id/username
+    /// Get AccessToken ✅
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPost("login")]
+    [HttpPost("authorize")]
     [AllowAnonymous]
     [EnableRateLimiting(WebConst.Limited)]
     public async Task<AccessTokenDto> LoginAsync(SystemLoginDto dto)
@@ -84,21 +82,19 @@ public class SystemUserController(
     }
 
     /// <summary>
-    /// 根据用户 id 获取用户角色、菜单与权限组等信息
+    /// Get UserInfo ✅
     /// </summary>
-    /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("userinfo/{id}")]
-    public async Task<ActionResult<UserInfoDto>> GetUserInfoAsync([FromRoute] Guid id)
+    [HttpGet("userinfo")]
+    public async Task<ActionResult<UserInfoDto>> GetUserInfoAsync()
     {
-        // 获取用户
-        var user = await _manager.GetSystemUserAsync(id);
+        var user = await _manager.GetSystemUserAsync(_user.UserId);
         if (user == null)
         {
             return NotFound(Localizer.NotFoundUser);
         }
 
-        var menus            = new List<SystemMenu>();
+        var menus = new List<SystemMenu>();
         var permissionGroups = new List<SystemPermissionGroup>();
         if (user.SystemRoles != null)
         {
@@ -108,10 +104,10 @@ public class SystemUserController(
 
         return new UserInfoDto
         {
-            Id               = user.Id,
-            Username         = user.UserName ?? string.Empty,
-            Roles            = user.SystemRoles?.Select(r => r.NameValue).ToArray() ?? [WebConst.AdminUser],
-            Menus            = menus,
+            Id = user.Id,
+            Username = user.UserName ?? string.Empty,
+            Roles = user.SystemRoles?.Select(r => r.NameValue).ToArray() ?? [WebConst.AdminUser],
+            Menus = menus,
             PermissionGroups = permissionGroups,
         };
     }
@@ -141,7 +137,7 @@ public class SystemUserController(
         AccessTokenDto jwtToken = _manager.GenerateJwtToken(user);
         // 更新缓存
         var loginPolicy = await _systemConfig.GetLoginSecurityPolicyAsync();
-        var client      = HttpContext.Request.Headers[WebConst.ClientHeader].FirstOrDefault() ?? WebConst.Web;
+        var client = HttpContext.Request.Headers[WebConst.ClientHeader].FirstOrDefault() ?? WebConst.Web;
         if (loginPolicy.SessionLevel == SessionLevel.OnlyOne)
         {
             client = WebConst.AllPlatform;

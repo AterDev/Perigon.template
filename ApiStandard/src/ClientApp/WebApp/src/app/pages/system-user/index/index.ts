@@ -1,10 +1,8 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/share/components/confirm-dialog/confirm-dialog.component';
-import { SystemUserService } from 'src/app/services/admin/system-user.service';
-// import { SystemUserItemDto } from 'src/app/services/admin/models/system-user-item-dto.model';
-import { SystemUserFilterDto } from 'src/app/services/admin/models/system-user-filter-dto.model';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -18,8 +16,8 @@ import { Detail } from '../detail/detail';
 import { Add } from '../add/add';
 import { Edit } from '../edit/edit';
 import { EnumTextPipe } from 'src/app/pipe/admin/enum-text.pipe';
-import { PageListOfSystemUserItemDto } from 'src/app/services/admin/models/page-list-of-system-user-item-dto.model';
-import { SystemUserItemDto } from 'src/app/services/admin/models/system-user-item-dto.model';
+import { PageList } from 'src/app/services/admin/models/ater/page-list.model';
+import { SystemUserItemDto } from 'src/app/services/admin/models/system-mod/system-user-item-dto.model';
 import { TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
@@ -42,21 +40,22 @@ export class Index implements OnInit {
   dialogRef!: MatDialogRef<{}, any>;
   @ViewChild('myDialog', { static: true }) myTmpl!: TemplateRef<{}>;
   mydialogForm!: FormGroup;
-  filter: SystemUserFilterDto;
+  filter = {
+    pageIndex: 1,
+    pageSize: 12,
+    userName: '',
+    roleId: ''
+  };
   pageSizeOption = [12, 20, 50];
+  private adminClient = inject(AdminClient);
+
   constructor(
-    private service: SystemUserService,
     private snb: MatSnackBar,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService
   ) {
-
-    this.filter = {
-      pageIndex: 1,
-      pageSize: 12
-    };
   }
 
   ngOnInit(): void {
@@ -81,8 +80,8 @@ export class Index implements OnInit {
       });
   }
 
-  getListAsync(): Observable<PageListOfSystemUserItemDto> {
-    return this.service.filter(this.filter);
+  getListAsync(): Observable<PageList<SystemUserItemDto>> {
+    return this.adminClient.systemUser.filter(this.filter.userName, this.filter.roleId, this.filter.pageIndex, this.filter.pageSize, null);
   }
 
   getList(event?: PageEvent): void {
@@ -90,7 +89,7 @@ export class Index implements OnInit {
       this.filter.pageIndex = event.pageIndex + 1;
       this.filter.pageSize = event.pageSize;
     }
-    this.service.filter(this.filter)
+    this.adminClient.systemUser.filter(this.filter.userName, this.filter.roleId, this.filter.pageIndex, this.filter.pageSize, null)
       .subscribe({
         next: (res) => {
           if (res) {
@@ -169,7 +168,7 @@ export class Index implements OnInit {
   }
   delete(item: SystemUserItemDto): void {
     this.isProcessing = true;
-    this.service.delete(item.id)
+    this.adminClient.systemUser.delete(item.id)
       .subscribe({
         next: (res) => {
           if (res) {

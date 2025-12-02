@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
     if (this.auth.isLogin) {
       return true;
     }
-    return this.router.parseUrl('/index');
+    return this.router.parseUrl('/login');
 
   }
   canActivateChild(

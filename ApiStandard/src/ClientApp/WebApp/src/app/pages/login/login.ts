@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 // import { OAuthService, OAuthErrorEvent, UserInfo } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { CommonFormModules } from 'src/app/share/shared-modules';
-import { SystemUserService } from 'src/app/services/admin/system-user.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { AdminClient } from 'src/app/services/admin/admin-client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -18,12 +17,6 @@ import { initStarfield } from './starfield';
   styleUrls: ['./login.scss']
 })
 export class Login implements OnInit, AfterViewInit {
-  ngAfterViewInit(): void {
-    const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
-    if (canvas) {
-      initStarfield(canvas);
-    }
-  }
   public loginForm!: FormGroup;
   i18nKeys = I18N_KEYS;
   private adminClient = inject(AdminClient);
@@ -37,8 +30,8 @@ export class Login implements OnInit, AfterViewInit {
     }
   }
 
-  get username() {
-    return this.loginForm.get('username') as FormControl;
+  get email() {
+    return this.loginForm.get('email') as FormControl;
   }
   get password() {
     return this.loginForm.get('password') as FormControl;
@@ -46,9 +39,15 @@ export class Login implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
-      username: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
+      email: new FormControl('', [Validators.email, Validators.required, Validators.minLength(4), Validators.maxLength(100)]),
       password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(60)])
     });
+  }
+  ngAfterViewInit(): void {
+    const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
+    if (canvas) {
+      initStarfield(canvas);
+    }
   }
 
   getValidatorMessage(control: AbstractControl | null): string {
@@ -72,7 +71,15 @@ export class Login implements OnInit, AfterViewInit {
     // 登录接口
     this.adminClient.systemUser.login(data)
       .subscribe(res => {
-        this.authService.saveLoginState(res.username, res.accessToken);
+        this.authService.saveToken(res);
+        this.getUserInfo();
+      });
+  }
+
+  getUserInfo(): void {
+    this.adminClient.systemUser.getUserInfo()
+      .subscribe(res => {
+        this.authService.saveUserInfo(res);
         this.router.navigate(['/system-role']);
       });
   }

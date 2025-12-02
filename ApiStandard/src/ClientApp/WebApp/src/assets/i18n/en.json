@@ -34,10 +34,12 @@
   },
   "login": {
     "username": "Username",
+    "email": "Email",
     "password": "Password",
     "login": "Login",
     "logout": "Logout",
     "usernamePlaceholder": "Username (4+ chars)",
+    "emailPlaceholder": "Please enter a valid email address",
     "passwordPlaceholder": "Password (6+ chars)"
   },
   "systemLogs": {

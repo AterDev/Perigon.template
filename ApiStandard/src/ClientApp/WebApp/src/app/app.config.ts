@@ -5,6 +5,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { CustomerHttpInterceptor } from './customer-http.interceptor';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { environment } from 'src/environments/environment';
 
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
@@ -29,6 +30,7 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: HTTP_INTERCEPTORS, useClass: CustomerHttpInterceptor, multi: true },
     { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
+    { provide: 'ADMIN_BASE_URL', useValue: environment.admin_daemon, deps: [] },
   ],
 };
 

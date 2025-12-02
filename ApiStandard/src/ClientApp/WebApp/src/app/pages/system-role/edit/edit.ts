@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SystemRoleService } from 'src/app/services/admin/system-role.service';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemRoleUpdateDto } from
-  'src/app/services/admin/models/system-role-update-dto.model';
+  'src/app/services/admin/models/system-mod/system-role-update-dto.model';
 import { SystemRoleDetailDto } from
-  'src/app/services/admin/models/system-role-detail-dto.model';
+  'src/app/services/admin/models/system-mod/system-role-detail-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -21,6 +21,7 @@ import { I18N_KEYS } from 'src/app/share/i18n-keys';
 })
 export class Edit implements OnInit {
   i18nKeys = I18N_KEYS;
+  private adminClient = inject(AdminClient);
 
   formGroup!: FormGroup;
   id!: string;
@@ -30,7 +31,6 @@ export class Edit implements OnInit {
   isProcessing = false;
 
   constructor(
-    private service: SystemRoleService,
     public snb: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
@@ -57,7 +57,7 @@ export class Edit implements OnInit {
   }
 
   getDetail(): void {
-    this.service.getDetail(this.id)
+    this.adminClient.systemRole.detail(this.id)
       .subscribe({
         next: (res) => {
           if (res) {
@@ -104,7 +104,7 @@ export class Edit implements OnInit {
       this.isProcessing = true;
       this.updateData = this.formGroup.value as SystemRoleUpdateDto;
 
-      this.service.update(this.id, this.updateData)
+      this.adminClient.systemRole.update(this.id, this.updateData)
         .subscribe({
           next: (res) => {
             if (res) {

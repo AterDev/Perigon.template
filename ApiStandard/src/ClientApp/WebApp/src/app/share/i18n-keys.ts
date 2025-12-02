@@ -37,10 +37,12 @@ export const I18N_KEYS = {
   },
   "login": {
     "username": "login.username",
+    "email": "login.email",
     "password": "login.password",
     "login": "login.login",
     "logout": "login.logout",
     "usernamePlaceholder": "login.usernamePlaceholder",
+    "emailPlaceholder": "login.emailPlaceholder",
     "passwordPlaceholder": "login.passwordPlaceholder"
   },
   "systemLogs": {

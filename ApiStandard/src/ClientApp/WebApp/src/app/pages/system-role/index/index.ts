@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/share/components/confirm-dialog/confirm-dialog.component';
-import { SystemRoleService } from 'src/app/services/admin/system-role.service';
-import { SystemRoleItemDto } from 'src/app/services/admin/models/system-role-item-dto.model';
-import { SystemRoleFilterDto } from 'src/app/services/admin/models/system-role-filter-dto.model';
+import { AdminClient } from 'src/app/services/admin/admin-client';
+import { SystemRoleItemDto } from 'src/app/services/admin/models/system-mod/system-role-item-dto.model';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,7 +16,7 @@ import { Detail } from '../detail/detail';
 import { Add } from '../add/add';
 import { Edit } from '../edit/edit';
 import { Menus } from '../menus/menus';
-import { PageListOfSystemRoleItemDto } from 'src/app/services/admin/models/page-list-of-system-role-item-dto.model';
+import { PageList } from 'src/app/services/admin/models/ater/page-list.model';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -40,21 +39,22 @@ export class Index implements OnInit {
   dialogRef!: MatDialogRef<{}, any>;
   @ViewChild('myDialog', { static: true }) myTmpl!: TemplateRef<{}>;
   mydialogForm!: FormGroup;
-  filter: SystemRoleFilterDto;
+  filter = {
+    pageIndex: 1,
+    pageSize: 12,
+    name: '',
+    nameValue: ''
+  };
   pageSizeOption = [12, 20, 50];
+  private adminClient = inject(AdminClient);
+
   constructor(
-    private service: SystemRoleService,
     private snb: MatSnackBar,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService
   ) {
-
-    this.filter = {
-      pageIndex: 1,
-      pageSize: 12
-    };
   }
 
   ngOnInit(): void {
@@ -79,8 +79,8 @@ export class Index implements OnInit {
       });
   }
 
-  getListAsync(): Observable<PageListOfSystemRoleItemDto> {
-    return this.service.filter(this.filter);
+  getListAsync(): Observable<PageList<SystemRoleItemDto>> {
+    return this.adminClient.systemRole.list(this.filter.name, this.filter.nameValue, this.filter.pageIndex, this.filter.pageSize, null);
   }
 
   getList(event?: PageEvent): void {
@@ -88,7 +88,7 @@ export class Index implements OnInit {
       this.filter.pageIndex = event.pageIndex + 1;
       this.filter.pageSize = event.pageSize;
     }
-    this.service.filter(this.filter)
+    this.adminClient.systemRole.list(this.filter.name, this.filter.nameValue, this.filter.pageIndex, this.filter.pageSize, null)
       .subscribe({
         next: (res) => {
           if (res) {
@@ -174,7 +174,7 @@ export class Index implements OnInit {
   }
   delete(item: SystemRoleItemDto): void {
     this.isProcessing = true;
-    this.service.delete(item.id)
+    this.adminClient.systemRole.delete(item.id)
       .subscribe({
         next: (res) => {
           if (res) {

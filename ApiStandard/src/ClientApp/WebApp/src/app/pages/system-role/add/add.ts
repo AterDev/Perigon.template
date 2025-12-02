@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SystemRoleService } from 'src/app/services/admin/system-role.service';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemRoleAddDto } from
-  'src/app/services/admin/models/system-role-add-dto.model';
+  'src/app/services/admin/models/system-mod/system-role-add-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -19,13 +19,13 @@ import { I18N_KEYS } from 'src/app/share/i18n-keys';
 })
 export class Add implements OnInit {
   i18nKeys = I18N_KEYS;
+  private adminClient = inject(AdminClient);
 
   formGroup!: FormGroup;
   data = {} as SystemRoleAddDto;
   isLoading = true;
   isProcessing = false;
   constructor(
-    private service: SystemRoleService,
     public snb: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
@@ -74,7 +74,7 @@ export class Add implements OnInit {
     if (this.formGroup.valid) {
       this.isProcessing = true;
       const data = this.formGroup.value as SystemRoleAddDto;
-      this.service.add(data)
+      this.adminClient.systemRole.add(data)
         .subscribe({
           next: (res) => {
             if (res) {

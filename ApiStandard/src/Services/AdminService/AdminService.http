@@ -1,10 +1,17 @@
-@AdminService_HostAddress = https://localhost:7001/api/
+@AdminService_HostAddress = https://localhost:17001/api
 
-POST {{AdminService_HostAddress}}/systemuser/login
+// @name auth
+POST {{AdminService_HostAddress}}/systemuser/authorize
 Accept: application/json
+Content-Type: application/json
 {
-  "userName": "admin@default.com",
-  "password":"Ater.Default.2026"
+  "email": "admin@default.com",
+  "password": "Ater.Default.20261"
 }
 
 ###
+
+GET {{AdminService_HostAddress}}/systemuser/userinfo
+Accept: application/json
+Authorization: Bearer {{auth.response.body.$.accessToken}}
+

@@ -1,17 +1,16 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { SystemMenu } from 'src/app/services/admin/models/system-menu.model';
-import { SystemMenuService } from 'src/app/services/admin/system-menu.service';
-import { SystemRoleService } from 'src/app/services/admin/system-role.service';
+import { SystemMenu } from 'src/app/services/admin/models/entity/system-menu.model';
+import { AdminClient } from 'src/app/services/admin/admin-client';
 import { Observable, forkJoin } from 'rxjs';
 import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModules } from 'src/app/share/shared-modules';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { PageListOfSystemMenu } from 'src/app/services/admin/models/page-list-of-system-menu.model';
+import { PageList } from 'src/app/services/admin/models/ater/page-list.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
@@ -29,12 +28,11 @@ export class Menus {
   menuNods = [] as MenuNode[];
   dataSource = new MatTreeNestedDataSource<MenuNode>();
   selectedIds = [] as string[];
+  private adminClient = inject(AdminClient);
 
   constructor(
     private route: ActivatedRoute,
     private snb: MatSnackBar,
-    private service: SystemMenuService,
-    private roleService: SystemRoleService,
     public dialogRef: MatDialogRef<Menus>,
     @Inject(MAT_DIALOG_DATA) public dlgData: { id: '' },
     private translate: TranslateService
@@ -81,12 +79,12 @@ export class Menus {
       });
   }
 
-  getMemusAsync(): Observable<PageListOfSystemMenu> {
-    return this.service.filter({ pageIndex: 1, pageSize: 999 });
+  getMemusAsync(): Observable<PageList<SystemMenu>> {
+    return this.adminClient.systemMenu.filter({ pageIndex: 1, pageSize: 999 });
   }
 
-  getRoleMenusAsync(): Observable<PageListOfSystemMenu> {
-    return this.service.filter({
+  getRoleMenusAsync(): Observable<PageList<SystemMenu>> {
+    return this.adminClient.systemMenu.filter({
       pageIndex: 1,
       pageSize: 100,
       roleId: this.id
@@ -135,7 +133,7 @@ export class Menus {
     this.selectedIds = [];
     this.getSelectedMenuIds(this.menuNods);
 
-    this.roleService.updateMenus({
+    this.adminClient.systemRole.updateMenus({
       id: this.id,
       menuIds: this.selectedIds
     }).subscribe({

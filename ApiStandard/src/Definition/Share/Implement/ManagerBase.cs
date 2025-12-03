@@ -33,6 +33,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
     where TEntity : EntityBase
 {
     protected IQueryable<TEntity> Queryable { get; set; }
+    protected bool IgnoreQueryFilter { get; set; }
     protected readonly ILogger _logger;
     protected readonly TDbContext _dbContext;
     protected readonly DbSet<TEntity> _dbSet;
@@ -107,8 +108,12 @@ public abstract class ManagerBase<TDbContext, TEntity>
     )
         where TDto : class
     {
-        return await _dbSet
-            .AsNoTracking()
+        var query = _dbSet.AsNoTracking();
+        if (IgnoreQueryFilter)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+        return await query
             .Where(e => e.TenantId == _userContext.TenantId)
             .Where(whereExp ?? (e => true))
             .ProjectToType<TDto>()
@@ -130,6 +135,10 @@ public abstract class ManagerBase<TDbContext, TEntity>
         where TFilter : FilterBase
         where TItem : class
     {
+        if (IgnoreQueryFilter)
+        {
+            Queryable = Queryable.IgnoreQueryFilters();
+        }
         Queryable = Queryable.Where(e => e.TenantId == _userContext.TenantId);
         Queryable =
             filter.OrderBy != null && filter.OrderBy.Count > 0

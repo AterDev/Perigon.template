@@ -43,7 +43,7 @@ public class GlobalExceptionMiddleware(RequestDelegate next, Localizer localizer
         {
             ctx.Response.StatusCode = ex.StatusCodes;
             await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(localizer.Get(ex.ErrorCode), ctx.TraceIdentifier, ex.ErrorCode)
+                new ErrorResult(localizer.Get(ex.ErrorCode), ctx.TraceIdentifier)
             );
         }
         catch (Exception ex)

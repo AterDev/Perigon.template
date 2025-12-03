@@ -49,6 +49,7 @@ public class SystemLogs : EntityBase
     public Guid SystemUserId { get; set; } = default!;
 
     public static SystemLogs NewLog(
+        Guid tenantId,
         string userName,
         Guid userId,
         object entity,
@@ -59,6 +60,7 @@ public class SystemLogs : EntityBase
     {
         return new SystemLogs
         {
+            TenantId = tenantId,
             SystemUserId = userId,
             ActionUserName = userName,
             Data = entity,

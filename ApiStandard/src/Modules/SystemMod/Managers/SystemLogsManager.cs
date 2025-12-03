@@ -6,12 +6,17 @@ namespace SystemMod.Managers;
 /// <summary>
 /// 系统日志
 /// </summary>
-public class SystemLogsManager(
-    TenantDbFactory dbContextFactory,
-    ILogger<SystemLogsManager> logger,
-    IUserContext userContext
-) : ManagerBase<DefaultDbContext, SystemLogs>(dbContextFactory, userContext, logger)
+public class SystemLogsManager : ManagerBase<DefaultDbContext, SystemLogs>
 {
+    public SystemLogsManager(
+        TenantDbFactory dbContextFactory,
+        ILogger<SystemLogsManager> logger,
+        IUserContext userContext
+    ) : base(dbContextFactory, userContext, logger)
+    {
+        IgnoreQueryFilter = true;
+    }
+
     public async Task<PageList<SystemLogsItemDto>> ToPageAsync(SystemLogsFilterDto filter)
     {
         Queryable = Queryable

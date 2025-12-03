@@ -310,7 +310,8 @@ public class SystemUserManager(
                 UserActionType.Login,
                 Localizer.LoginSuccess,
                 user.UserName,
-                user.Id
+                user.Id,
+                tenant.Id
             );
             return jwtToken;
         }

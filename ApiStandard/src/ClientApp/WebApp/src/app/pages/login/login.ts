@@ -1,7 +1,6 @@
-import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-// import { OAuthService, OAuthErrorEvent, UserInfo } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { CommonFormModules } from 'src/app/share/shared-modules';
 import { AuthService } from 'src/app/services/auth.service';
@@ -9,15 +8,18 @@ import { AdminClient } from 'src/app/services/admin/admin-client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 import { initStarfield } from './starfield';
+import { form, Field, required, email, FieldState, minLength, maxLength, ValidationError } from '@angular/forms/signals'
+import { SystemLoginDto } from 'src/app/services/admin/models/system-mod/system-login-dto.model';
+import { translateValidationError } from 'src/app/share/validation-helpers';
+
 
 @Component({
   selector: 'app-login',
-  imports: [CommonFormModules, MatCardModule],
+  imports: [CommonFormModules, MatCardModule, Field],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
 export class Login implements OnInit, AfterViewInit {
-  public loginForm!: FormGroup;
   i18nKeys = I18N_KEYS;
   private adminClient = inject(AdminClient);
   private translate = inject(TranslateService);
@@ -30,19 +32,31 @@ export class Login implements OnInit, AfterViewInit {
     }
   }
 
+  loginModel = signal<SystemLoginDto>({
+    email: '',
+    password: ''
+  })
+
+  loginForm = form(this.loginModel, (schema) => {
+    required(schema.email);
+    email(schema.email);
+    minLength(schema.email, 4);
+    maxLength(schema.email, 100);
+    required(schema.password);
+    minLength(schema.password, 6);
+    maxLength(schema.password, 60);
+  });
+
   get email() {
-    return this.loginForm.get('email') as FormControl;
+    return this.loginForm.email;
   }
   get password() {
-    return this.loginForm.get('password') as FormControl;
+    return this.loginForm.password;
   }
 
   ngOnInit(): void {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.email, Validators.required, Validators.minLength(4), Validators.maxLength(100)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(60)])
-    });
   }
+
   ngAfterViewInit(): void {
     const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
     if (canvas) {
@@ -50,24 +64,17 @@ export class Login implements OnInit, AfterViewInit {
     }
   }
 
-  getValidatorMessage(control: AbstractControl | null): string {
-    if (!control || !control.errors) {
-      return '';
-    }
-    const errors: ValidationErrors = control.errors;
-    const errorKeys = Object.keys(errors);
-    if (errorKeys.length === 0) {
+  getValidatorMessage(field: FieldState<string, string>): string {
+    const errors = field.errors();
+    if (!errors || errors.length === 0) {
       return '';
     }
 
-    const key = errorKeys[0];
-    const params = errors[key];
-    const translationKey = `validation.${key.toLowerCase()}`;
-    return this.translate.instant(translationKey, params);
+    return translateValidationError(this.translate, errors[0]);
   }
 
   doLogin(): void {
-    const data = this.loginForm.value;
+    const data = this.loginForm().value();
     // 登录接口
     this.adminClient.systemUser.login(data)
       .subscribe(res => {

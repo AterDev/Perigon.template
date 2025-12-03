@@ -16,7 +16,7 @@ public class IntegrationTest1
         var loginDto = new SystemLoginDto
         {
             Email = "admin@default.com",
-            Password = "Ater.Default.2026"
+            Password = "Perigon.2026"
         };
         var response = await httpClient.PostAsJsonAsync("/api/systemUser/authorize", loginDto);
         var resData = await response.Content.ReadFromJsonAsync<AccessTokenDto>();

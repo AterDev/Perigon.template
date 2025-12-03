@@ -9,9 +9,9 @@
     "ASP.NET Core",
     "Web Framework"
   ],
-  "identity": "Ater.Web.Standard",
-  "name": "Ater Web API Standard",
-  "shortName": "ater-webapi",
+  "identity": "Perigon.WebApi",
+  "name": "Perigon Web API",
+  "shortName": "perigon-webapi",
   "tags": {
     "language": "C#",
     "type": "project"
@@ -51,8 +51,8 @@
         },
         {
           "choice": "Angular",
-          "description": "Using Angular 20 with Material",
-          "displayName": "Angular 20"
+          "description": "Using Angular 21+ with Material",
+          "displayName": "Angular 21+"
         }
       ],
       "defaultValue": "None",

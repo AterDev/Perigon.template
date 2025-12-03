@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <PackageVersion>10.0.0-beta5</PackageVersion>
-        <PackageId>ater.web.templates</PackageId>
-        <Title>Ater Web Templates</Title>
-        <Authors>ater.NilTor</Authors>
+        <PackageVersion>10.0.0-beta6</PackageVersion>
+        <PackageId>Perigon.template</PackageId>
+        <Title>Perigon Templates</Title>
+        <Authors>Ater.NilTor</Authors>
         <Description>
             Well-structured fast development template based on ASP.NET Core / EF Core / Aspire
         </Description>
@@ -15,11 +15,11 @@
         <ContentTargetFolders>content</ContentTargetFolders>
         <PackageOutputPath>nuget</PackageOutputPath>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Product>ater.web</Product>
-        <PackageProjectUrl>https://github.com/AterDev/ater.web</PackageProjectUrl>
+        <Product>Perigon.template</Product>
+        <PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>
         <PackageIcon>logo.jpg</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/AterDev/ater.web</RepositoryUrl>
+        <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>
         </PackageReleaseNotes>

@@ -1,5 +1,5 @@
-using Entity.CommonMod;
 using System.Text.Json;
+using Entity.CommonMod;
 
 namespace SystemMod;
 
@@ -46,7 +46,7 @@ public class InitModule
     private static async Task InitTenantAdminAccountAsync(DefaultDbContext context)
     {
         var domain = "default.com";
-        var defaultPassword = "Ater.Default.2026";
+        var defaultPassword = "Perigon.2026";
         var tenant = new Tenant()
         {
             Domain = domain,

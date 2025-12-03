@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace Share.Exceptions;
 
@@ -7,6 +8,7 @@ namespace Share.Exceptions;
 /// </summary>
 /// <param name="errorCode">the key of language const</param>
 /// <param name="statusCodes"></param>
+[DebuggerNonUserCode]
 public class BusinessException(
     string errorCode,
     int statusCodes = StatusCodes.Status500InternalServerError

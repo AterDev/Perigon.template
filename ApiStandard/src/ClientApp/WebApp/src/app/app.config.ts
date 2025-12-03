@@ -18,9 +18,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     provideTranslateService({
-      fallbackLang: 'zh',
-      lang: 'zh',
-      defaultLanguage: 'zh',
+      fallbackLang: 'en-US',
+      lang: 'zh-CN',
+      defaultLanguage: 'zh-CN',
       extend: true,
       useDefaultLang: true,
     }),

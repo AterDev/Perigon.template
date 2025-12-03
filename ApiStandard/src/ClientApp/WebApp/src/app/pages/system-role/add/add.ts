@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemRoleAddDto } from
@@ -23,7 +23,7 @@ export class Add implements OnInit {
 
   formGroup!: FormGroup;
   data = {} as SystemRoleAddDto;
-  isLoading = true;
+  isLoading = signal(true);
   isProcessing = false;
   constructor(
     public snb: MatSnackBar,
@@ -43,7 +43,7 @@ export class Add implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.isLoading = false;
+    this.isLoading.set(false);
   }
 
   initForm(): void {

@@ -2,7 +2,7 @@
   <!-- <mat-icon class="clickable" matTooltip="返回" (click)="back()">arrow_back</mat-icon> -->
   <span>{{i18nKeys.common.save | translate}}</span>
 </mat-toolbar>
-@if (!isLoading) {
+@if (!isLoading()) {
   <form class="d-flex p-2" [formGroup]="formGroup">
     <div class="d-flex flex-column w-100">
       <mat-form-field class="w-100" appearance="fill">

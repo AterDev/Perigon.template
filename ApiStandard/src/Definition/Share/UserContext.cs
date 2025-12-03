@@ -24,23 +24,20 @@ public class UserContext : IUserContext
     public UserContext(IHttpContextAccessor httpContextAccessor)
     {
         HttpContext = httpContextAccessor!.HttpContext;
-        if (
-            Guid.TryParse(FindClaim(ClaimTypes.NameIdentifier)?.Value, out Guid userId)
+        if (Guid.TryParse(FindClaim(ClaimTypes.NameIdentifier)?.Value, out Guid userId)
             && userId != Guid.Empty
         )
         {
             UserId = userId;
         }
-        if (
-            Guid.TryParse(FindClaim(ClaimTypes.GroupSid)?.Value, out Guid groupSid)
+        if (Guid.TryParse(FindClaim(ClaimTypes.GroupSid)?.Value, out Guid groupSid)
             && groupSid != Guid.Empty
         )
         {
             GroupId = groupSid;
         }
 
-        if (
-            Guid.TryParse(FindClaim(CustomClaimTypes.TenantId)?.Value, out Guid tenantId)
+        if (Guid.TryParse(FindClaim(CustomClaimTypes.TenantId)?.Value, out Guid tenantId)
             && tenantId != Guid.Empty
         )
         {
@@ -49,7 +46,6 @@ public class UserContext : IUserContext
 
         UserName = FindClaim(ClaimTypes.Name)?.Value;
         Email = FindClaim(ClaimTypes.Email)?.Value;
-
         CurrentRole = FindClaim(ClaimTypes.Role)?.Value;
 
         Roles = HttpContext?.User?.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();

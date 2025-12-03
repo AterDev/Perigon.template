@@ -137,10 +137,12 @@ public class SystemUserManager(
             roles.Add(WebConst.AdminUser);
         }
 
-        jwtService.Claims = [new(ClaimTypes.Name, user.Email)];
-        var token = jwtService.GetToken(user
-            .Id
-            .ToString(), [.. roles]);
+        jwtService.Claims = [
+            new(ClaimTypes.Email, user.Email),
+            new (ClaimTypes.Name, user.UserName??string.Empty),
+            new (CustomClaimTypes.TenantId, tenantContext.TenantId.ToString())
+            ];
+        var token = jwtService.GetToken(user.Id.ToString(), [.. roles]);
 
         return new AccessTokenDto
         {
@@ -276,12 +278,7 @@ public class SystemUserManager(
         var user = await _dbSet
             .Where(u => u.Email == dto.Email)
             .Include(u => u.SystemRoles)
-            .FirstOrDefaultAsync();
-        if (user == null)
-        {
-            throw new BusinessException(Localizer.UserNotExists);
-        }
-
+            .FirstOrDefaultAsync() ?? throw new BusinessException(Localizer.UserNotExists);
         try
         {
             var loginPolicy = await _systemConfig.GetLoginSecurityPolicyAsync();

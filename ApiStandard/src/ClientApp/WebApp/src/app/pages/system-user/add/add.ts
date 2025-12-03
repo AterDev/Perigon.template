@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemUserAddDto } from
@@ -29,7 +29,7 @@ export class Add implements OnInit {
   formGroup!: FormGroup;
   data = {} as SystemUserAddDto;
   roles = [] as SystemRoleItemDto[];
-  isLoading = true;
+  isLoading = signal(true);
   isProcessing = false;
   private adminClient = inject(AdminClient);
 
@@ -66,7 +66,7 @@ export class Add implements OnInit {
           }
         },
         complete: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.initForm();
         }
       });

@@ -38,13 +38,13 @@
 </div>
 <!-- 加载框 -->
 <div class="d-flex text-center justify-content-center mt-2">
-  @if(isLoading){
+  @if(isLoading()){
   <mat-spinner mode="indeterminate"></mat-spinner>
   }
 
 </div>
 
-@if(!isLoading){
+@if(!isLoading()){ 
 <div class="px-2">
   <!-- 无数据时显示 -->
   @if(data && data.length<=0){ <h4>
@@ -72,13 +72,16 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>{{i18nKeys.common.actions | translate}}</th>
         <td mat-cell *matCellDef="let element;table:table">
-          <button mat-icon-button class="primary" [matTooltip]="i18nKeys.systemRole.menuPermission | translate" (click)="openMenuDialog(element)">
+          <button mat-icon-button class="primary" [matTooltip]="i18nKeys.systemRole.menuPermission | translate"
+            (click)="openMenuDialog(element)">
             <mat-icon>admin_panel_settings</mat-icon>
           </button>
-          <button mat-icon-button class="primary" (click)="openEditDialog(element)" [matTooltip]="i18nKeys.common.edit | translate">
+          <button mat-icon-button class="primary" (click)="openEditDialog(element)"
+            [matTooltip]="i18nKeys.common.edit | translate">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button class="error" [matTooltip]="i18nKeys.common.delete | translate" (click)="deleteConfirm(element)">
+          <button mat-icon-button class="error" [matTooltip]="i18nKeys.common.delete | translate"
+            (click)="deleteConfirm(element)">
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>

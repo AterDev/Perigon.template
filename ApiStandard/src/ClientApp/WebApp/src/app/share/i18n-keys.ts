@@ -83,7 +83,8 @@ export const I18N_KEYS = {
   "validation": {
     "required": "validation.required",
     "minlength": "validation.minlength",
-    "maxlength": "validation.maxlength"
+    "maxlength": "validation.maxlength",
+    "email": "validation.email"
   },
   "menu": {
     "business": "menu.business",

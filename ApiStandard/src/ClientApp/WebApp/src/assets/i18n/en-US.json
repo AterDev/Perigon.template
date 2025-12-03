@@ -80,7 +80,8 @@
   "validation": {
     "required": "This field is required",
     "minlength": "The minimum length is {{requiredLength}}",
-    "maxlength": "The maximum length is {{requiredLength}}"
+    "maxlength": "The maximum length is {{requiredLength}}",
+    "email": "Please enter a valid email address"
   },
   "menu": {
     "business": "Business",

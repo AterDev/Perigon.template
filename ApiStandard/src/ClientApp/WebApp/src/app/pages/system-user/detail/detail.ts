@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/share/components/confirm-dialog/confirm-dialog.component';
 import { AdminClient } from 'src/app/services/admin/admin-client';
@@ -27,7 +27,7 @@ export class Detail implements OnInit {
   private adminClient = inject(AdminClient);
 
   readonly dlgData = inject(MAT_DIALOG_DATA);
-  isLoading = true;
+  isLoading = signal(true);
   data = {} as SystemUserDetailDto;
   isProcessing = false;
   id: string = '';
@@ -55,7 +55,7 @@ export class Detail implements OnInit {
         next: (res) => {
           if (res) {
             this.data = res;
-            this.isLoading = false;
+            this.isLoading.set(false);
           }
         },
         error: (error) => {

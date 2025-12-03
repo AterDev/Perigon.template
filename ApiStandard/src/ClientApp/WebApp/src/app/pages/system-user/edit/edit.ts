@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AdminClient } from 'src/app/services/admin/admin-client';
 import { SystemUserUpdateDto } from
@@ -31,7 +31,7 @@ export class Edit implements OnInit {
   id!: string;
   data = {} as SystemUserDetailDto;
   updateData = {} as SystemUserUpdateDto;
-  isLoading = true;
+  isLoading = signal(true);
   isProcessing = false;
 
   constructor(
@@ -71,12 +71,12 @@ export class Edit implements OnInit {
           if (res) {
             this.data = res;
             this.initForm();
-            this.isLoading = false;
+            this.isLoading.set(false);
           }
         },
         error: (error) => {
           this.snb.open(error.detail);
-          this.isLoading = false;
+            this.isLoading.set(false);
         }
       });
   }

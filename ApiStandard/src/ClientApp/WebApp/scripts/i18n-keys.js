@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const sourceLang = 'zh';
+const sourceLang = 'zh-CN';
 const sourceFile = path.resolve(__dirname, `../src/assets/i18n/${sourceLang}.json`);
 const targetFile = path.resolve(__dirname, '../src/app/share/i18n-keys.ts');
 

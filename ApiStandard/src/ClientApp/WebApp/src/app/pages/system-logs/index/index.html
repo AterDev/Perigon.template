@@ -66,13 +66,13 @@
 </div>
 <!-- 加载框 -->
 <div class="d-flex text-center justify-content-center mt-2">
-  @if(isLoading){
+  @if(isLoading()){
     <mat-spinner mode="indeterminate"></mat-spinner>
   }
 
 </div>
 
-@if(!isLoading){
+@if(!isLoading()){
   <div class="px-2">
     <!-- 无数据时显示 -->
     @if(data && data.length<=0){ <h4>

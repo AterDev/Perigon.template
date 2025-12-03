@@ -80,7 +80,8 @@
   "validation": {
     "required": "此字段是必填项",
     "minlength": "最小长度是 {{requiredLength}}",
-    "maxlength": "最大长度是 {{requiredLength}}"
+    "maxlength": "最大长度是 {{requiredLength}}",
+    "email": "请输入有效的邮箱地址"
   },
   "menu": {
     "business": "业务管理",

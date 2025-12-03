@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Inject, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Inject, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
@@ -18,7 +18,7 @@ import { AdminClient } from 'src/app/services/admin/admin-client';
 })
 export class Detail implements OnInit {
   i18nKeys = I18N_KEYS;
-  isLoading = true;
+  isLoading = signal(true);
   data = {} as SystemRoleDetailDto;
   isProcessing = false;
   id: string = '';
@@ -50,7 +50,7 @@ export class Detail implements OnInit {
         next: (res) => {
           if (res) {
             this.data = res;
-            this.isLoading = false;
+            this.isLoading.set(false);
           }
         },
         error: (error) => {

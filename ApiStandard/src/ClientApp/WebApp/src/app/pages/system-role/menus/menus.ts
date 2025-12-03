@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -23,7 +23,7 @@ import { I18N_KEYS } from 'src/app/share/i18n-keys';
 export class Menus {
   i18nKeys = I18N_KEYS;
   id!: string;
-  isLoading = true;
+  isLoading = signal(true);
   data: SystemMenu[] = [];
   menuNods = [] as MenuNode[];
   dataSource = new MatTreeNestedDataSource<MenuNode>();
@@ -71,10 +71,10 @@ export class Menus {
         },
         error: (error) => {
           this.snb.open(error.detail);
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
         complete: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         }
       });
   }

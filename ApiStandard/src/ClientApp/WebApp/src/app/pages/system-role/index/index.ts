@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, inject, signal } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/share/components/confirm-dialog/confirm-dialog.component';
@@ -28,9 +28,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class Index implements OnInit {
   i18nKeys = I18N_KEYS;
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  isLoading = true;
+  isLoading = signal(true);
   isProcessing = false;
   total = 0;
   data: SystemRoleItemDto[] = [];
@@ -71,10 +70,10 @@ export class Index implements OnInit {
         },
         error: (error) => {
           this.snb.open(error.detail);
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
         complete: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         }
       });
   }
@@ -101,10 +100,10 @@ export class Index implements OnInit {
         },
         error: (error) => {
           this.snb.open(error.detail);
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
         complete: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         }
       });
   }

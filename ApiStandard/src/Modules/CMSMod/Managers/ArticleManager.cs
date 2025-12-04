@@ -1,4 +1,4 @@
-using Ater.AspNetCore.Abstraction;
+using Perigon.AspNetCore.Abstraction;
 using CMSMod.Models.ArticleDtos;
 using EntityFramework.AppDbContext;
 using EntityFramework.AppDbFactory;

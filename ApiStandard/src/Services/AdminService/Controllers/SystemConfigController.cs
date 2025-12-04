@@ -1,4 +1,4 @@
-using Ater.AspNetCore.Models;
+using Perigon.AspNetCore.Models;
 using SystemMod.Models.SystemConfigDtos;
 
 namespace AdminService.Controllers;

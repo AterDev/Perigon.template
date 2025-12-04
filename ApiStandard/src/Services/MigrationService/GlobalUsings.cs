@@ -1,2 +1,2 @@
-global using Ater.AspNetCore.Constants;
+global using Perigon.AspNetCore.Constants;
 global using EntityFramework.AppDbContext;

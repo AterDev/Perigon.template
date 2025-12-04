@@ -1,5 +1,5 @@
 using System.Reflection;
-using Ater.AspNetCore.Attributes;
+using Perigon.AspNetCore.Attributes;
 using Microsoft.Extensions.Hosting;
 
 namespace SystemMod.Worker;

@@ -1,8 +1,8 @@
 //global using AdminService.Extension;
 global using AdminService.Extension;
-global using Ater.AspNetCore.Abstraction;
-global using Ater.AspNetCore.Constants;
-global using Ater.AspNetCore.Utils;
+global using Perigon.AspNetCore.Abstraction;
+global using Perigon.AspNetCore.Constants;
+global using Perigon.AspNetCore.Utils;
 global using Entity.SystemMod;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;

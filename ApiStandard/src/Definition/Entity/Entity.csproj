@@ -15,6 +15,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Ater\Ater.AspNetCore\Ater.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" />
   </ItemGroup>
 </Project>

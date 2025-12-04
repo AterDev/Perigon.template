@@ -1,4 +1,4 @@
-using Ater.AspNetCore.Models;
+using Perigon.AspNetCore.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;

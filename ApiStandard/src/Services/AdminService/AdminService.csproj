@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Ater\Ater.AspNetCore.SourceGeneration\Ater.AspNetCore.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\Perigon\Perigon.AspNetCore.SourceGeneration\Perigon.AspNetCore.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\Definition\ServiceDefaults\ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Modules\CMSMod\CMSMod.csproj" />
     <ProjectReference Include="..\..\Modules\SystemMod\SystemMod.csproj" />

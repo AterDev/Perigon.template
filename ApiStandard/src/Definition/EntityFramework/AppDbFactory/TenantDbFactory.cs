@@ -1,8 +1,8 @@
-using Perigon.AspNetCore.Constants;
 using Entity.CommonMod;
 using EntityFramework.AppDbContext;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Perigon.AspNetCore.Constants;
 
 namespace EntityFramework.AppDbFactory;
 
@@ -20,7 +20,7 @@ public class TenantDbFactory(
 {
     public async Task<DefaultDbContext> CreateDbContextAsync()
     {
-        var  builder  = new DbContextOptionsBuilder<DefaultDbContext>();
+        var builder = new DbContextOptionsBuilder<DefaultDbContext>();
         Guid tenantId = tenantContext.TenantId;
 
         var connectionStrings = configuration.GetConnectionString(AppConst.Default);
@@ -44,9 +44,9 @@ public class TenantDbFactory(
 
     public async Task<AnalysisDbContext> CreateAnalysisDbContextAsync()
     {
-        var  builder           = new DbContextOptionsBuilder<AnalysisDbContext>();
-        Guid tenantId          = tenantContext.TenantId;
-        var  connectionStrings = configuration.GetConnectionString(AppConst.Analysis);
+        var builder = new DbContextOptionsBuilder<AnalysisDbContext>();
+        Guid tenantId = tenantContext.TenantId;
+        var connectionStrings = configuration.GetConnectionString(AppConst.Analysis);
         if (tenantContext.TenantType == TenantType
             .Independent
             .ToString())

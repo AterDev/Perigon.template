@@ -19,10 +19,10 @@ public class SystemUserManager(
     SystemUserRoleManager userRoleManager
 ) : ManagerBase<DefaultDbContext, SystemUser>(dbContextFactory, userContext, logger)
 {
-    private readonly SystemConfigManager _systemConfig = systemConfig;
-    private readonly CacheService _cache = cache;
-    private readonly SystemLogService _logService = logService;
-    private readonly Localizer _localizer = localizer;
+    private readonly SystemConfigManager   _systemConfig    = systemConfig;
+    private readonly CacheService          _cache           = cache;
+    private readonly SystemLogService      _logService      = logService;
+    private readonly Localizer             _localizer       = localizer;
     private readonly SystemUserRoleManager _userRoleManager = userRoleManager;
 
     /// <summary>
@@ -43,7 +43,7 @@ public class SystemUserManager(
     /// <returns></returns>
     public byte[] GetCaptchaImage(int length = 4)
     {
-        var code = GetCaptcha(length);
+        var code  = GetCaptcha(length);
         var width = length * 20;
         return ImageHelper.GenerateImageCaptcha(code, width);
     }
@@ -146,9 +146,9 @@ public class SystemUserManager(
 
         return new AccessTokenDto
         {
-            AccessToken = token,
-            ExpiresIn = jwtService.ExpiredSecond,
-            RefreshToken = JwtService.GetRefreshToken(),
+            AccessToken      = token,
+            ExpiresIn        = jwtService.ExpiredSecond,
+            RefreshToken     = JwtService.GetRefreshToken(),
             RefreshExpiresIn = jwtService.RefreshExpiredSecond,
         };
     }
@@ -271,7 +271,7 @@ public class SystemUserManager(
             await _dbContext.Tenants.Where(t => t.Domain == domain).FirstOrDefaultAsync()
             ?? throw new BusinessException(Localizer.TenantNotExist);
 
-        tenantContext.TenantId = tenant.Id;
+        tenantContext.TenantId   = tenant.Id;
         tenantContext.TenantType = tenant.Type.ToString();
 
         // 查询用户

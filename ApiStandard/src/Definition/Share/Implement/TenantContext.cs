@@ -1,10 +1,10 @@
-using Perigon.AspNetCore.Services;
+using System.Security.Claims;
 using Entity.CommonMod;
 using EntityFramework.AppDbContext;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using Perigon.AspNetCore.Services;
 
-namespace Share;
+namespace Share.Implement;
 
 public class TenantContext : ITenantContext
 {

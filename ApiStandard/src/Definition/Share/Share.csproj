@@ -10,20 +10,19 @@
     <NoWarn>1701;1702;1591;1587</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference
-      Include="..\..\Perigon\Perigon.AspNetCore.SourceGeneration\Perigon.AspNetCore.SourceGeneration.csproj"
-      OutputItemType="Analyzer"
-      ReferenceOutputAssembly="false"
-    />
+    <ProjectReference Include="..\..\Perigon\Perigon.AspNetCore.SourceGeneration\Perigon.AspNetCore.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\EntityFramework\EntityFramework.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Options\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="**\*.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Options\**" />
+    <Compile Remove="Options\**" />
+    <EmbeddedResource Remove="Options\**" />
+    <None Remove="Options\**" />
   </ItemGroup>
 </Project>

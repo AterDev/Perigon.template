@@ -24,7 +24,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
   </ItemGroup>
   <ItemGroup>
-    <!--<ProjectReference Include="..\EntityFramework\EntityFramework.csproj" />-->
     <ProjectReference Include="..\..\Perigon\Perigon.AspNetCore.Toolkit\Perigon.AspNetCore.Toolkit.csproj" />
     <ProjectReference Include="..\Share\Share.csproj" />
   </ItemGroup>

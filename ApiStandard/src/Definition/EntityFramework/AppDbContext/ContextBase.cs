@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EntityFramework.AppDbContext;
 
-public abstract partial class ContextBase(DbContextOptions options) : DbContext(options)
+public abstract class ContextBase(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Tenant> Tenants { get; set; }
 

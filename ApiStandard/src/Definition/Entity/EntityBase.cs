@@ -1,9 +1,11 @@
+using Perigon.AspNetCore.Abstraction;
+
 namespace Entity;
 
 /// <summary>
 /// 实体基类
 /// </summary>
-public abstract class EntityBase
+public abstract class EntityBase : IEntityBase
 {
     [Key]
     public Guid Id { get; set; } = Guid.CreateVersion7();

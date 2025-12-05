@@ -13,16 +13,14 @@ public class InitModule
     public static async Task InitializeAsync(IServiceProvider provider)
     {
         var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-        var context = provider.GetRequiredService<DefaultDbContext>();
-        var logger = loggerFactory.CreateLogger<InitModule>();
+        var context       = provider.GetRequiredService<DefaultDbContext>();
+        var logger        = loggerFactory.CreateLogger<InitModule>();
         var configuration = provider.GetRequiredService<IConfiguration>();
-        var cache = provider.GetRequiredService<CacheService>();
+        var cache         = provider.GetRequiredService<CacheService>();
 
         try
         {
-            var hasTenant = await context
-                .Tenants
-                .AnyAsync();
+            var hasTenant = await context.Tenants.AnyAsync();
             if (!hasTenant)
             {
                 logger.LogInformation("⛏️ Start init [System] Module");
@@ -45,36 +43,36 @@ public class InitModule
 
     private static async Task InitTenantAdminAccountAsync(DefaultDbContext context)
     {
-        var domain = "default.com";
+        var domain          = "default.com";
         var defaultPassword = "Perigon.2026";
-        var tenant = new Tenant()
+        var tenant          = new Tenant()
         {
-            Domain = domain,
-            Name = AppConst.Default,
+            Domain      = domain,
+            Name        = AppConst.Default,
             Description = "This is default tenant, created by system.",
         };
         var superRole = new SystemRole()
         {
-            Name = WebConst.SuperAdmin,
+            Name      = WebConst.SuperAdmin,
             NameValue = WebConst.SuperAdmin,
-            TenantId = tenant.Id,
+            TenantId  = tenant.Id,
         };
 
         var adminRole = new SystemRole()
         {
-            Name = WebConst.AdminUser,
+            Name      = WebConst.AdminUser,
             NameValue = WebConst.AdminUser,
-            TenantId = tenant.Id,
+            TenantId  = tenant.Id,
         };
-        var salt = HashCrypto.BuildSalt();
+        var salt      = HashCrypto.BuildSalt();
         var adminUser = new SystemUser()
         {
-            UserName = "admin",
-            Email = $"admin@{domain}",
+            UserName     = "admin",
+            Email        = $"admin@{domain}",
             PasswordSalt = salt,
             PasswordHash = HashCrypto.GeneratePwd(defaultPassword, salt),
-            SystemRoles = [superRole, adminRole],
-            TenantId = tenant.Id,
+            SystemRoles  = [superRole, adminRole],
+            TenantId     = tenant.Id,
         };
 
         context.Add(tenant);

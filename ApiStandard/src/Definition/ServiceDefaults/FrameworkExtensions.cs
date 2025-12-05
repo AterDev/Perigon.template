@@ -6,6 +6,7 @@ using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
+using Share.Implement;
 
 namespace ServiceDefaults;
 

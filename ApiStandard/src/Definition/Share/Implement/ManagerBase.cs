@@ -29,7 +29,7 @@ public abstract class ManagerBase<TDbContext>(TDbContext dbContext, ILogger logg
 /// <typeparam name="TEntity">Entity type</typeparam>
 public abstract class ManagerBase<TDbContext, TEntity>
     where TDbContext : DbContext
-    where TEntity : class, IEntityBase
+    where TEntity : class, ITenantEntityBase
 {
     protected IQueryable<TEntity> Queryable { get; set; }
     protected bool IgnoreQueryFilter { get; set; }
@@ -44,11 +44,11 @@ public abstract class ManagerBase<TDbContext, TEntity>
         ILogger logger
     )
     {
-        _logger      = logger;
-        _dbContext   = (dbContextFactory.CreateDbContextAsync().Result as TDbContext)!;
+        _logger = logger;
+        _dbContext = (dbContextFactory.CreateDbContextAsync().Result as TDbContext)!;
         _userContext = userContext;
-        _dbSet       = _dbContext.Set<TEntity>();
-        Queryable    = _dbSet.AsNoTracking().AsQueryable();
+        _dbSet = _dbContext.Set<TEntity>();
+        Queryable = _dbSet.AsNoTracking().AsQueryable();
 
         if (_userContext.TenantId == Guid.Empty)
         {
@@ -144,8 +144,8 @@ public abstract class ManagerBase<TDbContext, TEntity>
                 ? Queryable.OrderBy(filter.OrderBy)
                 : Queryable.OrderByDescending(t => t.CreatedTime);
 
-        var         count = Queryable.Count();
-        List<TItem> data  = await Queryable
+        var count = Queryable.Count();
+        List<TItem> data = await Queryable
             .AsNoTracking()
             .Skip((filter.PageIndex - 1) * filter.PageSize)
             .Take(filter.PageSize)
@@ -155,8 +155,8 @@ public abstract class ManagerBase<TDbContext, TEntity>
         ResetQuery();
         return new PageList<TItem>
         {
-            Count     = count,
-            Data      = data,
+            Count = count,
+            Data = data,
             PageIndex = filter.PageIndex,
         };
     }

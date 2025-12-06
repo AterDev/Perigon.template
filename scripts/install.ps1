@@ -1,9 +1,8 @@
 $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
 
 $location = Get-Location
-$solutionPath = Join-Path $location "ApiStandard"
-$modulePath = Join-Path $solutionPath "src/Modules"
-$packPath = Join-Path $location "nupkg"
+$solutionPath = Join-Path $location "../ApiStandard"
+$packPath = Join-Path $location "../nupkg"
 $requiredModules = @("SystemMod", "CommonMod");
 
 Write-Host "Clean files"
@@ -18,10 +17,11 @@ if (Test-Path $migrationPath) {
 }
 
 try {
+    Set-Location "../";
     # pack
     dotnet pack -c release -o $packPath
     # get package info
-    $VersionNode = Select-Xml -Path ./Pack.csproj -XPath '/Project//PropertyGroup/PackageVersion'
+    $VersionNode = Select-Xml -Path ./Pack.csproj -XPath '/Project//PropertyGroup/Version'
     $PackageNode = Select-Xml -Path ./Pack.csproj -XPath '/Project//PropertyGroup/PackageId'
     $Version = $VersionNode.Node.InnerText
     $PackageId = $PackageNode.Node.InnerText

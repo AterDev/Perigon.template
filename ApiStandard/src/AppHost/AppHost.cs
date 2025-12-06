@@ -80,10 +80,12 @@ var apiService = builder.AddProject<Projects.ApiService>("ApiService").WaitForCo
     .WithParentRelationship(serviceGroup);
 var adminService = builder.AddProject<Projects.AdminService>("AdminService").WaitForCompletion(migration)
     .WithParentRelationship(serviceGroup);
-var webApp = builder.AddNpmApp("frontend", "../ClientApp/WebApp")
-    .WithUrl("http://localhost:4200")
-    .WaitFor(adminService)
-    .WithParentRelationship(serviceGroup);
+
+// run frontend app, you should install npm packages first
+//var webApp = builder.AddNpmApp("frontend", "../ClientApp/WebApp")
+//    .WithUrl("http://localhost:4200")
+//    .WaitFor(adminService)
+//    .WithParentRelationship(serviceGroup);
 
 if (database != null)
 {

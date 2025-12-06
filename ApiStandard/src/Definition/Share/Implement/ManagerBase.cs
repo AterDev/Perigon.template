@@ -37,6 +37,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
     protected readonly TDbContext _dbContext;
     protected readonly DbSet<TEntity> _dbSet;
     protected readonly IUserContext _userContext;
+    protected readonly bool _isMultiTenant;
 
     public ManagerBase(
         TenantDbFactory dbContextFactory,
@@ -47,10 +48,11 @@ public abstract class ManagerBase<TDbContext, TEntity>
         _logger = logger;
         _dbContext = (dbContextFactory.CreateDbContextAsync().Result as TDbContext)!;
         _userContext = userContext;
+        _isMultiTenant = dbContextFactory.IsMultiTenant;
         _dbSet = _dbContext.Set<TEntity>();
         Queryable = _dbSet.AsNoTracking().AsQueryable();
 
-        if (_userContext.TenantId == Guid.Empty)
+        if (_isMultiTenant && _userContext.TenantId == Guid.Empty)
         {
             _logger.LogWarning("TenantId is empty in UserContext");
         }
@@ -75,9 +77,12 @@ public abstract class ManagerBase<TDbContext, TEntity>
     protected async Task<TDto?> FindAsync<TDto>(Expression<Func<TEntity, bool>>? whereExp = null)
         where TDto : class
     {
-        var model = await _dbSet
-            .AsNoTracking()
-            .Where(e => e.TenantId == _userContext.TenantId)
+        var query = _dbSet.AsNoTracking();
+        if (_isMultiTenant)
+        {
+            query = query.Where(e => e.TenantId == _userContext.TenantId);
+        }
+        var model = await query
             .Where(whereExp ?? (e => true))
             .ProjectToType<TDto>()
             .FirstOrDefaultAsync();
@@ -112,8 +117,11 @@ public abstract class ManagerBase<TDbContext, TEntity>
         {
             query = query.IgnoreQueryFilters();
         }
+        if (_isMultiTenant)
+        {
+            query = query.Where(e => e.TenantId == _userContext.TenantId);
+        }
         return await query
-            .Where(e => e.TenantId == _userContext.TenantId)
             .Where(whereExp ?? (e => true))
             .ProjectToType<TDto>()
             .ToListAsync(cancellationToken);
@@ -138,7 +146,10 @@ public abstract class ManagerBase<TDbContext, TEntity>
         {
             Queryable = Queryable.IgnoreQueryFilters();
         }
-        Queryable = Queryable.Where(e => e.TenantId == _userContext.TenantId);
+        if (_isMultiTenant)
+        {
+            Queryable = Queryable.Where(e => e.TenantId == _userContext.TenantId);
+        }
         Queryable =
             filter.OrderBy != null && filter.OrderBy.Count > 0
                 ? Queryable.OrderBy(filter.OrderBy)
@@ -168,7 +179,10 @@ public abstract class ManagerBase<TDbContext, TEntity>
     /// <param name="entity">The entity to insert or update. Cannot be null.</param>
     protected async Task InsertAsync(TEntity entity)
     {
-        entity.TenantId = _userContext.TenantId;
+        if (_isMultiTenant)
+        {
+            entity.TenantId = _userContext.TenantId;
+        }
         await _dbContext.BulkInsertAsync([entity]);
     }
 
@@ -197,7 +211,10 @@ public abstract class ManagerBase<TDbContext, TEntity>
     {
         foreach (TEntity entity in entities)
         {
-            entity.TenantId = _userContext.TenantId;
+            if (_isMultiTenant)
+            {
+                entity.TenantId = _userContext.TenantId;
+            }
             entity.UpdatedTime = DateTime.UtcNow;
         }
         await _dbContext.BulkInsertAsync(entities, cancellationToken: cancellationToken);

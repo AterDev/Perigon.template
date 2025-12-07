@@ -1,8 +1,8 @@
-using System.Linq.Expressions;
 using EFCore.BulkExtensions;
 using EntityFramework;
 using EntityFramework.AppDbFactory;
 using Mapster;
+using System.Linq.Expressions;
 
 namespace Share.Implement;
 
@@ -316,21 +316,30 @@ public abstract class ManagerBase<TDbContext, TEntity>
         CancellationToken cancellationToken = default
     )
     {
-        using var transaction = await _dbContext
-            .Database
-            .BeginTransactionAsync(cancellationToken);
-        try
+        var strategy = _dbContext.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync<T>(async (cancellationToken) =>
         {
-            var result = await operation();
-            await transaction.CommitAsync(cancellationToken);
-            return result;
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, "执行事务操作时发生错误");
-            throw;
-        }
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var result = await operation();
+                await transaction.CommitAsync(cancellationToken);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                }
+                catch
+                {
+                    // ignore rollback failures, original exception is more important
+                }
+                _logger.LogError(ex, "执行事务操作时发生错误");
+                throw;
+            }
+        }, cancellationToken);
     }
 
     /// <summary>
@@ -344,20 +353,29 @@ public abstract class ManagerBase<TDbContext, TEntity>
         CancellationToken cancellationToken = default
     )
     {
-        using var transaction = await _dbContext
-            .Database
-            .BeginTransactionAsync(cancellationToken);
-        try
+        var strategy = _dbContext.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async (cancellationToken) =>
         {
-            await operation();
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, "执行事务操作时发生错误");
-            throw;
-        }
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                await operation();
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                }
+                catch
+                {
+                    // ignore rollback failures
+                }
+                _logger.LogError(ex, "执行事务操作时发生错误");
+                throw;
+            }
+        }, cancellationToken);
     }
 
     public abstract Task<bool> HasPermissionAsync(Guid id);

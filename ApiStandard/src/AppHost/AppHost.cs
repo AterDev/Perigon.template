@@ -6,8 +6,6 @@ var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 
 IResourceBuilder<IResourceWithConnectionString>? database = null;
 IResourceBuilder<IResourceWithConnectionString>? cache = null;
-IResourceBuilder<IResourceWithConnectionString>? nats = null;
-IResourceBuilder<IResourceWithConnectionString>? qdrant = null;
 
 // if you have exist resource, you can set connection string here, without create container
 // database = builder.AddConnectionString(AppConst.Default, "");
@@ -51,24 +49,6 @@ _ = aspireSetting.CacheType?.ToLowerInvariant() switch
 devPassword.WithParentRelationship(infrastructureGroup);
 database?.WithParentRelationship(infrastructureGroup);
 cache?.WithParentRelationship(infrastructureGroup);
-
-if (aspireSetting.EnableNats)
-{
-    nats = builder
-        .AddNats(name: "mq", port: 14222)
-        .WithImageTag("2.12-alpine")
-        .WithJetStream()
-        .WithDataVolume();
-    nats.WithParentRelationship(infrastructureGroup);
-}
-if (aspireSetting.EnableQdrant)
-{
-    qdrant = builder
-        .AddQdrant("qdrant", devPassword, grpcPort: 16334, httpPort: 16333)
-        .WithLifetime(ContainerLifetime.Persistent)
-        .WithDataVolume();
-    qdrant.WithParentRelationship(infrastructureGroup);
-}
 
 #endregion
 

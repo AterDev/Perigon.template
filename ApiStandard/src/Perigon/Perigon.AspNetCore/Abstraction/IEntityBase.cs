@@ -11,7 +11,6 @@ public interface IEntityBase
     bool IsDeleted { get; set; }
 }
 
-
 /// <summary>
 /// entity base interface with tenant support
 /// </summary>

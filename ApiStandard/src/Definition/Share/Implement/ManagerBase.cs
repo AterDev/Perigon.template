@@ -1,8 +1,8 @@
+using System.Linq.Expressions;
 using EFCore.BulkExtensions;
 using EntityFramework;
 using EntityFramework.AppDbFactory;
 using Mapster;
-using System.Linq.Expressions;
 
 namespace Share.Implement;
 
@@ -198,8 +198,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
         Guid id,
         TUpdateDto dto,
         bool updateTime = true
-    )
-        where TUpdateDto : class
+    ) where TUpdateDto : class
     {
         return await _dbContext.PartialUpdateAsync<TEntity, TUpdateDto>(id, dto, updateTime);
     }

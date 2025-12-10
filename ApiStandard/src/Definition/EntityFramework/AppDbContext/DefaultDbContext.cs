@@ -10,9 +10,12 @@ namespace EntityFramework.AppDbContext;
 public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
     : ContextBase(options)
 {
+    #region CMSMod
     public DbSet<Article> Articles { get; set; }
     public DbSet<ArticleCategory> ArticleCategories { get; set; }
+    #endregion
 
+    #region SystemMod
     public DbSet<SystemUser> SystemUsers { get; set; }
     public DbSet<SystemRole> SystemRoles { get; set; }
     public DbSet<SystemUserRole> SystemUserRoles { get; set; }
@@ -30,6 +33,8 @@ public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options
     public DbSet<SystemPermissionGroup> SystemPermissionGroups { get; set; }
     public DbSet<SystemLogs> SystemLogs { get; set; }
     public DbSet<SystemOrganization> SystemOrganizations { get; set; } = null!;
+    #endregion
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -342,11 +342,11 @@ public class ManagerSourceGen : IIncrementalGenerator
             var hash = 17;
             foreach (var m in Managers)
             {
-                hash = hash * 31 + m.GetHashCode();
+                hash = (hash * 31) + m.GetHashCode();
             }
             foreach (var m in Modules)
             {
-                hash = hash * 31 + m.GetHashCode();
+                hash = (hash * 31) + m.GetHashCode();
             }
             return hash;
         }

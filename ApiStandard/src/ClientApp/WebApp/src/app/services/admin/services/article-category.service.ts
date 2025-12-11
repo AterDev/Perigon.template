@@ -2,7 +2,7 @@ import { BaseService } from '../base.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ArticleCategoryFilterDto } from '../models/cmsmod/article-category-filter-dto.model';
-import { PageList } from '../models/ater/page-list.model';
+import { PageList } from '../models/perigon/page-list.model';
 import { ArticleCategoryItemDto } from '../models/cmsmod/article-category-item-dto.model';
 import { ArticleCategoryAddDto } from '../models/cmsmod/article-category-add-dto.model';
 import { ArticleCategory } from '../models/entity/article-category.model';

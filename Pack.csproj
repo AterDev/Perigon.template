@@ -2,7 +2,7 @@
     <PropertyGroup>
         <PackageType>Template</PackageType>
         <Version>1.0.0-rc1</Version>
-        <PackageId>Perigon.template</PackageId>
+        <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
         <Description>
@@ -15,7 +15,7 @@
         <ContentTargetFolders>content</ContentTargetFolders>
         <PackageOutputPath>nuget</PackageOutputPath>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Product>Perigon.template</Product>
+        <Product>Perigon.templates</Product>
         <PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>
         <PackageIcon>logo.jpg</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>

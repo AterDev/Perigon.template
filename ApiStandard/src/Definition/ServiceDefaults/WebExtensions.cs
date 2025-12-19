@@ -216,7 +216,7 @@ public static class WebExtensions
         services.AddLocalization();
         services.AddRequestLocalization(options =>
         {
-            // 添加更多语言支持
+            //  add more cultures if needed
             var supportedCultures = new[] { "zh-CN", "en-US" };
             options
                 .SetDefaultCulture(supportedCultures[0])

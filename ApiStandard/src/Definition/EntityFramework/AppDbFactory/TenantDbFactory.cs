@@ -26,9 +26,7 @@ public class TenantDbFactory(
         Guid tenantId = tenantContext.TenantId;
 
         var connectionStrings = configuration.GetConnectionString(AppConst.Default);
-        if (IsMultiTenant && tenantContext.TenantType == TenantType
-            .Independent
-            .ToString())
+        if (IsMultiTenant && tenantContext.TenantType == TenantType.Independent.ToString())
         {
             connectionStrings = await tenantContext.GetDbConnectionStringAsync();
         }

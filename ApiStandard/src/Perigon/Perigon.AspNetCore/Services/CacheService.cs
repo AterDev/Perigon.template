@@ -42,17 +42,8 @@ public class CacheService(
     )
     {
         var cacheOption = options.Value;
-        var entryOption = new HybridCacheEntryOptions()
-        {
-            Expiration = expiration.HasValue
-                ? TimeSpan.FromSeconds(expiration.Value)
-                : TimeSpan.FromMinutes(cacheOption.Expiration),
-            Flags = flags ?? GetGlobalCacheFlags(cacheOption),
-            LocalCacheExpiration = localExpiration.HasValue
-                ? TimeSpan.FromMinutes(localExpiration.Value)
-                : TimeSpan.FromMinutes(cacheOption.LocalCacheExpiration),
-        };
-        await cache.SetAsync(key, data, entryOption);
+        var cacheOptions = GetCacheEntryOptions(expiration, localExpiration, flags);
+        await cache.SetAsync(key, data, cacheOptions);
     }
 
     /// <summary>
@@ -87,12 +78,33 @@ public class CacheService(
         CancellationToken cancellation = default
     )
     {
+        var cacheOptions = GetCacheEntryOptions();
         var cachedValue = await cache.GetOrCreateAsync(
             key,
             factory,
+            cacheOptions,
             cancellationToken: cancellation
         );
         return cachedValue;
+    }
+
+    private HybridCacheEntryOptions GetCacheEntryOptions(
+        int? expiration = null,
+        int? localExpiration = null,
+        HybridCacheEntryFlags? flags = null
+    )
+    {
+        var cacheOption = options.Value;
+        return new HybridCacheEntryOptions()
+        {
+            Expiration = expiration.HasValue
+                ? TimeSpan.FromSeconds(expiration.Value)
+                : TimeSpan.FromMinutes(cacheOption.Expiration),
+            Flags = flags ?? GetGlobalCacheFlags(cacheOption),
+            LocalCacheExpiration = localExpiration.HasValue
+                ? TimeSpan.FromMinutes(localExpiration.Value)
+                : TimeSpan.FromMinutes(cacheOption.LocalCacheExpiration),
+        };
     }
 
     private HybridCacheEntryFlags GetGlobalCacheFlags(CacheOption cacheOption)

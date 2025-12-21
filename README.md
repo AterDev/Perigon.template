@@ -1,6 +1,6 @@
-# Perigon.template
+# Perigon.templates
 
-`Perigon.template`是基于`Aspire`,`ASP.NET Core`和`Entity Framework Core`的快速开发模板，提供一个设计良好的项目工程结构。
+`Perigon.templates`是基于`Aspire`,`ASP.NET Core`和`Entity Framework Core`的快速开发模板，提供一个设计良好的项目工程结构。
 
 模板已被集成在`Perigon.CLI`代码辅助工具中，建议使用该命令行工具来创建解决方案，以获得更好的体验。
 
@@ -10,7 +10,7 @@
 
 ## 文档
 
-关于模板详细的说明和使用方法，请查阅[使用文档](https://www.dusi.dev/docs)！
+关于模板详细的说明和使用方法，请查阅[使用文档](https://www.dusi.dev/docs/perigon.html)！
 
 ## 安装
 
@@ -24,7 +24,7 @@
 模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.template)上，请根据你的项目版本下载对应的模板。
 
 ```pwsh
-dotnet new --install Perigon.template --preview
+dotnet new --install Perigon.templates --preview
 ```
 
 ## 创建项目

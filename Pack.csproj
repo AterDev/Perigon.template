@@ -17,7 +17,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Product>Perigon.templates</Product>
         <PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
+        <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -36,7 +36,7 @@
         <Content Include="ApiStandard\src\Modules\SystemMod\**" Exclude="$(StandardExcludes)" />
         <Content Include="ApiStandard\src\Modules\CMSMod\**" Exclude="$(StandardExcludes)" />
         <Compile Remove="**\*" />
-        <None Update="logo.jpg">
+        <None Update="logo.png">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
@@ -46,4 +46,3 @@
         </None>
     </ItemGroup>
 </Project>
-

@@ -5,21 +5,21 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Aspire Packages -->
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Hosting.Nats" Version="13.0.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.Nats" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
-    <PackageVersion Include="Aspire.Hosting.Qdrant" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.0.2" />
-    <PackageVersion Include="Aspire.NATS.Net" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.0.2" />
-    <PackageVersion Include="Aspire.Qdrant.Client" Version="13.0.2" />
-    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.0.2" />
+    <PackageVersion Include="Aspire.Hosting.Qdrant" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.1.0" />
+    <PackageVersion Include="Aspire.NATS.Net" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.0" />
+    <PackageVersion Include="Aspire.Qdrant.Client" Version="13.1.0" />
+    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.0" />
     <!--Test -->
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.0.2" />
-    <PackageVersion Include="TUnit" Version="1.5.6" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.1.0" />
+    <PackageVersion Include="TUnit" Version="1.6.5" />
     <!-- Microsoft ASP.NET Core Packages -->
     <PackageVersion Include="EFCore.BulkExtensions.PostgreSql" Version="10.0.0-rc.2" />
     <PackageVersion Include="EFCore.BulkExtensions.SqlServer" Version="10.0.0-rc.2" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.1" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
     <!-- Microsoft Entity Framework Core Packages -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.1" />
@@ -53,11 +53,11 @@
     <!-- Security & Authentication -->
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <!-- Third-party Packages -->
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.14.1" />
-    <PackageVersion Include="EPPlus" Version="8.3.1" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.15.2" />
+    <PackageVersion Include="EPPlus" Version="8.4.0" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
-    <PackageVersion Include="MiniExcel" Version="2.0.0-preview.1" />
+    <PackageVersion Include="MiniExcel" Version="2.0.0-preview.2" />
     <PackageVersion Include="SkiaSharp" Version="3.119.1" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.1" />
   </ItemGroup>

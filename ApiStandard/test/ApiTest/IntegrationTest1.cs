@@ -22,6 +22,5 @@ public class IntegrationTest1
         var resData = await response.Content.ReadFromJsonAsync<AccessTokenDto>();
         await Assert.That(resData.AccessToken).IsNotNullOrEmpty();
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
-
     }
 }

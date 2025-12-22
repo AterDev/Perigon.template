@@ -1,7 +1,7 @@
-using Perigon.AspNetCore.Abstraction;
 using CMSMod.Models.ArticleDtos;
 using EntityFramework.AppDbContext;
 using EntityFramework.AppDbFactory;
+using Perigon.AspNetCore.Abstraction;
 
 namespace CMSMod.Managers;
 
@@ -28,24 +28,6 @@ public class ArticleManager(
 
 
         return await PageListAsync<ArticleFilterDto, ArticleItemDto>(filter);
-    }
-
-    public async Task<bool> IsOwnedAsync(Guid id, Guid userId)
-    {
-        return await Queryable.AnyAsync(q => q.Id == id && q.UserId == userId);
-    }
-
-    /// <summary>
-    /// 当前用户所拥有的对象
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public async Task<Article?> GetOwnedAsync(Guid id)
-    {
-        IQueryable<Article> query = _dbSet.Where(q => q.Id == id);
-        // 获取权限范围的实体
-        // query = query.Where(q => q.User.Id == _userContext.UserId);
-        return await query.FirstOrDefaultAsync();
     }
 
     public override async Task<bool> HasPermissionAsync(Guid id)

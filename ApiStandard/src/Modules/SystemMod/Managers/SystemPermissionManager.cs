@@ -68,7 +68,6 @@ public class SystemPermissionManager(
             current.Group = group;
         }
 
-        // apply updates via partial update
         return await UpdateAsync(id, dto);
     }
 

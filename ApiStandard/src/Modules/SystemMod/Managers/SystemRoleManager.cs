@@ -70,7 +70,9 @@ public class SystemRoleManager(
                 .ToListAsync();
 
             current.PermissionGroups = groups;
-            await InsertAsync(current);
+            // use partial update pattern by touching navigation via context and saving
+            _dbSet.Update(current);
+            await _dbContext.SaveChangesAsync();
 
             return current;
         });
@@ -110,8 +112,7 @@ public class SystemRoleManager(
             );
         }
 
-        current.Merge(dto);
-        await InsertAsync(current);
+        await base.UpdateAsync<SystemRoleUpdateDto>(id, dto);
         return current;
     }
 
@@ -135,8 +136,7 @@ public class SystemRoleManager(
     {
         return await ExecuteInTransactionAsync(async () =>
         {
-            var current =
-                await FindAsync(dto.Id) ?? throw new BusinessException(Localizer.RoleNotFound);
+            var current = await FindAsync(dto.Id) ?? throw new BusinessException(Localizer.RoleNotFound);
 
             if (!CanUserModifyRole(current))
             {
@@ -153,7 +153,8 @@ public class SystemRoleManager(
                 .ToListAsync();
 
             current.SystemMenus = menus;
-            await InsertAsync(current);
+            _dbSet.Update(current);
+            await _dbContext.SaveChangesAsync();
 
             return current;
         });

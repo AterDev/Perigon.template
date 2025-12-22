@@ -49,7 +49,7 @@ public class SystemUserManager(
     }
 
     /// <summary>
-    /// 登录安全策略验证
+    /// 登录安全政策验证
     /// </summary>
     /// <param name="dto"></param>
     /// <param name="user"></param>
@@ -375,7 +375,10 @@ public class SystemUserManager(
                 );
             }
 
-            current.Merge(dto);
+            // 先进行 DTO 局部更新
+            await base.UpdateAsync(id, dto);
+
+            // 如需修改密码，单独更新密码相关字段
             if (dto.Password != null)
             {
                 if (!await ValidatePasswordAsync(dto.Password))
@@ -385,11 +388,18 @@ public class SystemUserManager(
                         StatusCodes.Status400BadRequest
                     );
                 }
-                current.PasswordSalt = HashCrypto.BuildSalt();
-                current.PasswordHash = HashCrypto.GeneratePwd(dto.Password, current.PasswordSalt);
-            }
 
-            await InsertAsync(current);
+                var newSalt = HashCrypto.BuildSalt();
+                var newHash = HashCrypto.GeneratePwd(dto.Password, newSalt);
+                var now = DateTimeOffset.UtcNow;
+
+                await _dbSet
+                    .Where(u => u.Id == id)
+                    .ExecuteUpdateAsync(u => u
+                        .SetProperty(e => e.PasswordSalt, newSalt)
+                        .SetProperty(e => e.PasswordHash, newHash)
+                        .SetProperty(e => e.LastPwdEditTime, now));
+            }
 
             // 使用中间表管理器处理角色关联，提高性能
             if (roles != null)

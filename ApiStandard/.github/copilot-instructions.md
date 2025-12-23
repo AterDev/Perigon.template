@@ -40,6 +40,7 @@
 * `src/Services/`: 其中可能包含多个接口服务项目，都是基于ASP.NET Core WebApi实现，并遵循Restful风格
 * `src/ClientApp/WebApp`: Angular前端项目，管理后台
 * `src/AppHost`: Aspire的启动项目
+* `test/ApiTest`: Api集成测试项目，使用TUnit
 </structure>
 
 <frontend>

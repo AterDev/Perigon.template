@@ -6,7 +6,7 @@ using TUnit.Core.Interfaces;
 
 namespace ApiTest.Data;
 
-public class HttpClientDataClass : IAsyncInitializer, IAsyncDisposable
+public class TestHttpClientData : IAsyncInitializer, IAsyncDisposable
 {
     public HttpClient HttpClient { get; private set; } = new();
 

@@ -6,7 +6,7 @@
 		<PackageId>Perigon.AspNetCore.Toolkit</PackageId>
 		<Title>Perigon.AspNetCore.Toolkit</Title>
 		<Authors>niltor</Authors>
-		<Version>1.0.0-rc1</Version>
+		<Version>0.1.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageTags>extension;webapi;framework;ater;aspnetcore;toolkit</PackageTags>
 		<PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>

@@ -24,7 +24,7 @@
 模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.template)上，请根据你的项目版本下载对应的模板。
 
 ```pwsh
-dotnet new --install Perigon.templates --preview
+dotnet new --install Perigon.templates 
 ```
 
 ## 创建项目

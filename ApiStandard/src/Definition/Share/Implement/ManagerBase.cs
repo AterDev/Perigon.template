@@ -1,8 +1,8 @@
-using System.Linq.Expressions;
 using EFCore.BulkExtensions;
 using EntityFramework;
 using EntityFramework.AppDbFactory;
 using Mapster;
+using System.Linq.Expressions;
 
 namespace Share.Implement;
 
@@ -28,6 +28,7 @@ public abstract class ManagerBase<TDbContext>(TDbContext dbContext, ILogger logg
 /// <typeparam name="TDbContext">Database context type</typeparam>
 /// <typeparam name="TEntity">Entity type</typeparam>
 public abstract class ManagerBase<TDbContext, TEntity>
+    : IDisposable, IAsyncDisposable
     where TDbContext : DbContext
     where TEntity : class, IEntityBase
 {
@@ -391,5 +392,34 @@ public abstract class ManagerBase<TDbContext, TEntity>
             return query.Where(e => ((ITenantEntityBase)e).TenantId == _userContext.TenantId);
         }
         return query;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _dbContext?.Dispose();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore();
+        Dispose(false);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (_dbContext is not null)
+        {
+            await _dbContext.DisposeAsync();
+        }
     }
 }

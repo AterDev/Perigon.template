@@ -72,14 +72,25 @@ public class CacheService(
         return cachedValue;
     }
 
-    public async Task<T> GetOrCreateAsync<T>(
+    /// <summary>
+    /// Get or create value from cache.
+    /// <para>
+    /// <b>Cache Stampede (Thundering Herd):</b> Automatically handled by HybridCache (concurrent requests wait for single factory execution).
+    /// </para>
+    /// <para>
+    /// <b>Cache Penetration (Invalid Keys):</b>
+    /// <br/>- If factory returns <c>null</c> (and T is nullable), it is cached. This protects against repeated queries for missing data.
+    /// <br/>- If keys are random/malicious, this can fill the cache. Ensure keys are validated before calling this.
+    /// </para>
+    /// </summary>
+    public async Task<T?> GetOrCreateAsync<T>(
         string key,
-        Func<CancellationToken, ValueTask<T>> factory,
+        Func<CancellationToken, ValueTask<T?>> factory,
         CancellationToken cancellation = default
     )
     {
         var cacheOptions = GetCacheEntryOptions();
-        var cachedValue = await cache.GetOrCreateAsync(
+        var cachedValue = await cache.GetOrCreateAsync<T?>(
             key,
             factory,
             cacheOptions,

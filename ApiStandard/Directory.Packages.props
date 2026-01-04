@@ -7,7 +7,7 @@
     <!-- Aspire Packages -->
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.Nats" Version="13.1.0" />
-    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.Qdrant" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.1.0" />
@@ -19,7 +19,7 @@
     <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.0" />
     <!--Test -->
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.1.0" />
-    <PackageVersion Include="TUnit" Version="1.6.5" />
+    <PackageVersion Include="TUnit" Version="1.9.2" />
     <!-- Microsoft ASP.NET Core Packages -->
     <PackageVersion Include="EFCore.BulkExtensions.PostgreSql" Version="10.0.0-rc.2" />
     <PackageVersion Include="EFCore.BulkExtensions.SqlServer" Version="10.0.0-rc.2" />
@@ -53,7 +53,7 @@
     <!-- Security & Authentication -->
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <!-- Third-party Packages -->
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.15.2" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.16.2" />
     <PackageVersion Include="EPPlus" Version="8.4.0" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
     <PackageVersion Include="Mapster" Version="7.4.0" />

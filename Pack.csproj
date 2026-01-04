@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>
+        <PackageReleaseNotes>update aspire and package to 13.1.0
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
@@ -31,7 +31,7 @@
         <StandardExcludes>**\bin\**;**\obj\**;**\.vs\**;**\node_modules\**;**\.angular\**;**\*.lock;**\pnpm-lock.yaml;**\dist\**</StandardExcludes>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="ApiStandard\**\*" Exclude="$(StandardExcludes);templates\**\src\Modules\**;templates\**\.tmp\**" />
+        <Content Include="ApiStandard\**\*" Exclude="$(StandardExcludes);templates\**\src\Modules\**;templates\**\.tmp\**;ApiStandard\src\Modules\**" />
         <Content Include="ApiStandard\src\Modules\CommonMod\**" Exclude="$(StandardExcludes)" />
         <Content Include="ApiStandard\src\Modules\SystemMod\**" Exclude="$(StandardExcludes)" />
         <Content Include="ApiStandard\src\Modules\CMSMod\**" Exclude="$(StandardExcludes)" />

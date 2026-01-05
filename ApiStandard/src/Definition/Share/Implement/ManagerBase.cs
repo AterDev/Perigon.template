@@ -61,6 +61,26 @@ public abstract class ManagerBase<TDbContext, TEntity>
         }
     }
 
+    protected ManagerBase(
+        TDbContext dbContext,
+        IUserContext userContext,
+        ILogger logger,
+        bool isMultiTenant = false
+    )
+    {
+        _logger = logger;
+        _dbContext = dbContext;
+        _userContext = userContext;
+        _isMultiTenant = isMultiTenant;
+        _dbSet = _dbContext.Set<TEntity>();
+        Queryable = _dbSet.AsNoTracking().AsQueryable();
+
+        if (_isMultiTenant && _userContext.TenantId == Guid.Empty)
+        {
+            _logger.LogWarning("TenantId is empty in UserContext");
+        }
+    }
+
     /// <summary>
     /// Finds and attaches the entity by id for tracking.
     /// </summary>

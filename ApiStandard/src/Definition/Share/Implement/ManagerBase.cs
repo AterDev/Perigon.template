@@ -152,9 +152,8 @@ public abstract class ManagerBase<TDbContext, TEntity>
                     ? Queryable
                     : Queryable.OrderByDescending(t => t.CreatedTime);
 
-        var count = Queryable.Count();
-        List<TItem> data = await Queryable
-            .AsNoTracking()
+        var count = await Queryable.CountAsync(cancellationToken);
+        List<TItem> data = await Queryable.AsNoTracking()
             .Skip((filter.PageIndex - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ProjectToType<TItem>()
@@ -264,8 +263,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
         }
         else
         {
-            await _dbContext
-                .Entry(entity)
+            await _dbContext.Entry(entity)
                 .Reference(propertyExpression)
                 .Query()
                 .AsNoTracking()
@@ -382,7 +380,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
     /// </summary>
     protected void ResetQuery()
     {
-        Queryable = _dbSet.AsQueryable();
+        Queryable = _dbSet.AsNoTracking().AsQueryable();
     }
 
     protected IQueryable<TEntity> ApplyTenantFilter(IQueryable<TEntity> query)

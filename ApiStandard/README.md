@@ -1,5 +1,8 @@
 # 说明
 
+![NuGet Version](https://img.shields.io/nuget/v/Perigon.templates?style=flat)
+
+
 `Perigon.templates`项目模板的使用提供文档支持。
 
 ## 根目录

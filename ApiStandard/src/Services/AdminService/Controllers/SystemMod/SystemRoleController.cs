@@ -1,7 +1,7 @@
 using Perigon.AspNetCore.Models;
 using SystemMod.Models.SystemRoleDtos;
 
-namespace AdminService.Controllers;
+namespace AdminService.Controllers.SystemMod;
 
 /// <summary>
 /// 系统角色

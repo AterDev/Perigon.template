@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Share.Models.Auth;
 using SystemMod.Models.SystemUserDtos;
 
-namespace AdminService.Controllers;
+namespace AdminService.Controllers.SystemMod;
 
 /// <summary>
 /// 系统用户

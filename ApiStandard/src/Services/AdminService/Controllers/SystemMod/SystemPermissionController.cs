@@ -1,25 +1,31 @@
 using Perigon.AspNetCore.Models;
-using SystemMod.Models.SystemPermissionGroupDtos;
+using SystemMod.Models.SystemPermissionDtos;
 
-namespace AdminService.Controllers;
+namespace AdminService.Controllers.SystemMod;
 
-/// <see cref="SystemPermissionGroupManager"/>
-[Authorize(WebConst.SuperAdmin)]
-public class SystemPermissionGroupController(
+/// <summary>
+/// 权限
+/// </summary>
+/// <see cref="SystemPermissionManager"/>
+public class SystemPermissionController(
     Localizer localizer,
     IUserContext user,
-    ILogger<SystemPermissionGroupController> logger,
-    SystemPermissionGroupManager manager
-) : RestControllerBase<SystemPermissionGroupManager>(localizer, manager, user, logger)
+    ILogger<SystemPermissionController> logger,
+    SystemPermissionManager manager,
+    SystemPermissionGroupManager systemPermissionGroupManager
+) : RestControllerBase<SystemPermissionManager>(localizer, manager, user, logger)
 {
+    private readonly SystemPermissionGroupManager _systemPermissionGroupManager =
+        systemPermissionGroupManager;
+
     /// <summary>
     /// 筛选 ✅
     /// </summary>
     /// <param name="filter"></param>
     /// <returns></returns>
     [HttpPost("filter")]
-    public async Task<ActionResult<PageList<SystemPermissionGroupItemDto>>> FilterAsync(
-        SystemPermissionGroupFilterDto filter
+    public async Task<ActionResult<PageList<SystemPermissionItemDto>>> FilterAsync(
+        SystemPermissionFilterDto filter
     )
     {
         return await _manager.FilterAsync(filter);
@@ -31,8 +37,13 @@ public class SystemPermissionGroupController(
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<SystemPermissionGroup>> AddAsync(SystemPermissionGroupAddDto dto)
+    public async Task<ActionResult<SystemPermission>> AddAsync(SystemPermissionAddDto dto)
     {
+        if (!await _systemPermissionGroupManager.ExistAsync(dto.SystemPermissionGroupId))
+        {
+            return NotFound("不存在的权限组");
+        }
+
         var entity = await _manager.AddAsync(dto);
         return CreatedAtAction(nameof(GetDetailAsync), new { id = entity.Id }, entity);
     }
@@ -46,7 +57,7 @@ public class SystemPermissionGroupController(
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateAsync(
         [FromRoute] Guid id,
-        SystemPermissionGroupUpdateDto dto
+        SystemPermissionUpdateDto dto
     )
     {
         await _manager.EditAsync(id, dto);
@@ -59,9 +70,7 @@ public class SystemPermissionGroupController(
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<SystemPermissionGroupDetailDto?>> GetDetailAsync(
-        [FromRoute] Guid id
-    )
+    public async Task<ActionResult<SystemPermissionDetailDto?>> GetDetailAsync([FromRoute] Guid id)
     {
         var res = await _manager.GetAsync(id);
         return res == null ? NotFound() : res;
@@ -76,7 +85,7 @@ public class SystemPermissionGroupController(
     public async Task<ActionResult<bool>> DeleteAsync([FromRoute] Guid id)
     {
         // 注意删除权限
-        SystemPermissionGroup? entity = await _manager.GetGroupAsync(id);
+        SystemPermission? entity = await _manager.GetSystemPermissionAsync(id);
         return entity == null ? NotFound() : await _manager.DeleteAsync(id) > 0;
     }
 }

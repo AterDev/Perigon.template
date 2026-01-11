@@ -1,7 +1,7 @@
 using Perigon.AspNetCore.Models;
 using SystemMod.Models.SystemLogsDtos;
 
-namespace AdminService.Controllers;
+namespace AdminService.Controllers.SystemMod;
 
 /// <summary>
 /// 系统日志

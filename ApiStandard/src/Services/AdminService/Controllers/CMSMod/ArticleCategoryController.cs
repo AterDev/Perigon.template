@@ -1,9 +1,10 @@
-﻿using Perigon.AspNetCore.Models;
+﻿using AdminService.Controllers.SystemMod;
 using CMSMod.Managers;
 using CMSMod.Models.ArticleCategoryDtos;
 using Entity.CMSMod;
+using Perigon.AspNetCore.Models;
 
-namespace AdminService.Controllers;
+namespace AdminService.Controllers.CMSMod;
 
 public class ArticleCategoryController(
     Localizer localizer,
@@ -14,7 +15,7 @@ public class ArticleCategoryController(
 {
 
     /// <summary>
-    /// 获取配置列表 ✅
+    /// 获取目录列表 ✅
     /// </summary>
     /// <param name="filter"></param>
     /// <returns></returns>

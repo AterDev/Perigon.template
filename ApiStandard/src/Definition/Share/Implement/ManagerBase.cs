@@ -61,6 +61,26 @@ public abstract class ManagerBase<TDbContext, TEntity>
         }
     }
 
+    protected ManagerBase(
+        TDbContext dbContext,
+        IUserContext userContext,
+        ILogger logger,
+        bool isMultiTenant = false
+    )
+    {
+        _logger = logger;
+        _dbContext = dbContext;
+        _userContext = userContext;
+        _isMultiTenant = isMultiTenant;
+        _dbSet = _dbContext.Set<TEntity>();
+        Queryable = _dbSet.AsNoTracking().AsQueryable();
+
+        if (_isMultiTenant && _userContext.TenantId == Guid.Empty)
+        {
+            _logger.LogWarning("TenantId is empty in UserContext");
+        }
+    }
+
     /// <summary>
     /// Finds and attaches the entity by id for tracking.
     /// </summary>
@@ -152,9 +172,8 @@ public abstract class ManagerBase<TDbContext, TEntity>
                     ? Queryable
                     : Queryable.OrderByDescending(t => t.CreatedTime);
 
-        var count = Queryable.Count();
-        List<TItem> data = await Queryable
-            .AsNoTracking()
+        var count = await Queryable.CountAsync(cancellationToken);
+        List<TItem> data = await Queryable.AsNoTracking()
             .Skip((filter.PageIndex - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ProjectToType<TItem>()
@@ -264,8 +283,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
         }
         else
         {
-            await _dbContext
-                .Entry(entity)
+            await _dbContext.Entry(entity)
                 .Reference(propertyExpression)
                 .Query()
                 .AsNoTracking()
@@ -382,7 +400,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
     /// </summary>
     protected void ResetQuery()
     {
-        Queryable = _dbSet.AsQueryable();
+        Queryable = _dbSet.AsNoTracking().AsQueryable();
     }
 
     protected IQueryable<TEntity> ApplyTenantFilter(IQueryable<TEntity> query)

@@ -19,10 +19,10 @@
     <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.1.0" />
     <!--Test -->
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.1.0" />
-    <PackageVersion Include="TUnit" Version="1.9.2" />
+    <PackageVersion Include="TUnit" Version="1.9.45" />
     <!-- Microsoft ASP.NET Core Packages -->
-    <PackageVersion Include="EFCore.BulkExtensions.PostgreSql" Version="10.0.0-rc.2" />
-    <PackageVersion Include="EFCore.BulkExtensions.SqlServer" Version="10.0.0-rc.2" />
+    <PackageVersion Include="EFCore.BulkExtensions.PostgreSql" Version="10.0.0" />
+    <PackageVersion Include="EFCore.BulkExtensions.SqlServer" Version="10.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.1" />
@@ -34,6 +34,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
     <!-- Microsoft Extensions Packages -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.1.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.1" />
@@ -53,7 +54,7 @@
     <!-- Security & Authentication -->
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <!-- Third-party Packages -->
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.16.2" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.17" />
     <PackageVersion Include="EPPlus" Version="8.4.0" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
     <PackageVersion Include="Mapster" Version="7.4.0" />

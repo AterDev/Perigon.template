@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace MigrationService;
 
@@ -25,7 +25,6 @@ public class Worker(
             _logger.LogInformation("migrations {db}", nameof(DefaultDbContext));
             var dbContext = scope.ServiceProvider.GetRequiredService<DefaultDbContext>();
             await RunMigrationAsync(dbContext, cancellationToken);
-            await SeedDataAsync(dbContext, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -44,16 +43,6 @@ public class Worker(
         await strategy.ExecuteAsync(async () =>
         {
             await dbContext.Database.MigrateAsync(cancellationToken);
-        });
-    }
-
-    private static async Task SeedDataAsync<T>(T dbContext, CancellationToken cancellationToken)
-        where T : DbContext
-    {
-        var strategy = dbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(() =>
-        {
-            return Task.CompletedTask;
         });
     }
 }

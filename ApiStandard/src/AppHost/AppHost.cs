@@ -3,6 +3,7 @@ using Perigon.AspNetCore.Constants;
 
 var builder = DistributedApplication.CreateBuilder(args);
 var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
+var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
 
 IResourceBuilder<IResourceWithConnectionString>? database = null;
 IResourceBuilder<IResourceWithConnectionString>? cache = null;
@@ -13,7 +14,7 @@ IResourceBuilder<IResourceWithConnectionString>? cache = null;
 // qdrant = builder.AddConnectionString("qdrant", "");
 
 #region infrastructure
-var defaultName = "MyProjectName_dev";
+var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
 var devPassword = builder.AddParameter(
     "dev-password",
     value: aspireSetting.DevPassword,
@@ -56,9 +57,11 @@ cache?.WithParentRelationship(infrastructureGroup);
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var migration = builder.AddProject<Projects.MigrationService>("MigrationService")
     .WithParentRelationship(serviceGroup);
-var apiService = builder.AddProject<Projects.ApiService>("ApiService").WaitForCompletion(migration)
+var apiService = builder.AddProject<Projects.ApiService>("ApiService")
+    .WaitForCompletion(migration)
     .WithParentRelationship(serviceGroup);
-var adminService = builder.AddProject<Projects.AdminService>("AdminService").WaitForCompletion(migration)
+var adminService = builder.AddProject<Projects.AdminService>("AdminService")
+    .WaitForCompletion(migration)
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first
@@ -76,7 +79,6 @@ if (database != null)
 }
 if (cache != null)
 {
-    migration.WithReference(cache).WaitFor(cache);
     apiService.WithReference(cache);
     adminService.WithReference(cache);
 }

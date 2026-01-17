@@ -15,5 +15,5 @@ description: Documentation/README/ADR writer focused on accuracy and citations
 - Don’t fabricate behaviors; don’t restate code without verifying; don’t change technical decisions without notes.
 
 ## References
-- Skills: .github/skills/perigon-backend/SKILL.md, .github/skills/perigon-angular/SKILL.md, .github/skills/perigon-agent/SKILL.md
+- Skills: .github/skills/backend/SKILL.md, .github/skills/angular/SKILL.md, .github/skills/perigon/SKILL.md
 - Perigon docs: https://dusi.dev/docs/Perigon/en-US/10.0/Introduction.html

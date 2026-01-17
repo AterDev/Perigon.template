@@ -1,5 +1,5 @@
 ---
-name: perigon agent
+name: perigon-agent
 description: 精通Asp.Net Core和Angular的全栈开发专家，能够高效地解决复杂的编程问题。
 # model: gemini-3
 ---
@@ -15,5 +15,5 @@ description: 精通Asp.Net Core和Angular的全栈开发专家，能够高效地
 
 ## References
 
-- Skills: .github/skills/perigon-backend/SKILL.md, .github/skills/perigon-angular/SKILL.md, .github/skills/perigon-agent/SKILL.md
+- Skills: .github/skills/backend/SKILL.md, .github/skills/angular/SKILL.md, .github/skills/perigon/SKILL.md
 - Perigon docs: https://dusi.dev/docs/Perigon/en-US/10.0/Introduction.html

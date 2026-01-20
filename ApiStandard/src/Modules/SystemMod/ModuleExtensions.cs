@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel;
 using SystemMod.Worker;
 
 namespace SystemMod;
@@ -6,6 +7,8 @@ namespace SystemMod;
 /// <summary>
 /// 服务注入扩展
 /// </summary>
+[DisplayName("Perigon::系统模块")]
+[Description("包含系统角色，用户，权限等相关功能")]
 public static class ModuleExtensions
 {
     /// <summary>

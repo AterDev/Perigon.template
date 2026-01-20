@@ -1,5 +1,5 @@
-using System.Text.Json;
 using Entity.CommonMod;
+using System.Text.Json;
 
 namespace SystemMod;
 
@@ -13,10 +13,10 @@ public class InitModule
     public static async Task InitializeAsync(IServiceProvider provider)
     {
         var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-        var context       = provider.GetRequiredService<DefaultDbContext>();
-        var logger        = loggerFactory.CreateLogger<InitModule>();
+        var context = provider.GetRequiredService<DefaultDbContext>();
+        var logger = loggerFactory.CreateLogger<InitModule>();
         var configuration = provider.GetRequiredService<IConfiguration>();
-        var cache         = provider.GetRequiredService<CacheService>();
+        var cache = provider.GetRequiredService<CacheService>();
 
         try
         {
@@ -34,45 +34,43 @@ public class InitModule
         }
         catch (Exception ex)
         {
-            var conn = context
-                .Database
-                .GetConnectionString();
+            var conn = context.Database.GetConnectionString();
             logger.LogError("Failed to initialize system configuration! {message}. ", ex.Message);
         }
     }
 
     private static async Task InitTenantAdminAccountAsync(DefaultDbContext context)
     {
-        var domain          = "default.com";
+        var domain = "default.com";
         var defaultPassword = "Perigon.2026";
-        var tenant          = new Tenant()
+        var tenant = new Tenant()
         {
-            Domain      = domain,
-            Name        = AppConst.Default,
+            Domain = domain,
+            Name = AppConst.Default,
             Description = "This is default tenant, created by system.",
         };
         var superRole = new SystemRole()
         {
-            Name      = WebConst.SuperAdmin,
+            Name = WebConst.SuperAdmin,
             NameValue = WebConst.SuperAdmin,
-            TenantId  = tenant.Id,
+            TenantId = tenant.Id,
         };
 
         var adminRole = new SystemRole()
         {
-            Name      = WebConst.AdminUser,
+            Name = WebConst.AdminUser,
             NameValue = WebConst.AdminUser,
-            TenantId  = tenant.Id,
+            TenantId = tenant.Id,
         };
-        var salt      = HashCrypto.BuildSalt();
+        var salt = HashCrypto.BuildSalt();
         var adminUser = new SystemUser()
         {
-            UserName     = "admin",
-            Email        = $"admin@{domain}",
+            UserName = "admin",
+            Email = $"admin@{domain}",
             PasswordSalt = salt,
             PasswordHash = HashCrypto.GeneratePwd(defaultPassword, salt),
-            SystemRoles  = [superRole, adminRole],
-            TenantId     = tenant.Id,
+            SystemRoles = [superRole, adminRole],
+            TenantId = tenant.Id,
         };
 
         context.Add(tenant);
@@ -112,12 +110,8 @@ public class InitModule
             JsonSerializer.Serialize(loginSecurityPolicy)
         );
 
-        context
-            .SystemConfigs
-            .Add(loginSecurityPolicyConfig);
-        context
-            .SystemConfigs
-            .Add(initConfig);
+        context.SystemConfigs.Add(loginSecurityPolicyConfig);
+        context.SystemConfigs.Add(initConfig);
 
         await context.SaveChangesAsync();
         logger.LogInformation("写入登录安全策略成功");
@@ -138,12 +132,8 @@ public class InitModule
     {
         logger.LogInformation("加载配置缓存");
         var securityPolicy = context
-            .SystemConfigs.Where(c => c
-            .Key
-            .Equals(WebConst.LoginSecurityPolicy))
-            .Where(c => c
-            .GroupName
-            .Equals(WebConst.SystemGroup))
+            .SystemConfigs.Where(c => c.Key.Equals(WebConst.LoginSecurityPolicy))
+            .Where(c => c.GroupName.Equals(WebConst.SystemGroup))
             .Select(c => c.Value)
             .FirstOrDefault();
 

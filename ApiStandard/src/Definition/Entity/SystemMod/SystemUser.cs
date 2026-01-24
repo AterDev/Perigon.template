@@ -34,7 +34,7 @@ public class SystemUser : EntityBase
     public string PasswordHash { get; set; } = default!;
 
     [JsonIgnore]
-    [MaxLength(60)]
+    [MaxLength(100)]
     public string PasswordSalt { get; set; } = default!;
 
     [Phone]

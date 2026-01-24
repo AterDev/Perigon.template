@@ -1,6 +1,3 @@
-using System.Text.Encodings.Web;
-using System.Text.Unicode;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
@@ -11,6 +8,9 @@ using Microsoft.OpenApi;
 using Perigon.AspNetCore.Converters;
 using ServiceDefaults;
 using ServiceDefaults.Middleware;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+using System.Threading.RateLimiting;
 
 namespace ServiceDefaults;
 
@@ -46,7 +46,7 @@ public static class WebExtensions
         IConfiguration configuration
     )
     {
-        services.AddJwtAuthentication(configuration);
+        services.AddAuthentication(configuration);
         services.AddThirdAuthentication(configuration);
 
         services.AddAuthorize();
@@ -238,7 +238,7 @@ public static class WebExtensions
     /// <param name="configuration"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static IServiceCollection AddJwtAuthentication(
+    public static IServiceCollection AddAuthentication(
         this IServiceCollection services,
         IConfiguration configuration
     )
@@ -248,25 +248,59 @@ public static class WebExtensions
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(cfg =>
+            .AddJwtBearer(options =>
             {
-                cfg.SaveToken = true;
+                options.SaveToken = true;
+                var componentOption = configuration.GetSection(ComponentOption.ConfigPath).Get<ComponentOption>();
                 var jwtOption = configuration.GetSection(JwtOption.ConfigPath).Get<JwtOption>();
-                var sign = jwtOption?.Sign;
-                if (string.IsNullOrEmpty(sign))
+                var oauthOption = configuration.GetSection(OAuthOption.ConfigPath).Get<OAuthOption>();
+
+                if (componentOption?.AuthType == AuthType.Jwt)
                 {
-                    throw new Exception("未找到有效的Jwt配置");
+                    var sign = jwtOption?.Sign;
+                    if (string.IsNullOrEmpty(sign))
+                    {
+                        throw new Exception("未找到有效的Jwt配置");
+                    }
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
+                        ValidIssuer = jwtOption?.ValidIssuer,
+                        ValidAudience = jwtOption?.ValidAudiences,
+                        ValidateIssuer = true,
+                        ValidateLifetime = true,
+                        RequireExpirationTime = true,
+                        ValidateIssuerSigningKey = true,
+                    };
                 }
-                cfg.TokenValidationParameters = new TokenValidationParameters()
+                else if (componentOption?.AuthType == AuthType.OAuth)
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
-                    ValidIssuer = jwtOption?.ValidIssuer,
-                    ValidAudience = jwtOption?.ValidAudiences,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
-                    ValidateIssuerSigningKey = true,
+                    options.Authority = oauthOption?.Authority;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidAudiences = oauthOption?.Audiences,
+                        ClockSkew = TimeSpan.FromMinutes(5),
+                    };
+                    options.RequireHttpsMetadata = oauthOption?.RequireHttpsMetadata ?? true;
+                }
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine("Authentication failed: {0}", context.Exception);
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        Console.WriteLine("Token validated for user: {0}", context.Principal?.Identity?.Name);
+                        return Task.CompletedTask;
+                    },
                 };
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);

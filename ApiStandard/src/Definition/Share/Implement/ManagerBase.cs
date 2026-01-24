@@ -231,7 +231,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
                 ((ITenantEntityBase)entity).TenantId = _userContext.TenantId;
             }
 
-            entity.UpdatedTime = DateTime.UtcNow;
+            entity.UpdatedTime = DateTimeOffset.UtcNow;
         }
         await _dbContext.BulkInsertAsync(entities, cancellationToken: cancellationToken);
     }

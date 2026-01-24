@@ -10,7 +10,7 @@ public class AspireSetting
     public string DatabaseType { get; set; } = "PostgreSQL";
     public string CacheType { get; set; } = "Hybrid";
     public string DevPassword { get; set; } =
-        "MyProjectName_Dev@" + DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy");
+        "Perigon." + DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy");
 
     public int DbPort { get; set; } = 15432;
     public int CachePort { get; set; } = 16379;

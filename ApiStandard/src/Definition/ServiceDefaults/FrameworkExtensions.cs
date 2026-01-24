@@ -1,11 +1,11 @@
-using Perigon.AspNetCore.Abstraction;
-using Perigon.AspNetCore.Services;
-using Perigon.AspNetCore.Toolkit.Services;
 using EntityFramework.AppDbFactory;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
+using Perigon.AspNetCore.Abstraction;
+using Perigon.AspNetCore.Services;
+using Perigon.AspNetCore.Toolkit.Services;
 using Share.Implement;
 
 namespace ServiceDefaults;
@@ -25,10 +25,8 @@ public static class FrameworkExtensions
             builder.Services.AddScoped<IUserContext, UserContext>();
             builder.Services.AddScoped<ITenantContext, TenantContext>();
 
-            var components =
-                builder.Configuration.GetSection(ComponentOption.ConfigPath).Get<ComponentOption>()
-                ?? throw new Exception($"can't get {ComponentOption.ConfigPath} config");
-
+            var components = builder.Configuration.GetSection(ComponentOption.ConfigPath)
+                .Get<ComponentOption>() ?? new ComponentOption();
             builder.AddOptions();
             builder.AddCache(components);
             builder.AddDbFactory();

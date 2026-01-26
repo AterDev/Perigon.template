@@ -1,4 +1,3 @@
-using Entity.CommonMod;
 using System.Text.Json;
 
 namespace SystemMod;
@@ -41,26 +40,22 @@ public class InitModule
 
     private static async Task InitTenantAdminAccountAsync(DefaultDbContext context)
     {
-        var domain = "default.com";
         var defaultPassword = "Perigon.2026";
-        var tenant = new Tenant()
-        {
-            Domain = domain,
-            Name = AppConst.Default,
-            Description = "This is default tenant, created by system.",
-        };
+        var tenant = context.Tenants.FirstOrDefault();
+        var tenantId = tenant?.Id ?? Guid.Empty;
+        var domain = tenant?.Domain ?? "default.com";
         var superRole = new SystemRole()
         {
             Name = WebConst.SuperAdmin,
             NameValue = WebConst.SuperAdmin,
-            TenantId = tenant.Id,
+            TenantId = tenantId,
         };
 
         var adminRole = new SystemRole()
         {
             Name = WebConst.AdminUser,
             NameValue = WebConst.AdminUser,
-            TenantId = tenant.Id,
+            TenantId = tenantId,
         };
         var salt = HashCrypto.BuildSalt();
         var adminUser = new SystemUser()
@@ -70,10 +65,9 @@ public class InitModule
             PasswordSalt = salt,
             PasswordHash = HashCrypto.GeneratePwd(defaultPassword, salt),
             SystemRoles = [superRole, adminRole],
-            TenantId = tenant.Id,
+            TenantId = tenantId,
         };
 
-        context.Add(tenant);
         context.Add(adminUser);
         await context.SaveChangesAsync();
 

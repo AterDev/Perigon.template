@@ -1,3 +1,4 @@
+using Entity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -25,6 +26,7 @@ public class Worker(
             _logger.LogInformation("migrations {db}", nameof(DefaultDbContext));
             var dbContext = scope.ServiceProvider.GetRequiredService<DefaultDbContext>();
             await RunMigrationAsync(dbContext, cancellationToken);
+            await InitAsync(dbContext, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -43,6 +45,24 @@ public class Worker(
         await strategy.ExecuteAsync(async () =>
         {
             await dbContext.Database.MigrateAsync(cancellationToken);
+        });
+    }
+
+    private static async Task InitAsync(DefaultDbContext dbContext, CancellationToken cancellationToken)
+    {
+        var strategy = dbContext.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+
+            var domain = "default.com";
+            var tenant = new Tenant()
+            {
+                Domain = domain,
+                Name = AppConst.Default,
+                Description = "This is default tenant, created by system.",
+            };
+            dbContext.Add(tenant);
+            await dbContext.SaveChangesAsync(cancellationToken);
         });
     }
 }

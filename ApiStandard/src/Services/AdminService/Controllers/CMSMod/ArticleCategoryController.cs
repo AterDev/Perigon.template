@@ -1,5 +1,4 @@
-﻿using AdminService.Controllers.SystemMod;
-using CMSMod.Managers;
+﻿using CMSMod.Managers;
 using CMSMod.Models.ArticleCategoryDtos;
 using Entity.CMSMod;
 using Perigon.AspNetCore.Models;
@@ -9,7 +8,7 @@ namespace AdminService.Controllers.CMSMod;
 public class ArticleCategoryController(
     Localizer localizer,
     IUserContext user,
-    ILogger<SystemConfigController> logger,
+    ILogger<ArticleCategoryManager> logger,
     ArticleCategoryManager manager
     ) : RestControllerBase<ArticleCategoryManager>(localizer, manager, user, logger)
 {

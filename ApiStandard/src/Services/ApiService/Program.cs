@@ -9,8 +9,7 @@ builder.AddFrameworkServices();
 // Web中间件服务:route, openapi, jwt, cors, auth, rateLimiter etc.
 builder.AddMiddlewareServices();
 
-builder
-    .Services.AddAuthorizationBuilder()
+builder.Services.AddAuthorizationBuilder()
     .AddPolicy(
         WebConst.User,
         policy =>

@@ -28,13 +28,14 @@
     </PropertyGroup>
     <PropertyGroup>
         <!-- 定义通用排除模式 -->
-        <StandardExcludes>**\bin\**;**\obj\**;**\.vs\**;**\node_modules\**;**\.angular\**;**\*.lock;**\pnpm-lock.yaml;**\dist\**</StandardExcludes>
+        <StandardExcludes>
+            **\bin\**;**\obj\**;**\.vs\**;**\node_modules\**;**\.angular\**;**\*.lock;**\pnpm-lock.yaml;**\dist\**</StandardExcludes>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="ApiStandard\**\*" Exclude="$(StandardExcludes);templates\**\src\Modules\**;templates\**\.tmp\**;ApiStandard\src\Modules\**" />
-        <Content Include="ApiStandard\src\Modules\CommonMod\**" Exclude="$(StandardExcludes)" />
-        <Content Include="ApiStandard\src\Modules\SystemMod\**" Exclude="$(StandardExcludes)" />
-        <Content Include="ApiStandard\src\Modules\CMSMod\**" Exclude="$(StandardExcludes)" />
+        <Content Include="ApiStandard\**\*"
+            Exclude="$(StandardExcludes);ApiStandard\templates\**;ApiStandard\src\Modules\**;ApiStandard\test\ManagerBaseTests\**" />
+        <Content Include="ApiStandard\src\Entity\*.*" Exclude="ApiStandard\src\Entity\**" />
+        
         <Compile Remove="**\*" />
         <None Update="logo.png">
             <Pack>True</Pack>

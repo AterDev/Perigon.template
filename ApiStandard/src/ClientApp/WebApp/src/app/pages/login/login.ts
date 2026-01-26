@@ -4,12 +4,10 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { CommonFormModules } from 'src/app/share/shared-modules';
 import { AuthService } from 'src/app/services/auth.service';
-import { AdminClient } from 'src/app/services/admin/admin-client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 import { initStarfield } from './starfield';
 import { form, FormField, required, email, FieldState, minLength, maxLength, ValidationError } from '@angular/forms/signals'
-import { SystemLoginDto } from 'src/app/services/admin/models/system-mod/system-login-dto.model';
 import { translateValidationError } from 'src/app/share/validation-helpers';
 
 
@@ -21,7 +19,7 @@ import { translateValidationError } from 'src/app/share/validation-helpers';
 })
 export class Login implements OnInit, AfterViewInit {
   i18nKeys = I18N_KEYS;
-  private adminClient = inject(AdminClient);
+  // private adminClient = inject(AdminClient);
   private translate = inject(TranslateService);
   constructor(
     private authService: AuthService,
@@ -32,7 +30,7 @@ export class Login implements OnInit, AfterViewInit {
     }
   }
 
-  loginModel = signal<SystemLoginDto>({
+  loginModel = signal<any>({
     email: '',
     password: ''
   })
@@ -74,21 +72,21 @@ export class Login implements OnInit, AfterViewInit {
   }
 
   doLogin(): void {
-    const data = this.loginForm().value();
-    // 登录接口
-    this.adminClient.systemUser.login(data)
-      .subscribe(res => {
-        this.authService.saveToken(res);
-        this.getUserInfo();
-      });
+    // const data = this.loginForm().value();
+    // // 登录接口
+    // this.adminClient.systemUser.login(data)
+    //   .subscribe(res => {
+    //     this.authService.saveToken(res);
+    //     this.getUserInfo();
+    //   });
   }
 
   getUserInfo(): void {
-    this.adminClient.systemUser.getUserInfo()
-      .subscribe(res => {
-        this.authService.saveUserInfo(res);
-        this.router.navigate(['/system-role']);
-      });
+    // this.adminClient.systemUser.getUserInfo()
+    //   .subscribe(res => {
+    //     this.authService.saveUserInfo(res);
+    //     this.router.navigate(['/system-role']);
+    //   });
   }
 
 

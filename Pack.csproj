@@ -34,8 +34,6 @@
     <ItemGroup>
         <Content Include="ApiStandard\**\*"
             Exclude="$(StandardExcludes);ApiStandard\templates\**;ApiStandard\src\Modules\**;ApiStandard\test\ManagerBaseTests\**" />
-        <Content Include="ApiStandard\src\Entity\*.*" Exclude="ApiStandard\src\Entity\**" />
-        
         <Compile Remove="**\*" />
         <None Update="logo.png">
             <Pack>True</Pack>

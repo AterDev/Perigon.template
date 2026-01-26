@@ -27,10 +27,6 @@
     <Project Path="src/Definition/ServiceDefaults/ServiceDefaults.csproj" />
     <Project Path="src/Definition/Share/Share.csproj" />
   </Folder>
-  <Folder Name="/src/Modules/">
-    <Project Path="src/Modules/CMSMod/CMSMod.csproj" />
-    <Project Path="src/Modules/SystemMod/SystemMod.csproj" />
-  </Folder>
   
   <Folder Name="/src/Services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
     <Project Path="src/Services/AdminService/AdminService.csproj" />

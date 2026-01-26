@@ -1,7 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿using Share.Models.Auth;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Share.Models.Auth;
-using SystemMod.Models;
 using TUnit.Core.Interfaces;
 
 namespace ApiTest.Data;
@@ -23,7 +22,8 @@ public class TestHttpClientData : IAsyncInitializer, IAsyncDisposable
         }
 
         // Authenticate once and set bearer token for subsequent requests
-        var loginDto = new SystemLoginDto
+
+        var loginDto = new
         {
             Email = "admin@default.com",
             Password = "Perigon.2026",

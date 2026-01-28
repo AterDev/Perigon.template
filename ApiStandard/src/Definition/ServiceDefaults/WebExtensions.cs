@@ -88,7 +88,6 @@ public static class WebExtensions
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.MapFallbackToFile("index.html");
         return app;
     }
 

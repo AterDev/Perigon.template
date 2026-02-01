@@ -55,7 +55,6 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <!-- Third-party Packages -->
     <PackageVersion Include="AWSSDK.S3" Version="4.0.17.3" />
-    <PackageVersion Include="EPPlus" Version="8.4.1" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="MiniExcel" Version="2.0.0-preview.2" />

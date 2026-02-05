@@ -1,16 +1,11 @@
 ---
 name: angular
-description: Angular 21+ standalone/Material/signal 前端开发约定
+description: Angular 21+ 前端开发规范（standalone/Material/signals）。用于 Angular 组件/页面/路由/表单、Material UI、signals 状态、i18n、前端样式与交互相关任务。
 ---
 
 ## 何时使用
 
-在 src/ClientApp/WebApp 下的前端开发工作
-- 组件（Components）开发
-- 路由（Routes）配置
-- 服务（Services）和 API 调用
-- 样式和主题定制
-- 国际化（i18n）
+本技能适用于使用 Angular 框架进行前端开发的项目。
 
 ---
 
@@ -44,25 +39,54 @@ src/ClientApp/WebApp/
 ```
 
 **核心原则**：
+
 - **100% Standalone 组件**：不使用 NgModule
 - **Angular Material**：统一的 UI 组件库
 - **Signals 优先**：使用新的响应式 API
-
+- **严格的类型安全**：TypeScript 严格模式
 ---
 
 ## 开发流程
 
-0. 先调用MCP 工具，从Api文档生成客户端请求服务，`outputPath`参数为前端的`src\app`目录的绝对路径,clientType为:NgHttp
+0. 先调用MCP 工具，从Api文档生成客户端请求服务，`outputPath`参数为前端的`src\ClientApp\WebApp\src\app`目录的绝对路径,不要再添加子路径了。clientType为:NgHttp。这一步需要将`AppHost`项目启动起来之后，才能正常调用工具生成请求服务。
 1. 创建独立组件：目录及文件结构
 2. 配置路由和菜单
 3. 实现ts逻辑和HTML模板
-4. 检查导入和依赖
+4. **执行构建验证**（必须步骤）：验证编译无错误
+5. 检查导入和依赖
 
 优先通过使用 MCP 工具生成组件，Perigon提供`通过razor 模板生成代码`的能力，以获取可参考的代码结构和示例。
 
 **特别注意**：生成的请求服务代码不要添加或修改，它是与接口保持一致的，包括类型定义，切勿重复定义类型。
 
+---
+
+## 构建验证（每次修改后必须执行）
+
+### 验证前端构建
+```pwsh
+cd src/ClientApp/WebApp
+npm run build
+```
+
+### 常见构建错误及解决
+1. **TypeScript 类型错误**：检查接口定义和类型注解
+2. **模块未找到**：检查 import 路径和 tsconfig.json
+3. **Angular 编译错误**：检查组件装饰器和模板语法
+4. **依赖缺失**：执行 `pnpm install`
+
+### 实时开发验证（可选）
+```pwsh
+npm run start  # 启动开发服务器，实时查看编译错误
+```
+
+### 构建-修复循环
+修改代码 → 构建 → 发现错误 → 修复 → 重新构建，直到无错误
+
 ## 组件开发
+
+- `enumText`管道：用于将枚举值转换为对应的文本显示。
+- `toKeyValue`管道：用于将枚举类型转换为键值对数组，以便在选项列表中使用。
 
 ### Standalone 组件
 - ✓ **必须**：所有组件使用 standalone 模式
@@ -93,6 +117,10 @@ src/ClientApp/WebApp/
 - 使用 SCSS 变量和混入
 - ✗ 不要在组件中使用内联样式，而是在scss中定义。
 
+### 多语言
+
+- 禁止使用硬编码字符串，而是定义和使用i18nKeys
+- 使用 `translate` 管道进行文本翻译
 ---
 
 ### 表单管理

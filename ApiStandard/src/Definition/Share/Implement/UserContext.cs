@@ -1,5 +1,5 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Share.Implement;
 
@@ -10,6 +10,7 @@ public class UserContext : IUserContext
     public Guid? GroupId { get; init; }
 
     public Guid TenantId { get; init; }
+    public string? TenantType { get; set; }
 
     public string? UserName { get; init; }
     public string? Email { get; set; }
@@ -42,6 +43,8 @@ public class UserContext : IUserContext
         )
         {
             TenantId = tenantId;
+            TenantType = FindClaim(CustomClaimTypes.TenantType)?.Value
+                ?? nameof(Entity.TenantType.Normal);
         }
 
         UserName = FindClaim(ClaimTypes.Name)?.Value;

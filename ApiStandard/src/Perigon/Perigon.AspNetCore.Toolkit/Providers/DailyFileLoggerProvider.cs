@@ -63,7 +63,7 @@ public class DailyFileLogger(
     Func<string, LogLevel, bool> filter
 ) : ILogger
 {
-    private readonly Lock _fileLock = new();
+    private readonly object _fileLock = new();
 
     public bool IsEnabled(LogLevel logLevel)
     {
@@ -105,7 +105,7 @@ public class DailyFileLogger(
         var logFilePath = Path.Combine(basePath, logFileName);
         Directory.CreateDirectory(basePath);
 
-        using (_fileLock.EnterScope())
+        lock (_fileLock)
         {
             File.AppendAllText(logFilePath, logEntry.ToString());
         }

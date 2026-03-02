@@ -20,6 +20,41 @@ public static class Extensions
         var equal = Expression.Equal(keyProp, idConst);
         var whereLambda = Expression.Lambda<Func<TEntity, bool>>(equal, eParam);
 
+#if NET8_0
+        var entity = await set.FirstOrDefaultAsync(whereLambda, cancellationToken);
+        if (entity is null)
+        {
+            return 0;
+        }
+
+        foreach (var dtoProp in typeof(TUpdateDto).GetProperties())
+        {
+            var value = dtoProp.GetValue(dto);
+            if (value is null)
+            {
+                continue;
+            }
+
+            var entityProp = typeof(TEntity).GetProperty(dtoProp.Name);
+            if (entityProp is null || !entityProp.CanWrite)
+            {
+                continue;
+            }
+
+            entityProp.SetValue(entity, value);
+        }
+
+        if (updateUpdatedTime)
+        {
+            var entityProp = typeof(TEntity).GetProperty(nameof(EntityBase.UpdatedTime));
+            if (entityProp is not null && entityProp.CanWrite)
+            {
+                entityProp.SetValue(entity, DateTimeOffset.UtcNow);
+            }
+        }
+
+        return await db.SaveChangesAsync(cancellationToken);
+#else
         return await set.Where(whereLambda).ExecuteUpdateAsync(updater =>
         {
             var type = updater.GetType();
@@ -43,11 +78,9 @@ public static class Extensions
                     continue;
                 }
 
-                // Construct e => e.Prop
                 var propExp = Expression.Property(eParam, entityProp);
                 var propLambda = Expression.Lambda(propExp, eParam);
 
-                // Invoke SetProperty<TProp>(lambda, value)
                 var genericSetProperty = setPropertyMethod.MakeGenericMethod(entityProp.PropertyType);
                 genericSetProperty.Invoke(updater, [propLambda, value]);
             }
@@ -64,6 +97,9 @@ public static class Extensions
                     genericSetProperty.Invoke(updater, [propLambda, DateTimeOffset.UtcNow]);
                 }
             }
+
+            return updater;
         }, cancellationToken);
+#endif
     }
 }

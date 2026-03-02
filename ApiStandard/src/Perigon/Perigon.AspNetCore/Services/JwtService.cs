@@ -71,7 +71,11 @@ public class JwtService(IOptions<JwtOption> options)
     /// <returns></returns>
     public static string GetRefreshToken()
     {
+#if NET8_0
+        var guid = Guid.NewGuid().ToString("N");
+#else
         var guid = Guid.CreateVersion7().ToString("N");
+#endif
         return guid + HashCrypto.GetRandom(32, useLow: true);
     }
 

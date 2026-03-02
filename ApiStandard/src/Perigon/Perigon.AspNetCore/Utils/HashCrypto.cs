@@ -112,8 +112,11 @@ public class HashCrypto
     public static string HashString(string str, HashType type = HashType.MD5)
     {
         var bytes = HashData(str, type);
-
+#if NET8_0
+        return Convert.ToHexString(bytes).ToLowerInvariant();
+#else
         return Convert.ToHexStringLower(bytes);
+#endif
     }
 
     private static byte[] HashData(string str, HashType type = HashType.MD5)

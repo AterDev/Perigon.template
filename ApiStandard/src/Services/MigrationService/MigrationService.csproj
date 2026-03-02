@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-MigrationService-a6847709-48df-4a73-8a2f-60d08c2f943f</UserSecretsId>
@@ -17,4 +17,5 @@
         <ProjectReference Include="..\..\Definition\EntityFramework\EntityFramework.csproj" />
     </ItemGroup>
 </Project>
+
 

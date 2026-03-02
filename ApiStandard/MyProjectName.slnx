@@ -36,4 +36,5 @@
   <Folder Name="/tests/">
     <Project Path="tests/ApiTest/ApiTest.csproj" Id="76a6ee38-e083-4d7a-a1f4-5f490942d94b" />
   </Folder>
+  <Project Path="Definition/EntityFramework.UnitTests/EntityFramework.UnitTests.csproj" Id="c39f4cd8-54e5-4230-a5b8-1719369431d0" />
 </Solution>

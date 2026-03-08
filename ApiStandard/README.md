@@ -1,9 +1,6 @@
 # 说明
 
-![NuGet Version](https://img.shields.io/nuget/v/Perigon.templates?style=flat)
-
-
-`Perigon.templates`项目模板的使用提供文档支持。
+本项目基于 `Asp.Net Core/EF Core/Aspire`技术栈，提供结构清晰的项目结构，并对模块化，AI工具提供了良好的支持。
 
 ## 根目录
 
@@ -15,7 +12,7 @@
 
 ## 代码目录src
 
-* `src/Ater/Perigon.AspNetCore`: 基础类库，提供基础帮助类。
+* `src/Perigon/Perigon.AspNetCore`: 基础类库，提供基础帮助类。
 * `src/Definition/ServiceDefaults`: 是提供基础的服务注入的项目。
 * `src/Definition/Entity`: 包含所有的实体模型，按模块目录组织。
 * `src/Definition/EntityFramework`: 基于Entity Framework Core的数据库上下文
@@ -29,6 +26,10 @@
 ## 项目运行
 
 项目基于`Aspire`，直接运行`AppHost`项目即可启动所有服务。
+
+如使用`dotnet run  --project .\src\AppHost\AppHost.csproj`.
+
+或者使用`aspire run`命令运行.
 
 ## 文档
 

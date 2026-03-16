@@ -9,9 +9,9 @@ IResourceBuilder<IResourceWithConnectionString>? database = null;
 IResourceBuilder<IResourceWithConnectionString>? cache = null;
 
 // if you have exist resource, you can set connection string here, without create container
-// database = builder.AddConnectionString(AppConst.Default, "");
-// nats = builder.AddConnectionString("mq", "");
-// qdrant = builder.AddConnectionString("qdrant", "");
+// database = builder.AddConnectionString(AppConst.Default);
+// nats = builder.AddConnectionString("mq");
+// qdrant = builder.AddConnectionString("qdrant");
 
 #region infrastructure
 var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";

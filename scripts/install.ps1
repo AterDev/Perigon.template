@@ -1,8 +1,10 @@
 $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
 
-$location = Get-Location
-$solutionPath = Join-Path $location "../ApiStandard"
-$packPath = Join-Path $location "../nupkg"
+$scriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$repoRoot = (Resolve-Path (Join-Path $scriptRoot "..")).Path
+$solutionPath = Join-Path $repoRoot "ApiStandard"
+$packPath = Join-Path $repoRoot "nupkg"
+$packProjectPath = Join-Path $repoRoot "Pack.csproj"
 $requiredModules = @("SystemMod", "CommonMod");
 
 Write-Host "Clean files"
@@ -17,24 +19,21 @@ if (Test-Path $migrationPath) {
 }
 
 try {
-    Set-Location "../";
     # pack
-    dotnet pack -c release -o $packPath
+    dotnet pack $packProjectPath -c release -o $packPath
     # get package info
-    $VersionNode = Select-Xml -Path ./Pack.csproj -XPath '/Project//PropertyGroup/Version'
-    $PackageNode = Select-Xml -Path ./Pack.csproj -XPath '/Project//PropertyGroup/PackageId'
+    $VersionNode = Select-Xml -Path $packProjectPath -XPath '/Project//PropertyGroup/Version'
+    $PackageNode = Select-Xml -Path $packProjectPath -XPath '/Project//PropertyGroup/PackageId'
     $Version = $VersionNode.Node.InnerText
     $PackageId = $PackageNode.Node.InnerText
+    $packageFilePath = Join-Path $packPath "$PackageId.$Version.nupkg"
 
     #re install package
     dotnet new uninstall $PackageId
-    dotnet new install $packPath\$PackageId.$Version.nupkg
-
-    Set-Location $location;
+    dotnet new install $packageFilePath
 }
 catch {
     Write-Error $_.Exception.Message
-    Set-Location $location;
 }
 
 

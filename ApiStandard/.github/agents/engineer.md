@@ -67,7 +67,7 @@ Rules:
 
 根据制定的计划编写代码，根据<skills> 选择合适的技能。要充分考虑代码的复用性，可维护性。
 
-每个步骤执行完，使用 #tool:vscode/memory 的`str_replace`来更新`/memories/session/task.md`中的计划完成度和步骤状态。
+每个步骤执行完，使用 #tool:vscode/memory 的`str_replace`来更新`/memories/session/task.md`中的计划完成度和步骤状态。并输出当前执行进度。
 
 在代码编写及重构时，对模式相同的代码修改，可尝试编写脚本来批量处理。
 

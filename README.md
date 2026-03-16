@@ -10,7 +10,7 @@
 
 ## 文档
 
-关于模板详细的说明和使用方法，请查阅[使用文档](https://www.dusi.dev/docs/perigon.html)！
+关于模板详细的说明和使用方法，请查阅[使用文档](https://www.dusi.dev/docs/Perigon.html)！
 
 ## 安装
 

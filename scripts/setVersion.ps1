@@ -2,12 +2,15 @@ param(
     [string]$Version = "1.0.0"
 )
 
-# 定义项目文件路径数组（相对于脚本所在目录）
+$scriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$repoRoot = (Resolve-Path (Join-Path $scriptRoot "..")).Path
+
+# 定义项目文件路径数组（基于脚本所在目录解析）
 $projects = @(
-    "..\Pack.csproj",
-    "..\ApiStandard\src\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj",
-    "..\ApiStandard\src\Perigon\Perigon.AspNetCore.Toolkit\Perigon.AspNetCore.Toolkit.csproj",
-    "..\ApiStandard\src\Perigon\Perigon.AspNetCore.SourceGeneration\Perigon.AspNetCore.SourceGeneration.csproj"
+    (Join-Path $repoRoot "Pack.csproj"),
+    (Join-Path $repoRoot "ApiStandard\src\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj"),
+    (Join-Path $repoRoot "ApiStandard\src\Perigon\Perigon.AspNetCore.Toolkit\Perigon.AspNetCore.Toolkit.csproj"),
+    (Join-Path $repoRoot "ApiStandard\src\Perigon\Perigon.AspNetCore.SourceGeneration\Perigon.AspNetCore.SourceGeneration.csproj")
 )
 
 foreach ($project in $projects) {

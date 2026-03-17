@@ -47,8 +47,6 @@ export class CustomerHttpInterceptor implements HttpInterceptor {
     return this.showError(error);
   }
   showError(error: HttpErrorResponse) {
-    console.log(error);
-
     const errors = {
       detail: 'Server Error',
       status: 500,
@@ -85,7 +83,8 @@ export class CustomerHttpInterceptor implements HttpInterceptor {
         break;
     }
     errors.status = error.status;
-    this.snb.open(errors.detail, '了解', { duration: 10000 });
+    console.log('errors', errors);
+    this.snb.open(errors.detail, 'Close', { duration: 10000 });
     return throwError(() => errors);
   }
 }

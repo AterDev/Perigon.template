@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Share.Implement;
@@ -25,7 +26,7 @@ public class UserContext : IUserContext
     public UserContext(IHttpContextAccessor httpContextAccessor)
     {
         HttpContext = httpContextAccessor!.HttpContext;
-        if (Guid.TryParse(FindClaim(ClaimTypes.NameIdentifier)?.Value, out Guid userId)
+        if (Guid.TryParse(FindClaimValue(ClaimTypes.NameIdentifier, JwtRegisteredClaimNames.Sub), out Guid userId)
             && userId != Guid.Empty
         )
         {
@@ -47,6 +48,9 @@ public class UserContext : IUserContext
                 ?? nameof(Entity.TenantType.Normal);
         }
 
+        UserName = FindClaimValue(ClaimTypes.Name, JwtRegisteredClaimNames.Name);
+        Email = FindClaimValue(ClaimTypes.Email, JwtRegisteredClaimNames.Email);
+
         UserName = FindClaim(ClaimTypes.Name)?.Value;
         Email = FindClaim(ClaimTypes.Email)?.Value;
         CurrentRole = FindClaim(ClaimTypes.Role)?.Value;
@@ -61,6 +65,19 @@ public class UserContext : IUserContext
     protected Claim? FindClaim(string claimType)
     {
         return HttpContext?.User?.FindFirst(claimType);
+    }
+
+    protected string? FindClaimValue(params string[] claimTypes)
+    {
+        foreach (var claimType in claimTypes)
+        {
+            var value = FindClaim(claimType)?.Value;
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+        }
+        return null;
     }
 
     /// <summary>

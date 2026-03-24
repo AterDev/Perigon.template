@@ -41,7 +41,7 @@ src/
 - 模块主要是通过继承 ManagerBase<T> 来实现业务逻辑，所有Manager都要继承 ManagerBase<T> 或 ManagerBase
 - 在模块中业务验证错误，抛出 `BusinessException`
 
-模块之间不能相互依赖，除了`CoreMod`块可以被所有模块依赖外，其他模块只能依赖`Share`和`ServiceDefaults`。
+多模块共用的逻辑在`CoreMod`中实现，它作为核心模块被其他模块引用；除此之外，模块间不允许互相引用，以保持模块的独立性和可维护性。
 
 ### Services
 
@@ -70,13 +70,6 @@ src/
 4. **Modules** → 模块的业务逻辑实现和DTO，依赖 Entity 和 Share
 5. **Services** → API 控制器，依赖 Modules
 
-**禁止**：
-
-- ❌ Manager之间直接调用
-- ❌ Controller 绕过 Manager 直接访问 DbContext
-- ❌ Entity 包含业务逻辑（仅数据模型和验证注解）
-- ❌ 不要面向接口编程。没有多个实现类的服务，不要为其创建接口。
-
 ## 开发流程
 
 1. 定义层，即实体的定义，DbContext的处理，以及共享服务的编写(封装以便简化和复用)
@@ -94,12 +87,17 @@ src/
 ### 构建-修复循环
 修改代码 → 构建 → 发现错误 → 修复 → 重新构建，直到无错误
 
-MCP server config lives in [.mcp.json](../../../.mcp.json) or [.vscode/mcp.json](../../../.vscode/mcp.json); use configured endpoints when invoking tools.
+MCP server config lives in [.vscode/mcp.json](../../../.vscode/mcp.json); use configured endpoints when invoking tools.
 
 
 ## 约定与规范
 
-解决方案使用全局命名空间和中央包管理
+- 解决方案使用全局命名空间(`GlobalUsings.cs`)和中央包管理
+- Manager之间不允许直接调用
+- Module之间不会互相依赖
+- Controller调用Manager方法，不直接访问 DbContext
+- 不要面向接口编程。没有多个实现类的服务，不要为其创建接口。
+- 遵守项目核心约定和模式（如Manager继承ManagerBase、控制器继承RestControllerBase）
 
 ### 代码复用
 

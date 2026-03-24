@@ -1,8 +1,16 @@
 {
-    "servers": {
-        "perigon": {
-            "type": "http",
-            "url": "http://localhost:19160/mcp/"
-        }
+  "servers": {
+    "perigon": {
+      "type": "http",
+      "url": "http://localhost:19160/mcp/"
+    },
+    "aspire": {
+      "type": "stdio",
+      "command": "aspire",
+      "args": [
+        "agent",
+        "mcp"
+      ]
     }
+  }
 }

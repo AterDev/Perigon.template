@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.2.2</Version>
+        <Version>1.2.3</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,10 +21,8 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. update AI coding docs.
-    2. Add tenant middleware to get tenant info and save to cache. TenantDbFactory get tenant info from cache and create dbcontext.
-    3. Updated dependencies to the latest versions.
-    
+        <PackageReleaseNotes>1. update aspire to 13.2.0.
+            2. update agents and skills.
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

@@ -49,7 +49,8 @@ src/ClientApp/WebApp/
 
 <workflow>
 
-0. 先调用MCP 工具，从Api文档生成客户端请求服务，`outputPath`参数为前端的`src\ClientApp\WebApp\src\app`目录的绝对路径,不要再添加子路径了。clientType为:NgHttp。这一步需要将`AppHost`项目启动起来之后，才能正常调用工具生成请求服务。
+0. 生成前端请求服务及类型：通过perigon 提供的命令行工具`generate request`或`perigon mcp`工具，根据后端swagger文件生成前端代码，
+`outputPath`参数为前端项目根目录下的`\src\app`目录的绝对路径(生成错了要删除)。
 1. 创建独立组件：目录及文件结构
 2. 配置路由和菜单
 3. 实现ts逻辑和HTML模板
@@ -108,7 +109,7 @@ npm run start  # 启动开发服务器，实时查看编译错误
 
 ### 多语言
 
-- 禁止使用硬编码字符串，而是定义和使用i18nKeys
+- 禁止使用`硬编码字符串`，而是定义和使用`i18nKeys`
 - 使用 `translate` 管道进行文本翻译
 
 ### 表单管理

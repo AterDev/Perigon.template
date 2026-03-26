@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.2.4</Version>
+        <Version>1.2.5</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -23,6 +23,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>1. update aspire to 13.2.0.
             2. update agents and skills.
+            3. fix package version conflicts.
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

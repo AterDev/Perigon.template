@@ -32,28 +32,26 @@ public class UserContext : IUserContext
         {
             UserId = userId;
         }
-        if (Guid.TryParse(FindClaim(ClaimTypes.GroupSid)?.Value, out Guid groupSid)
+        if (Guid.TryParse(FindClaimValue(ClaimTypes.GroupSid), out Guid groupSid)
             && groupSid != Guid.Empty
         )
         {
             GroupId = groupSid;
         }
 
-        if (Guid.TryParse(FindClaim(CustomClaimTypes.TenantId)?.Value, out Guid tenantId)
+        if (Guid.TryParse(FindClaimValue(CustomClaimTypes.TenantId), out Guid tenantId)
             && tenantId != Guid.Empty
         )
         {
             TenantId = tenantId;
-            TenantType = FindClaim(CustomClaimTypes.TenantType)?.Value
+            TenantType = FindClaimValue(CustomClaimTypes.TenantType)
                 ?? nameof(Entity.TenantType.Normal);
         }
 
         UserName = FindClaimValue(ClaimTypes.Name, JwtRegisteredClaimNames.Name);
         Email = FindClaimValue(ClaimTypes.Email, JwtRegisteredClaimNames.Email);
 
-        UserName = FindClaim(ClaimTypes.Name)?.Value;
-        Email = FindClaim(ClaimTypes.Email)?.Value;
-        CurrentRole = FindClaim(ClaimTypes.Role)?.Value;
+        CurrentRole = FindClaimValue(ClaimTypes.Role);
 
         Roles = HttpContext?.User?.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
         if (Roles != null)
@@ -62,16 +60,11 @@ public class UserContext : IUserContext
         }
     }
 
-    protected Claim? FindClaim(string claimType)
-    {
-        return HttpContext?.User?.FindFirst(claimType);
-    }
-
     protected string? FindClaimValue(params string[] claimTypes)
     {
         foreach (var claimType in claimTypes)
         {
-            var value = FindClaim(claimType)?.Value;
+            var value = HttpContext?.User?.FindFirstValue(claimType);
             if (!string.IsNullOrWhiteSpace(value))
             {
                 return value;

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.2.5</Version>
+        <Version>1.2.6</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
         <Description>
             Well-structured fast development template based on ASP.NET Core / EF Core / Aspire
         </Description>
-        <PackageTags>dotnet-new;templates;webapi;framework</PackageTags>
+        <PackageTags>dotnet-new;templates;webapi;framework;efcore;aspire;ai</PackageTags>
         <TargetFramework>netstandard2.1</TargetFramework>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -21,9 +21,8 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. update aspire to 13.2.0.
-            2. update agents and skills.
-            3. fix package version conflicts.
+        <PackageReleaseNotes>1. update aspire to 13.2.1.
+            2. add Angular templates example;
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

@@ -7,6 +7,11 @@ model: GPT-5.4 mini (copilot)
 ---
 Generate a git commit message for the current repository changes.
 
+
+**提前条件**
+
+检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+
 Rules:
 
 1. Use Conventional Commits format:

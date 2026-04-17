@@ -107,6 +107,7 @@ MCP server config lives in [.vscode/mcp.json](../../../.vscode/mcp.json); use co
 - Controller调用Manager方法，不直接访问 DbContext
 - 不要面向接口编程。没有多个实现类的服务，不要为其创建接口。
 - 遵守项目核心约定和模式（如Manager继承ManagerBase、控制器继承RestControllerBase）
+- 注意跨平台兼容性，尤其是涉及到 Windows/Linux/MacOS 的文件路径、环境变量、系统调用等方面。
 
 ### 代码复用
 

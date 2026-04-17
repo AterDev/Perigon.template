@@ -8,9 +8,10 @@ model: GPT-5.4 mini (copilot)
 Generate a git commit message for the current repository changes.
 
 
-**提前条件**
+**提前条件**:
 
-检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+- 检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+- 如果包含大量测试或生成内容，或者体积很大的文件，给出警告，让用户确认是否需要添加到忽略列表。
 
 Rules:
 
@@ -31,9 +32,9 @@ Body rules:
 - Each body line should be short and written in Chinese.
 - Focus only on the important secondary changes.
 - You may use plain list lines like:
-  - `- 补充 SSO 处理流程文档`
-  - `- 统一 API 错误返回结构`
-  - `- 增加错误响应集成测试`
+  - `- Add new feature`
+  - `- fix bug in module`
+  - `- update documentation`
 
 Output pattern:
 

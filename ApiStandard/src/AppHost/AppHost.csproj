@@ -21,4 +21,3 @@
         <ProjectReference Include="..\Services\MigrationService\MigrationService.csproj" />
     </ItemGroup>
 </Project>
-

@@ -10,6 +10,11 @@ Generate a git commit message for the current repository changes.
 
 First inspect the current git diff or staged diff, then combine it with any user-provided intent.
 
+**提前条件**:
+
+- 检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+- 如果包含大量测试或生成内容，或者体积很大的文件，给出警告，让用户确认是否需要添加到忽略列表。
+
 Rules:
 
 1. Use Conventional Commits format:

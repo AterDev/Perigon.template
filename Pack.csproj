@@ -21,8 +21,10 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. update AI workflow files;
-            2. update aspire package to 13.2.4;
+        <PackageReleaseNotes>1. update AI workflow files.
+            2. upgrade Aspire and core dependencies to the latest stable versions.
+            3. migrate Excel helper to MiniExcel and remove EPPlus.
+            4. refresh frontend styles and template scripts.
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

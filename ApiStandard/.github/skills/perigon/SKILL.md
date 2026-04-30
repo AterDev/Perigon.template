@@ -1,6 +1,6 @@
 ---
 name: perigon
-description: "使用 Perigon CLI 进行解决方案脚手架、模块/服务添加、OpenAPI 客户端生成、MCP Server 配置与启动、Studio 面板管理、模块打包与安装。USE FOR: perigon new, perigon add module, perigon add service, perigon generate request, perigon mcp config/start, perigon studio, perigon pack, perigon install. 
+description: "使用 Perigon CLI/MCP 进行项目脚手架、模块/服务添加、OpenAPI 客户端生成、MCP 配置、Studio、模块打包与安装。Use when: perigon new, add module, add service, generate request, mcp, studio, pack, install."
 ---
 
 # Perigon Skill

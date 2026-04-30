@@ -4,8 +4,11 @@ name: "Commit Message"
 argument-hint: "Describe the intent or constraints for this commit"
 agent: "agent"
 model: GPT-5.4 mini (copilot)
+tools: [execute]
 ---
 Generate a git commit message for the current repository changes.
+
+First inspect the current git diff or staged diff, then combine it with any user-provided intent.
 
 Rules:
 
@@ -14,7 +17,7 @@ Rules:
 2. `type` must be one of:
    - `feat` `fix` `docs` `refactor` `test` `chore`
 3. Infer `scope` from the main module, such as:
-   - `sso`, `api`, `recipe`, `docker`, `docs`, `test`
+   - `api`, `admin`, `webapp`, `entity`, `ef`, `modules`, `apphost`, `aspire`, `perigon`, `docs`, `test`, `templates`
 4. `subject` must be written in Chinese, concise, and must not end with `。` or `.`
 5. If one commit contains several **related** changes, choose the primary type for the header and use a short body to summarize secondary changes.
 6. If the changes are clearly unrelated, output a short Chinese suggestion to split the commit instead of forcing one message.

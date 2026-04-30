@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.2.6</Version>
+        <Version>1.3.0</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,8 +21,8 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. update aspire to 13.2.1.
-            2. add Angular templates example;
+        <PackageReleaseNotes>1. update AI workflow files;
+            2. update aspire package to 13.2.4;
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

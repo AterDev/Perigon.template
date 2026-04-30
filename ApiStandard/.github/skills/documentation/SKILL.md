@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: 技术文档编写规范 - README、任务分配文档、开发指南、部署文档
+description: "技术文档编写规范。Use when: README, docs, markdown, development guide, deployment guide, task plan, architecture document, troubleshooting guide."
 ---
 
 <applicability>

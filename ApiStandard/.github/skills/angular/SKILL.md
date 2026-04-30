@@ -1,6 +1,6 @@
 ---
 name: angular
-description: Angular 21+ 前端开发规范（standalone/Material/signals）。用于 Angular 组件/页面/路由/表单、Material UI、signals 状态、i18n、前端样式与交互相关任务。
+description: "Angular 21+ 前端开发规范。Use when: Angular component, page, route, form, Material UI, signals, i18n, frontend style, CRUD page, generated request client."
 ---
 
 ## 何时使用
@@ -67,12 +67,12 @@ src/
 
 ### 验证前端构建
 ```pwsh
-npm run build
+pnpm build
 ```
 
 ### 实时开发验证（可选）
 ```pwsh
-npm run start  # 启动开发服务器，实时查看编译错误
+pnpm start  # 启动开发服务器，实时查看编译错误
 ```
 
 ### 构建-修复循环

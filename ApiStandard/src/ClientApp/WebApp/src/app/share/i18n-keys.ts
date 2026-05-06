@@ -36,6 +36,7 @@ export const I18N_KEYS = {
     "pageNotFound": "common.pageNotFound"
   },
   "login": {
+    "adminLogin": "login.adminLogin",
     "username": "login.username",
     "email": "login.email",
     "password": "login.password",

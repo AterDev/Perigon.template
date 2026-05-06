@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -52,6 +53,12 @@ public static class WebExtensions
         services.AddAuthorize();
         services.AddCors(configuration);
         services.AddRateLimiter();
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor
+                | ForwardedHeaders.XForwardedProto
+                | ForwardedHeaders.XForwardedHost;
+        });
 
         services.AddOutputCache(options =>
         {
@@ -65,27 +72,38 @@ public static class WebExtensions
 
     public static WebApplication UseMiddlewareServices(this WebApplication app)
     {
+        app.UseForwardedHeaders();
+
         if (app.Environment.IsProduction())
         {
-            app.UseCors(AppConst.Default);
             app.UseHsts();
             app.UseHttpsRedirection();
         }
-        else
-        {
-            app.UseCors(AppConst.Default);
-        }
 
-        app.UseRateLimiter();
         app.UseStaticFiles();
         app.UseRequestLocalization();
         app.UseRouting();
+        app.UseCors(app.Environment.IsProduction() ? WebConst.Limited : WebConst.Default);
+        app.UseRateLimiter();
         app.UseOutputCache();
-        app.MapSwagger().CacheOutput("openapi");
+
+        if (!app.Environment.IsProduction())
+        {
+            app.MapSwagger().CacheOutput("openapi");
+        }
 
         //app.UseMiddleware<JwtMiddleware>();
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseAuthentication();
+
+        // tenant resolution should be after authentication, because it needs tenant id from user context which is set in authentication middleware
+        var componentOption = app.Configuration
+            .GetSection(ComponentOption.ConfigPath)
+            .Get<ComponentOption>();
+        if (componentOption?.IsMultiTenant == true)
+        {
+            app.UseMiddleware<TenantResolutionMiddleware>();
+        }
         app.UseAuthorization();
         app.MapControllers();
         return app;
@@ -369,14 +387,14 @@ public static class WebExtensions
     {
         var section = configuration.GetSection("Cors");
         //get origins array
-        var origins = section?.GetValue<string[]>("AllowedOrigins") ?? [];
+        var origins = section?.GetSection("AllowedOrigins").Get<string[]>() ?? [];
 
         var allowedSubdomains = section?.GetValue<bool>("AllowedSubdomains") ?? false;
 
         services.AddCors(options =>
         {
             options.AddPolicy(
-                AppConst.Default,
+                WebConst.Default,
                 builder =>
                 {
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();

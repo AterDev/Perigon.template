@@ -1,6 +1,6 @@
 ---
 name: angular
-description: Angular 21+ 前端开发规范（standalone/Material/signals）。用于 Angular 组件/页面/路由/表单、Material UI、signals 状态、i18n、前端样式与交互相关任务。
+description: "Angular 21+ 前端开发规范。Use when: Angular component, page, route, form, Material UI, Material 3, bootstrap-grid, responsive layout, dashboard, CRUD page, i18n, generated request client."
 ---
 
 ## 何时使用
@@ -54,8 +54,9 @@ src/
 1. 创建独立组件：目录及文件结构
 2. 配置路由和菜单
 3. 实现ts逻辑和HTML模板
-4. **执行构建验证**（必须步骤）：验证编译无错误
-5. 检查导入和依赖
+4. 进行页面设计自检：信息层级、布局密度、响应式、状态、空/错/加载态
+5. **执行构建验证**（必须步骤）：验证编译无错误
+6. 检查导入和依赖
 
 优先通过使用 MCP 工具生成组件，Perigon提供`通过razor 模板生成代码`的能力，以获取可参考的代码结构和示例。
 
@@ -67,12 +68,12 @@ src/
 
 ### 验证前端构建
 ```pwsh
-npm run build
+pnpm build
 ```
 
 ### 实时开发验证（可选）
 ```pwsh
-npm run start  # 启动开发服务器，实时查看编译错误
+pnpm start  # 启动开发服务器，实时查看编译错误
 ```
 
 ### 构建-修复循环
@@ -87,8 +88,61 @@ npm run start  # 启动开发服务器，实时查看编译错误
 
 具备良好的交互常识和布局和审美。要考虑排版、边距，文字大小，颜色搭配，组件间距等，优先参考已定义好的`theme.scss`中的样式变量和组件样式，保持整体风格一致。
 
-**组件选择**:
-- 要充分考虑用户交互的便利性和视觉特点，选择合适的组件，比如多选，批量操作，内容展示等，要根据实际业务特点去选择。
+**设计输入**：
+- 先判断页面类型：列表检索、表单编辑、详情阅读、仪表盘、设置页、登录页、向导流程、异常页。
+- 先判断用户目标：快速查找、批量处理、录入校验、审计追踪、状态监控、配置维护。
+- 先判断信息密度：字段数量、筛选条件数量、主次操作数量、是否需要批量操作、是否需要左右分栏。
+
+**页面骨架**：
+- 企业后台默认使用“页面标题/工具区 + 查询或内容区 + 表格/表单/详情 + 分页或底部操作”的结构。
+- 列表页：顶部标题行保持简洁；筛选区使用可换行 flex 布局；主操作放右侧；高频操作露出，低频操作放菜单。
+- 表单页：字段少时单列；字段多时桌面两列、移动端单列；相关字段用小节分组，不要把所有控件堆成一张大表单。
+- 详情页：用 definition/list 风格或只读表单风格呈现；长文本、审计信息、关联数据分区展示。
+- 仪表盘：先放关键指标和异常入口，再放趋势和明细；不要用大量装饰卡片稀释信息。
+- 登录页可以更有品牌感，但仍要保证表单清晰、对比足够、移动端不裁切。
+
+**响应式布局**：
+- 参考 Material window size class 思路，而不是只针对某个设备：compact `<600px`、medium `600-839px`、expanded `>=840px`、desktop `>=1200px`。
+- compact：单列、操作按钮可堆叠或收进菜单、表格允许横向滚动。
+- medium：可显示更多筛选项或二列轻量内容，但不要压缩复杂表格。
+- expanded/desktop：可以使用两栏布局、侧边详情、更多列和更高信息密度。
+- 优先使用 `bootstrap-grid` 的 `d-flex`、`flex-wrap`、`gap-*`、`align-items-center`、`justify-content-between`、`flex-grow-1`、`col-*`、`row-cols-*`；不要使用 `container/row/col/w-100` 作为默认套路，只有明确需要 12 栅格时才使用 `row/col-*`。
+
+**Material 3 视觉规则**：
+- 优先使用 Angular Material 组件表达语义：按钮、图标按钮、菜单、tabs、chips、table、paginator、dialog、snackbar、form-field、slide-toggle、checkbox、select、datepicker。
+- 优先使用 `theme.scss`、`vars.scss`、Angular Material token 或组件 API，不直接覆盖 Material 私有 DOM 结构。
+- 色彩只用于层级和状态：primary 用于主操作，tertiary/accent 用于辅助强调，error 用于错误和危险操作。
+- 不做一页一种颜色风格；不要堆叠渐变、发光、阴影、超大圆角。后台页面应清爽、稳定、可重复使用。
+- 文字层级要克制：页面标题、分组标题、表格文字、辅助说明分别使用稳定大小；不要在普通后台页面使用 hero 级标题。
+- 卡片只用于独立内容块、统计项、弹窗或可重复条目；不要“卡片套卡片”。页面大区块更适合自然分隔、间距和边框。
+
+**组件选择**：
+
+要充分考虑用户交互的便利性和视觉特点，选择合适的组件，比如多选，批量操作，内容展示等，要根据实际业务特点去选择。
+
+
+- 单选少量选项：`mat-button-toggle-group` 或 `mat-radio-group`。
+- 多选筛选：`mat-select multiple` 或 chips + menu。
+- 二元设置：`mat-slide-toggle`；表格行选择：`mat-checkbox`。
+- 危险操作：icon button + tooltip + confirm dialog；批量危险操作必须二次确认。
+- 长列表：`mat-table` + `mat-paginator`；简单键值：list/detail layout；少量状态：chips；复杂状态：tag + tooltip。
+- 行内主操作不超过 2 个；更多操作放 `mat-menu`。
+
+**状态设计**：
+- 每个页面至少考虑 loading、empty、error、disabled、saving/submitting 状态。
+- 空状态只说明当前结果为空并提供最直接动作，不写冗长说明。
+- 表单校验错误显示在控件附近，提交失败用 snackbar 或页面级错误提示。
+- 所有 icon-only 按钮都要有 `matTooltip` 或 `aria-label`。
+
+**AI 设计自检清单**：
+- 页面第一屏是否能看出当前页面、主要对象和主要操作？
+- 标题、筛选、操作、结果是否形成清晰层级？
+- 桌面端是否浪费大面积空白，移动端是否出现文字/按钮挤压？
+- 是否存在横向滚动？允许的只有内部表格或代码/长文本区域。
+- 是否出现硬编码颜色、内联样式、重复自定义按钮样式？
+- 是否使用 i18nKeys，没有硬编码用户可见字符串？
+- 是否包含加载、空、错、禁用、提交中状态？
+- 页面是否符合“企业后台工具”气质，而不是营销页或装饰型 landing page？
 
 **样式层级**：
 - **全局样式**：`styles.scss` - 基础样式和重置
@@ -102,7 +156,60 @@ npm run start  # 启动开发服务器，实时查看编译错误
 - 关注行内元素垂直居中对齐
 - 整体页面不要出现水平滚动条(内部表格除外)，要注意组件的宽度和外层容器的宽度关系
 - ✗ 不要在组件中使用内联样式，而是在scss中定义。
-- 使用boostrap的flex util布局，而不是container/row/col/w-100等.
+- 使用 bootstrap-grid 的 flex util 布局，而不是 container/row/col/w-100 等固定套路。
+- 不使用 `::ng-deep` 覆盖 Material 内部结构，除非是修复已有组件兼容问题且没有 token/API 可用。
+- 组件样式优先写布局、间距和少量局部状态，不要重写 Material 组件整体皮肤。
+- 间距优先使用项目已有 `gap-1/gap-2/gap-3`、Bootstrap spacing/flex 工具或少量组件级变量。
+- 对固定格式 UI 设置稳定尺寸或响应式约束，例如 toolbar、表格操作列、统计卡、图标按钮、弹窗宽度。
+- 移动端必须检查文字换行、按钮宽度、表单字段高度和弹窗最大宽度。
+
+### 常用页面布局模板
+
+**列表检索页**：
+```html
+<section class="d-flex flex-column gap-3">
+  <header class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <div>
+      <h1>{{ i18nKeys.xxx.title | translate }}</h1>
+      <p class="page-subtitle">{{ i18nKeys.xxx.subtitle | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary">{{ i18nKeys.common.add | translate }}</button>
+  </header>
+
+  <form class="d-flex flex-wrap gap-2 align-items-center" [formGroup]="filterForm">
+    <!-- 筛选项使用 mat-form-field，桌面横向排列，移动端自然换行 -->
+  </form>
+
+  <div class="table-shell">
+    <!-- mat-table + mat-paginator -->
+  </div>
+</section>
+```
+
+**表单编辑页**：
+```html
+<section class="d-flex flex-column gap-3">
+  <header class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <h1>{{ i18nKeys.xxx.edit | translate }}</h1>
+    <div class="d-flex gap-2 align-items-center">
+      <button mat-button>{{ i18nKeys.common.cancel | translate }}</button>
+      <button mat-flat-button color="primary" [disabled]="form.invalid || saving()">
+        {{ i18nKeys.common.save | translate }}
+      </button>
+    </div>
+  </header>
+
+  <form class="form-grid" [formGroup]="form">
+    <!-- desktop 两列，compact 单列；字段按业务分组 -->
+  </form>
+</section>
+```
+
+### 视觉验证
+
+- 普通 TS/HTML/SCSS 修改后必须执行 `pnpm build`。
+- 对新页面、复杂布局、登录页、仪表盘、响应式改动，优先启动前端并用浏览器工具检查桌面和移动端视口。
+- 视觉检查重点：是否空白、是否溢出、是否遮挡、表格是否可横向滚动、按钮文字是否换行异常、暗色/亮色模式是否可读。
 
 ### 多语言
 

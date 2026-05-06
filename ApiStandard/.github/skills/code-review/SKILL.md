@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: 全栈代码审查规范（质量/性能/安全/架构/风格）。用于 Code Review、PR 审查、质量门禁、安全与性能检查等任务。
+description: "全栈代码审查规范。Use when: Code Review, PR review, REVIEW_STATUS, NEXT_ACTION, quality gate, performance, security, architecture, style, build/test gate."
 ---
 
 ## 何时使用
@@ -13,6 +13,8 @@ description: 全栈代码审查规范（质量/性能/安全/架构/风格）。
 ## 核心职责
 
 ### 1. 代码正确性审查
+
+跨平台兼容性检查，尤其是涉及到 Windows/Linux/MacOS 的文件路径、环境变量、系统调用等方面的代码。
 
 #### 后端审查要点
   

@@ -1,11 +1,24 @@
 import { Injectable } from '@angular/core';
-import { AccessTokenDto } from './admin/models/share/access-token-dto.model';
-import { UserInfoDto } from './admin/models/system-mod/user-info-dto.model';
+
+export interface AccessTokenDto {
+  accessToken: string;
+  refreshToken?: string | null;
+  expiresIn?: number;
+  refreshExpiresIn?: number;
+}
+
+export interface UserInfoDto {
+  id?: string | null;
+  username?: string | null;
+  userName?: string | null;
+  roles?: string[] | null;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly authKeys = ['accessToken', 'refreshToken', 'username'];
   isLogin = false;
   isAdmin = false;
   userName?: string | null = null;
@@ -17,14 +30,18 @@ export class AuthService {
   saveToken(token: AccessTokenDto): void {
     this.isLogin = true;
     localStorage.setItem("accessToken", token.accessToken);
-    localStorage.setItem("refreshToken", token.refreshToken);
+    if (token.refreshToken) {
+      localStorage.setItem("refreshToken", token.refreshToken);
+    }
 
   }
 
   saveUserInfo(userinfo: UserInfoDto): void {
     this.isLogin = true;
-    this.userName = userinfo.username;
-    localStorage.setItem("username", userinfo.username);
+    this.userName = userinfo.username ?? userinfo.userName ?? null;
+    if (this.userName) {
+      localStorage.setItem("username", this.userName);
+    }
   }
 
   updateUserLoginState(): void {
@@ -38,7 +55,9 @@ export class AuthService {
     }
   }
   logout(): void {
-    localStorage.clear();
+    for (const key of this.authKeys) {
+      localStorage.removeItem(key);
+    }
     this.isLogin = false;
   }
 }

@@ -1,11 +1,11 @@
 ---
 name: aspire
-description: "Orchestrates Aspire distributed applications using the Aspire CLI for running, debugging, and managing distributed apps. USE FOR: aspire start, aspire stop, start aspire app, aspire describe, list aspire integrations, debug aspire issues, view aspire logs, add aspire resource, aspire dashboard, update aspire apphost. DO NOT USE FOR: non-Aspire .NET apps (use dotnet CLI), container-only deployments (use docker/podman), Azure deployment after local testing (use azure-deploy skill). INVOKES: Aspire CLI commands (aspire start, aspire describe, aspire otel logs, aspire docs search, aspire add), bash. FOR SINGLE OPERATIONS: Use Aspire CLI commands directly for quick resource status or doc lookups."
+description: "Aspire 分布式应用编排与调试。Use when: aspire start, AppHost, resource status, logs, traces, dashboard, integrations, Aspire MCP, distributed app debugging. Do not use for ordinary dotnet build/test."
 ---
 
 # Aspire Skill
 
-This repository uses Aspire to orchestrate its distributed application. Resources are defined in the AppHost project (`apphost.cs` or `apphost.ts`).
+This repository uses Aspire to orchestrate its distributed application. Resources are defined in `src/AppHost/AppHost.cs`.
 
 ## CLI command reference
 
@@ -39,15 +39,15 @@ Most commands support `--format Json` for machine-readable output. Use `--apphos
 
 ### Running in agent environments
 
-Use `aspire start` to run the AppHost in the background. When working in a git worktree, use `--isolated` to avoid port conflicts and to prevent sharing user secrets or other local state with other running instances:
+Use `aspire start` to run the AppHost when runtime verification, logs, traces, resource status, or integration debugging is required. When working in a git worktree, use `--isolated` to avoid port conflicts and to prevent sharing user secrets or other local state with other running instances:
 
-```bash
+```pwsh
 aspire start --isolated
 ```
 
 Use `aspire wait <resource>` to block until a resource is healthy before interacting with it:
 
-```bash
+```pwsh
 aspire start --isolated
 aspire wait myapi
 ```
@@ -56,7 +56,7 @@ Relaunching is safe — `aspire start` automatically stops any previous instance
 
 ### Debugging issues
 
-Before making code changes, inspect the app state:
+When debugging runtime issues, inspect the app state before changing code:
 
 1. `aspire describe` — check resource status
 2. `aspire otel logs <resource>` — view structured logs
@@ -73,7 +73,7 @@ After adding an integration, restart the app with `aspire start` for the new res
 
 Some resources expose MCP tools (e.g. `WithPostgresMcp()` adds SQL query tools). Discover and call them via CLI:
 
-```bash
+```pwsh
 aspire mcp tools                                              # list available tools
 aspire mcp tools --format Json                                # includes input schemas
 aspire mcp call <resource> <tool> --input '{"key":"value"}'   # invoke a tool
@@ -81,7 +81,7 @@ aspire mcp call <resource> <tool> --input '{"key":"value"}'   # invoke a tool
 
 ## Important rules
 
-- **Always start the app first** (`aspire start`) before making changes to verify the starting state.
+- Start Aspire only for runtime debugging, integration verification, resource status, logs, traces, or dashboard work. For ordinary static changes, prefer `dotnet build` / `dotnet test`.
 - **To restart, just run `aspire start` again** — it automatically stops the previous instance. NEVER use `aspire stop` then `aspire run`. NEVER use `aspire run` at all.
 - Use `--isolated` when working in a worktree.
 - **Avoid persistent containers** early in development to prevent state management issues.

@@ -3,6 +3,7 @@ import { Login } from './pages/login/login';
 import { LayoutComponent } from './layout/layout';
 import { Notfound } from './pages/notfound/notfound';
 import { AuthGuard } from './share/auth.guard';
+import { Index } from './pages/index/index';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -12,27 +13,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     children: [
-      {
-        path: 'system-role',
-        children: [
-          { path: '', redirectTo: '/system-role/index', pathMatch: 'full' },
-          { path: 'index', loadComponent: () => import('./pages/system-role/index/index').then(m => m.Index) },
-        ]
-      },
-      {
-        path: 'system-user',
-        children: [
-          { path: '', redirectTo: '/system-user/index', pathMatch: 'full' },
-          { path: 'index', loadComponent: () => import('./pages/system-user/index/index').then(m => m.Index) },
-        ]
-      },
-      {
-        path: 'system-logs',
-        children: [
-          { path: '', redirectTo: '/system-logs/index', pathMatch: 'full' },
-          { path: 'index', loadComponent: () => import('./pages/system-logs/index/index').then(m => m.Index) },
-        ]
-      },
+      { path: '', redirectTo: 'index', pathMatch: 'full' },
+      { path: 'index', component: Index },
+      { path: 'system-role', component: Index },
+      { path: 'system-user', component: Index },
+      { path: 'system-logs', component: Index },
       // {
       //   path: 'system-config',
       //   children: [
@@ -42,7 +27,7 @@ export const routes: Routes = [
       // },
     ],
   },
-  
+
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: Notfound },
 ];

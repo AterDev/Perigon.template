@@ -3,14 +3,17 @@ description: "Generate a concise git commit message that follows Conventional Co
 name: "Commit Message"
 argument-hint: "Describe the intent or constraints for this commit"
 agent: "agent"
-model: GPT-5.4 mini (copilot)
+model: [DeepSeek V4 Flash (deepseek), Raptor mini (Preview) (copilot), GPT-5.4 mini (copilot)]
+tools: [execute]
 ---
 Generate a git commit message for the current repository changes.
 
+First inspect the current git diff or staged diff, then combine it with any user-provided intent.
 
-**提前条件**
+**提前条件**:
 
-检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+- 检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
+- 如果包含大量测试或生成内容，或者体积很大的文件，给出警告，让用户确认是否需要添加到忽略列表。
 
 Rules:
 
@@ -19,7 +22,7 @@ Rules:
 2. `type` must be one of:
    - `feat` `fix` `docs` `refactor` `test` `chore`
 3. Infer `scope` from the main module, such as:
-   - `sso`, `api`, `recipe`, `docker`, `docs`, `test`
+   - `api`, `admin`, `webapp`, `entity`, `ef`, `modules`, `apphost`, `aspire`, `perigon`, `docs`, `test`, `templates`
 4. `subject` must be written in Chinese, concise, and must not end with `。` or `.`
 5. If one commit contains several **related** changes, choose the primary type for the header and use a short body to summarize secondary changes.
 6. If the changes are clearly unrelated, output a short Chinese suggestion to split the commit instead of forcing one message.

@@ -159,7 +159,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
                     ? Queryable
                     : Queryable.OrderByDescending(t => t.CreatedTime);
 
-        var count = Queryable.Count();
+        var count = await Queryable.CountAsync(cancellationToken);
         List<TItem> data = await Queryable
             .AsNoTracking()
             .Skip((filter.PageIndex - 1) * filter.PageSize)

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Perigon.AspNetCore.Abstraction;
 using Perigon.AspNetCore.Services;
 
-namespace Services.Middleware;
+namespace ServiceDefaults.Middleware;
 
 /// <summary>
 /// Middleware to resolve tenant metadata and cache it in memory.
@@ -46,7 +46,7 @@ public class TenantResolutionMiddleware
             {
                 tenant = await dbContext.Tenants
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.TenantId == userContext.TenantId);
+                    .FirstOrDefaultAsync(t => t.Id == userContext.TenantId, context.RequestAborted);
 
                 if (tenant is not null)
                 {

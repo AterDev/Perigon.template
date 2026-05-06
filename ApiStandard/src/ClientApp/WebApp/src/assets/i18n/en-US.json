@@ -33,6 +33,7 @@
     "pageNotFound": "Page Not Found"
   },
   "login": {
+    "adminLogin": "Admin Login",
     "username": "Username",
     "email": "Email",
     "password": "Password",

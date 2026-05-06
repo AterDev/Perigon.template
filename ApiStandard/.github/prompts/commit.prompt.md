@@ -3,7 +3,7 @@ description: "Generate a concise git commit message that follows Conventional Co
 name: "Commit Message"
 argument-hint: "Describe the intent or constraints for this commit"
 agent: "agent"
-model: GPT-5.4 mini (copilot)
+model: [DeepSeek V4 Flash (deepseek), Raptor mini (Preview) (copilot), GPT-5.4 mini (copilot)]
 tools: [execute]
 ---
 Generate a git commit message for the current repository changes.

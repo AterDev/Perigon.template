@@ -17,7 +17,12 @@ export class CustomerHttpInterceptor implements HttpInterceptor {
 
   }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request)
+    const token = localStorage.getItem('accessToken');
+    const authRequest = token && !request.headers.has('Authorization')
+      ? request.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : request;
+
+    return next.handle(authRequest)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return this.handleError(error);

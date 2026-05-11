@@ -4,7 +4,7 @@ description: "Use when editing C#/.NET files: ASP.NET Core, EF Core, Controller,
 applyTo: ["**/*.cs", "**/*.csproj"]
 ---
 
-# .NET Guidelines
+## .NET Guidelines
 
 - 使用文件作用域命名空间、主构造函数、集合表达式和可空引用类型。
 - Controller 只处理 HTTP 边界、权限和输入验证；业务逻辑放在 Manager；不要在 Controller 中直接访问 DbContext。
@@ -12,4 +12,3 @@ applyTo: ["**/*.cs", "**/*.csproj"]
 - 异步方法优先传递 `CancellationToken`，避免同步阻塞和不必要的内存分配。
 - 优先复用 `src/Perigon` 提供的扩展和工具，例如 `Merge` / `MapTo`；多语言文本使用 `Localizer` 常量。
 - 修改实体或 DbContext 后，通过 `scripts/EFMigrations.ps1` 生成迁移；不要手动编写或修改迁移文件。
-- 验证时优先构建受影响项目；影响范围较大时构建 `MyProjectName.slnx`。

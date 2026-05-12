@@ -29,12 +29,12 @@ user-invocable: true
 
 <skills>
 
-- 后端、API、EF Core、迁移、模块结构：`.github/skills/backend/SKILL.md`
-- Angular 页面、路由、表单、Material、i18n：`.github/skills/angular/SKILL.md`
-- Perigon CLI/MCP、代码生成、请求客户端生成：`.github/skills/perigon/SKILL.md`
-- Aspire 启动、资源状态、日志、链路、集成：`.github/skills/aspire/SKILL.md`
-- TUnit、ApiTest、集成测试、测试失败排查：`.github/skills/test/SKILL.md`
-- Markdown、README、开发/部署文档：`.github/skills/documentation/SKILL.md`
+- 后端、API、EF Core、迁移、模块结构：`.agents/skills/backend/SKILL.md`
+- Angular 页面、路由、表单、Material、i18n：`.agents/skills/angular/SKILL.md`
+- Perigon CLI/MCP、代码生成、请求客户端生成：`.agents/skills/perigon/SKILL.md`
+- Aspire 启动、资源状态、日志、链路、集成：`.agents/skills/aspire/SKILL.md`
+- TUnit、ApiTest、集成测试、测试失败排查：`.agents/skills/test/SKILL.md`
+- Markdown、README、开发/部署文档：`.agents/skills/documentation/SKILL.md`
 
 </skills>
 

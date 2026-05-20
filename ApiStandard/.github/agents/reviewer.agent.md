@@ -61,7 +61,7 @@ dotnet test tests/ApiTest/ApiTest.csproj
 
 ### 1. 审查标准
 
-优先遵循 `.github/skills/code-review/SKILL.md`，并重点检查：
+优先遵循 `.agents/skills/code-review/SKILL.md`，并重点检查：
 
 - 架构分层：Controller 不直接访问 DbContext；业务逻辑放在 Manager；模块依赖不越界。
 - 后端规范：文件作用域命名空间、主构造函数、异步与 `CancellationToken`、`BusinessException`、`Problem()` / `NotFound()`。

@@ -108,6 +108,7 @@ MCP server config lives in [.vscode/mcp.json](../../../.vscode/mcp.json); use co
 - 不要面向接口编程。没有多个实现类的服务，不要为其创建接口。
 - 遵守项目核心约定和模式（如Manager继承ManagerBase、控制器继承RestControllerBase）
 - 注意跨平台兼容性，尤其是涉及到 Windows/Linux/MacOS 的文件路径、环境变量、系统调用等方面。
+- 优先保持一个类型一个文件(class)；对于小型枚举，可以在同一文件中定义；测试项目可使用`record`类型来定义测试数据。
 
 ### 代码复用
 

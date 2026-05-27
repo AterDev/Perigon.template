@@ -9,12 +9,14 @@ description: "ASP.NET Core / Aspire / TUnit 测试规范。Use when: ApiTest, in
 
 ## 项目说明
 
+- `tests\UnitTest\`：主要用来编写单元测试。
 - `tests\ApiTest\`：是基于`Aspire/Tunit`的测试项目，主要用来编写集成测试。
 - 已统一配置了`TestHttpClientData`，用来进行请求授权，使用`[ClassDataSource<TestHttpClientData>(Shared = SharedType.PerTestSession)]` 特性标记，以避免每次请求都需要重新获取Token。
 
 ## 规范
 
 - 使用有意义且风格统一的测试方法名称，清晰描述测试目的和预期结果。
+- 测试要根据功能或业务模块进行组织，确保测试代码结构清晰，易于维护。
 - 使用`TUnit`提供的断言方法进行结果验证，确保测试结果符合预期。
 
 **集成测试**
@@ -31,8 +33,8 @@ description: "ASP.NET Core / Aspire / TUnit 测试规范。Use when: ApiTest, in
 **单元测试**
 - 单元测试项目`tests\UnitTest\`用于编写单元测试，用来测试基础类库和算法逻辑，通常不涉及数据库和业务逻辑。
 
-<workflow>
-1. 创建测试类文件(如果没有)，例如`SystemUserTests.cs`，放在对应的模块目录下。
+**参考步骤**
+1. 创建测试类文件(如果没有)，例如 `SystemUserTests.cs`，放在对应的模块目录下。
 2. 分析控制器接口，确定需要测试的方法。
 3. 根据接口内容，添加/移除/更新测试方法，确保覆盖主要功能。
 4. 编写测试逻辑，并自我检查逻辑。
@@ -40,11 +42,9 @@ description: "ASP.NET Core / Aspire / TUnit 测试规范。Use when: ApiTest, in
 6. 按功能模块依次运行测试内容。
 7. 仅当用户明确要求测试报告，或任务本身要求沉淀测试结果时，才创建或更新 `docs\test.result.md`。
 
-</workflow>
+## 额外说明
 
-## 其他说明
-
-无需清理数据，因为使用aspire运行测试结束时，会自动清理库数据。
+测试代码可适当使用`Record`来简化数据结构定义，提升代码的可读性和维护性。
 
 ## 示例代码
 

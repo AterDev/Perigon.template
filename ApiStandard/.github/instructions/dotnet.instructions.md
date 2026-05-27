@@ -1,7 +1,7 @@
 ---
 name: ".NET Guidelines"
 description: "Use when editing C#/.NET files: ASP.NET Core, EF Core, Controller, Manager, DTO, Entity, DbContext, migration, tests, csproj."
-applyTo: ["**/*.cs", "**/*.csproj"]
+applyTo: "**/*.cs"
 ---
 
 ## .NET Guidelines
@@ -12,3 +12,5 @@ applyTo: ["**/*.cs", "**/*.csproj"]
 - 异步方法优先传递 `CancellationToken`，避免同步阻塞和不必要的内存分配。
 - 优先复用 `src/Perigon` 提供的扩展和工具，例如 `Merge` / `MapTo`；多语言文本使用 `Localizer` 常量。
 - 修改实体或 DbContext 后，通过 `scripts/EFMigrations.ps1` 生成迁移；不要手动编写或修改迁移文件。
+- 优先保持一个类型一个文件(class)；对于小型 枚举，可以在同一文件中定义；对于实体、DTO，优先使用 class 而非 record。
+- 测试代码可适当使用`Record`来简化数据结构定义，提升代码的可读性和维护性。

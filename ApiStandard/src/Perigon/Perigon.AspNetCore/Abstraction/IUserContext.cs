@@ -1,52 +1,53 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Perigon.AspNetCore.Abstraction;
-
-public interface IUserContext
+namespace Perigon.AspNetCore.Abstraction
 {
-    /// <summary>
-    /// 用户ID
-    /// </summary>
-    Guid UserId { get; }
+    public interface IUserContext
+    {
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        Guid UserId { get; }
 
-    /// <summary>
-    /// 组织ID
-    /// </summary>
-    Guid? GroupId { get; }
+        /// <summary>
+        /// 组织ID
+        /// </summary>
+        Guid? GroupId { get; }
 
-    Guid TenantId { get; set; }
+        Guid TenantId { get; set; }
 
-    string? TenantType { get; set; }
+        string? TenantType { get; set; }
 
-    /// <summary>
-    /// 用户名
-    /// </summary>
-    string? UserName { get; }
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        string? UserName { get; }
 
-    /// <summary>
-    /// 邮箱
-    /// </summary>
-    string? Email { get; }
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        string? Email { get; }
 
-    /// <summary>
-    /// 是否为管理员
-    /// </summary>
-    bool IsAdmin { get; }
+        /// <summary>
+        /// 是否为管理员
+        /// </summary>
+        bool IsAdmin { get; }
 
-    /// <summary>
-    /// 当前角色
-    /// </summary>
-    string? CurrentRole { get; }
+        /// <summary>
+        /// 当前角色
+        /// </summary>
+        string? CurrentRole { get; }
 
-    /// <summary>
-    /// 所有角色
-    /// </summary>
-    IReadOnlyList<string>? Roles { get; }
+        /// <summary>
+        /// 所有角色
+        /// </summary>
+        IReadOnlyList<string>? Roles { get; }
 
-    public HttpContext? HttpContext { get; set; }
+        public HttpContext? HttpContext { get; set; }
 
-    /// <summary>
-    /// 判断当前用户是否属于指定角色
-    /// </summary>
-    bool IsRole(string roleName);
+        /// <summary>
+        /// 判断当前用户是否属于指定角色
+        /// </summary>
+        bool IsRole(string roleName);
+    }
 }

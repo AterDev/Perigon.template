@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine-extra
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
 
 ARG PUBLISH_DIR=artifacts/publish/ApiService
 ARG INSTALL_FONTS=false
@@ -21,4 +21,4 @@ COPY ${PUBLISH_DIR}/ ./
 
 EXPOSE 8080
 USER $APP_UID
-ENTRYPOINT ["dotnet", "ApiService.dll"]
+ENTRYPOINT ["./ApiService"] 

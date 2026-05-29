@@ -13,7 +13,7 @@ namespace Perigon.AspNetCore.SourceGeneration
     public class ManagerSourceGen : IIncrementalGenerator
     {
         public const string BaseManagerName = "ManagerBase";
-        public const string BaseEndpointGroupName = "RestControllerBase";
+        public const string BaseEndpointGroupName = "RestEndpointBase";
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {

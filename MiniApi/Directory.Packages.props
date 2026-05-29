@@ -47,7 +47,7 @@
     <PackageVersion Include="Mapster" Version="10.0.7" />
     <PackageVersion Include="MiniExcel" Version="2.0.0-preview.2" />
     <PackageVersion Include="Npgsql" Version="10.0.0" />
-    <PackageVersion Include="Perigon.PostgreSQL" Version="0.1.0" />
+    <PackageVersion Include="Perigon.PostgreSQL" Version="0.1.2" />
     <PackageVersion Include="SkiaSharp" Version="3.119.2" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.2" />
   </ItemGroup>

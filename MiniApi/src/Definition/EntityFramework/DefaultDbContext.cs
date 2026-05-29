@@ -1,10 +1,11 @@
 using Perigon.PostgreSQL;
+using Perigon.PostgreSQL.Options;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Data;
 
-public partial class DefaultDbContext(string connectionString)
-    : DbContext(builder => builder.UsePostgres(connectionString))
+public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
+    : DbContext(options)
 {
     public new DbSet<TEntity> Set<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TEntity>()
         where TEntity : class

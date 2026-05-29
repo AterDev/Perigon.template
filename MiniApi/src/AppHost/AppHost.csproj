@@ -15,7 +15,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" IsAspireProjectResource="false" />
-        <ProjectReference Include="..\Services\AdminService\AdminService.csproj" />
         <ProjectReference Include="..\Services\ApiService\ApiService.csproj" />
     </ItemGroup>
 </Project>

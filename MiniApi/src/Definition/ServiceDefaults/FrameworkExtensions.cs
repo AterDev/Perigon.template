@@ -63,13 +63,13 @@ namespace ServiceDefaults
             /// <returns></returns>
             public IHostApplicationBuilder AddDbContext()
             {
-                builder.Services.AddDbContext(serviceProvider =>
+                builder.Services.AddDbContext<DefaultDbContext>((serviceProvider, options) =>
                 {
                     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                     var connectionString = configuration.GetConnectionString(AppConst.Default)
                         ?? configuration.GetConnectionString("Postgres")
                         ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
-                    return new DefaultDbContext(connectionString);
+                    options.UseNpgsql(connectionString);
                 });
                 return builder;
             }

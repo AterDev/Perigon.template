@@ -19,10 +19,10 @@ builder.Services.AddAuthorizationBuilder()
         }
     );
 
-// Managers, auto generate by source generator
+// Managers, auto register by source generator
 builder.Services.AddManagers();
 
-// Modules, auto generate by source generator
+// Optional module extensions, kept as a compatibility hook
 builder.AddModules();
 
 WebApplication app = builder.Build();

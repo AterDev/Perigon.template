@@ -32,7 +32,7 @@ description: "全栈代码审查规范。Use when: Code Review, PR review, REVIE
   - 事务操作是否使用 `ExecuteInTransactionAsync`？
   
 - **Controller 层**:
-  - 是否继承 `RestControllerBase` 并定义 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`？
+  - 是否继承 `RestEndpointBase` 并定义 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`？
   - 是否避免直接访问 `DbContext`？
   - 错误处理是否使用 `Problem()` / `NotFound()`？
   - 是否避免使用 `ApiResponse` 包装器？

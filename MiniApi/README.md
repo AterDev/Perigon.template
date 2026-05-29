@@ -1,6 +1,6 @@
 # 说明
 
-本项目基于 `ASP.NET Core Minimal API / NativeAOT / Aspire / Perigon.PostgreSQL` 技术栈，提供结构清晰的多模块、多服务项目结构，并对 AI 工具提供良好的支持。
+本项目基于 `ASP.NET Core Minimal API / NativeAOT / Aspire / Perigon.PostgreSQL` 技术栈，提供结构清晰的模块化单接口服务项目结构，并对 AI 工具提供良好的支持。
 
 ## 根目录
 
@@ -16,17 +16,16 @@
 * `src/Definition/ServiceDefaults`: 是提供基础的服务注入的项目。
 * `src/Definition/Entity`: 包含所有的实体模型，按模块目录组织。
 * `src/Definition/EntityFramework`: 实体与数据库定义，基于 Perigon.PostgreSQL
-* `src/Modules/`: 包含各个模块的程序集，主要用于业务逻辑实现
-	* `src/Modules/XXXMod/Managers`: 各模块下，实际实现业务逻辑的目录
-	* `src/Modules/XXXMod/Controllers`: 各模块下，Minimal API endpoint group 定义目录
-	* `src/Modules/XXXMod/Models`: 各模块下，Dto模型定义，按实体目录组织
-* `src/Services/ApiService`: 公共接口服务项目，基于 ASP.NET Core Minimal API
-* `src/Services/AdminService`: 后台管理服务接口项目
+* `src/Services/ApiService`: 接口服务项目，基于 ASP.NET Core Minimal API
+	* `src/Services/ApiService/Endpoints`: Minimal API endpoint group 定义目录
+	* `src/Services/ApiService/Managers`: 业务逻辑目录
+	* `src/Services/ApiService/Models`: DTO、筛选对象和请求响应模型目录
+	* `src/Services/ApiService/Services`: Service 内部辅助服务目录
 
 
 ## 项目运行
 
-项目基于 `Aspire`，直接运行 `AppHost` 项目即可启动 PostgreSQL、缓存和所有服务。
+项目基于 `Aspire`，直接运行 `AppHost` 项目即可启动 PostgreSQL、缓存和 `ApiService`。
 
 如使用`dotnet run  --project .\src\AppHost\AppHost.csproj`.
 
@@ -35,10 +34,12 @@
 ## AOT 与数据访问
 
 - 本模板不使用 MVC Controller、EF Core、EF migration 和多租户。
-- Controller 目录中定义 endpoint group，继承 `RestControllerBase` 并实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
+- MiniApi 默认不走完整的 `Module` 开发模式，大部分后端代码直接写在 `ApiService` 项目中。
+- Endpoint 目录中定义 endpoint group，继承 `RestEndpointBase` 并实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
+- 业务代码优先按 `Endpoints/Managers/Models/Services` 分层，而不是先拆独立模块程序集。
 - OpenAPI 文档地址为 `/openapi/v1.json`，服务项目与共享模型项目默认生成 XML 文档，XML 注释会由 `Microsoft.AspNetCore.OpenApi` 源生成器写入 OpenAPI 文档。Endpoint handler 应使用 public static typed Minimal API 方法，避免 `RequestDelegate` 风格导致 OpenAPI 无法描述接口。
-- 数据访问只使用 `Perigon.PostgreSQL`。新增实体后，在 `src/Definition/EntityFramework/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
-- 发布 NativeAOT 可使用 `dotnet publish -c Release -p:PublishAot=true`。
+- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用 `DbContextOptions<TContext>` 和 `options.UseNpgsql(connectionString)` 的注册方式。新增实体后，在 `src/Definition/EntityFramework/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
+- `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
 
 ## 文档
 

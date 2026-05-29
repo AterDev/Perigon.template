@@ -40,7 +40,7 @@ dotnet build MyProjectName.slnx
 **仅单个服务或测试项目变更**：
 
 ```pwsh
-dotnet build src/Services/AdminService/AdminService.csproj
+dotnet build src/Services/ApiService/ApiService.csproj
 dotnet build tests/ApiTest/ApiTest.csproj
 ```
 

@@ -46,22 +46,18 @@ cache?.WithParentRelationship(infrastructureGroup);
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var apiService = builder.AddProject<Projects.ApiService>("ApiService")
     .WithParentRelationship(serviceGroup);
-var adminService = builder.AddProject<Projects.AdminService>("AdminService")
-    .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first
 //var webApp = builder.AddJavaScriptApp("frontend", "../ClientApp/WebApp")
 //    .WithPnpm()
 //    .WithUrl("http://localhost:4200")
-//    .WaitFor(adminService)
+//    .WaitFor(apiService)
 //    .WithParentRelationship(serviceGroup);
 
 apiService.WithReference(database).WaitFor(database);
-adminService.WithReference(database).WaitFor(database);
 if (cache != null)
 {
     apiService.WithReference(cache);
-    adminService.WithReference(cache);
 }
 # endregion
 

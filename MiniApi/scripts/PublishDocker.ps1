@@ -31,7 +31,7 @@ use the Aspire AppHost instead of this script.
 .\scripts\PublishDocker.ps1 -Service ApiService -ImageName myprojectname-api-service
 
 .EXAMPLE
-.\scripts\PublishDocker.ps1 -Service AdminService -ImageName myprojectname-admin-service -Tag v1 -InstallFonts
+.\scripts\PublishDocker.ps1 -Service ApiService -ImageName myprojectname-api-service -Tag v1 -InstallFonts
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -71,13 +71,14 @@ $publishArgs = @(
     'publish', $projectPath,
     '--configuration', $Configuration,
     '--runtime', $runtimeIdentifier,
-    '--self-contained', 'false',
+    '--self-contained', 'true',
     '--output', $publishDir,
-    '/p:PublishTrimmed=false',
-    '/p:PublishAot=false',
+    '/p:PublishTrimmed=true',
+    '/p:PublishAot=true',
     '/p:PublishReadyToRun=false',
     '/p:InvariantGlobalization=false',
-    '/p:UseAppHost=false',
+    '/p:UseAppHost=true',
+    '/p:StripSymbols=true',
     '/p:DebugType=None',
     '/p:DebugSymbols=false'
 )

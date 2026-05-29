@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Routing;
 namespace Share.Implement
 {
     /// <summary>
-    /// Base type for classes in Controllers folders that map Minimal API endpoint groups.
+    /// Base type for classes in Endpoints folders that map Minimal API endpoint groups.
     /// </summary>
-    public abstract class RestControllerBase
+    public abstract class RestEndpointBase
     {
         protected static RouteGroupBuilder MapGroup(
             IEndpointRouteBuilder endpoints,

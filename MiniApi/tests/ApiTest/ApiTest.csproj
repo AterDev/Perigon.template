@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\AppHost\AppHost.csproj" />
-	  <ProjectReference Include="..\..\src\Services\AdminService\AdminService.csproj" />
+	  <ProjectReference Include="..\..\src\Definition\Share\Share.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

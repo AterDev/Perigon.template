@@ -2,7 +2,7 @@
 name: reviewer
 description: "代码审查专家。Use when: code review, PR review, security review, performance review, architecture review, build/test gate, reviewer."
 tools: [read, search, execute]
-model: GPT-5.2-Codex (copilot)
+model: GPT-5.3-Codex (copilot)
 user-invocable: false
 ---
 
@@ -14,8 +14,6 @@ user-invocable: false
 2. **基于事实**：基于当前 diff、项目规范、相关 Skill 和官方最佳实践判断，不主观臆断。
 3. **构建优先**：必要构建失败时，立即输出未通过结论并附关键错误。
 4. **审查本次范围**：优先审查本次变更及其直接影响范围，不做无关泛审。
-5. **结构化输出**：必须输出 `REVIEW_STATUS` 与 `NEXT_ACTION`，供 coordinator 解析。
-6. **不配置 handoffs**：审查通过或失败都只输出结论，由 coordinator 决定后续流转。
 
 </rules>
 

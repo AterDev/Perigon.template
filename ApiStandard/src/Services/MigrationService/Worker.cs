@@ -31,6 +31,8 @@ public class Worker(
         catch (Exception ex)
         {
             activity?.AddException(ex);
+            _logger.LogError(ex, "Database migration failed");
+            throw;
         }
         finally
         {
@@ -53,15 +55,22 @@ public class Worker(
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-
             var domain = "default.com";
+            var exist = await dbContext.Tenants
+                .IgnoreQueryFilters()
+                .AnyAsync(t => t.Domain == domain, cancellationToken);
+            if (exist)
+            {
+                return;
+            }
+
             var tenant = new Tenant()
             {
                 Domain = domain,
                 Name = AppConst.Default,
                 Description = "This is default tenant, created by system.",
             };
-            dbContext.Add(tenant);
+            dbContext.Tenants.Add(tenant);
             await dbContext.SaveChangesAsync(cancellationToken);
         });
     }

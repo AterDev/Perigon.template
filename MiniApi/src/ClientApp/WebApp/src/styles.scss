@@ -1,0 +1,237 @@
+@use './theme.scss' as theme;
+@use '@angular/material' as mat;
+@import '@fontsource/material-symbols-outlined/index.css';
+@import './assets/bootstrap-grid.min.css';
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Ginto, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  @include mat.all-component-themes(theme.$dark-theme);
+
+
+  @media (prefers-color-scheme: light) {
+    @include mat.all-component-colors(theme.$light-theme);
+  }
+}
+
+.gap-1 {
+  gap: 4px;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-3 {
+  gap: 16px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.v-middle {
+  vertical-align: middle;
+}
+
+.paginator {
+  margin: 2px auto;
+  background-color: var(--mat-paginator-container-background-color);
+}
+
+mat-nav-list .mat-icon {
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+mat-panel-title .mat-icon {
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.mat-mdc-button-base .mat-icon {
+  vertical-align: middle;
+}
+
+button.mat-mdc-menu-item.mat-focus-indicator .mat-icon {
+  align-content: center;
+}
+
+// Fix mat-icon alignment in mat-chip
+mat-chip {
+  .mat-icon {
+    min-height: unset;
+    vertical-align: middle;
+  }
+}
+
+// Detail page styles
+.detail-label {
+  width: 160px;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+// Global Material Mica-like mouse-follow glow (no per-page template changes needed)
+:root {
+  --mica-glow-size: 100px;
+  --mica-glow-alpha: 0.20;
+}
+
+:where(
+  button.mat-mdc-button-base:not(:disabled),
+  a.mat-mdc-button-base
+) {
+  --mica-x: 50%;
+  --mica-y: 50%;
+  position: relative;
+  border-radius: var(--mica-radius, inherit);
+}
+
+:where(
+  .mat-mdc-menu-item,
+  .mat-mdc-list-item,
+  .mat-mdc-tab-link,
+  .mat-mdc-tab
+) {
+  --mica-x: 50%;
+  --mica-y: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+:where(button.mat-mdc-button, a.mat-mdc-button) {
+  --mica-radius: var(--mdc-text-button-container-shape, 999px);
+}
+
+:where(button.mat-mdc-unelevated-button, a.mat-mdc-unelevated-button) {
+  --mica-radius: var(--mdc-filled-button-container-shape, 999px);
+}
+
+:where(button.mat-mdc-raised-button, a.mat-mdc-raised-button) {
+  --mica-radius: var(--mdc-protected-button-container-shape, 999px);
+}
+
+:where(button.mat-mdc-outlined-button, a.mat-mdc-outlined-button) {
+  --mica-radius: var(--mdc-outlined-button-container-shape, 999px);
+}
+
+:where(button.mat-mdc-icon-button, a.mat-mdc-icon-button) {
+  --mica-radius: 50%;
+}
+
+:where(
+  button.mat-mdc-button-base:not(:disabled),
+  a.mat-mdc-button-base
+) .mat-mdc-button-persistent-ripple {
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+:where(
+  button.mat-mdc-button-base:not(:disabled),
+  a.mat-mdc-button-base
+) .mat-mdc-button-persistent-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  background: radial-gradient(
+    circle var(--mica-glow-size) at var(--mica-x) var(--mica-y),
+    rgba(255, 255, 255, var(--mica-glow-alpha)),
+    transparent 75%
+  );
+}
+
+:where(
+  button.mat-mdc-button-base:not(:disabled),
+  a.mat-mdc-button-base
+):is(:hover, :focus-visible, .mica-glow-active) .mat-mdc-button-persistent-ripple::after {
+  opacity: 1;
+}
+
+:where(
+  .mat-mdc-menu-item,
+  .mat-mdc-list-item,
+  .mat-mdc-tab-link,
+  .mat-mdc-tab
+)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  background: radial-gradient(
+    circle var(--mica-glow-size) at var(--mica-x) var(--mica-y),
+    rgba(255, 255, 255, var(--mica-glow-alpha)),
+    transparent 75%
+  );
+}
+
+:where(
+  .mat-mdc-menu-item,
+  .mat-mdc-list-item,
+  .mat-mdc-tab-link,
+  .mat-mdc-tab
+):is(:hover, :focus-visible, .mica-glow-active)::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    button.mat-mdc-button-base:not(:disabled),
+    a.mat-mdc-button-base
+  ) .mat-mdc-button-persistent-ripple::after {
+    transition: none;
+  }
+
+  :where(
+    .mat-mdc-menu-item,
+    .mat-mdc-list-item,
+    .mat-mdc-tab-link,
+    .mat-mdc-tab
+  )::after {
+    transition: none;
+  }
+}

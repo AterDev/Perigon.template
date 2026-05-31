@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.3.0</Version>
+        <Version>1.3.3</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
         <Description>
-            Well-structured fast development template based on ASP.NET Core / EF Core / Aspire
+            Well-structured fast development templates based on ASP.NET Core / Aspire
         </Description>
-        <PackageTags>dotnet-new;templates;webapi;framework;efcore;aspire;ai</PackageTags>
+        <PackageTags>dotnet-new;templates;webapi;minimal-api;nativeaot;framework;aspire;ai</PackageTags>
         <TargetFramework>netstandard2.1</TargetFramework>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -22,9 +22,8 @@
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>1. update AI workflow files.
-            2. upgrade Aspire and core dependencies to the latest stable versions.
-            3. migrate Excel helper to MiniExcel and remove EPPlus.
-            4. refresh frontend styles and template scripts.
+            2. update aspire package dependencies.
+            3. add docker publish exmples.
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
@@ -37,7 +36,10 @@
     <ItemGroup>
         <Content Include="ApiStandard\**\*"
             Exclude="$(StandardExcludes);ApiStandard\templates\**;ApiStandard\src\Modules\**;ApiStandard\test\ManagerBaseTests\**" />
+        <Content Include="MiniApi\**\*"
+            Exclude="$(StandardExcludes);MiniApi\templates\**;MiniApi\src\Modules\**;MiniApi\test\ManagerBaseTests\**" />
         <Compile Remove="**\*" />
+        <EmbeddedResource Remove="**\*" />
         <None Update="logo.png">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>

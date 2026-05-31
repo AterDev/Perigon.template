@@ -1,18 +1,19 @@
 
 
 
-namespace EntityFramework.AppDbContext;
-
-/// <summary>
-/// default data access for main business
-/// </summary>
-/// <param name="options"></param>
-public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
-    : ContextBase(options)
+namespace EntityFramework.AppDbContext
 {
-    protected override void OnModelCreating(ModelBuilder builder)
+    /// <summary>
+    /// default data access for main business
+    /// </summary>
+    /// <param name="options"></param>
+    public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
+        : ContextBase(options)
     {
-        base.OnModelCreating(builder);
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
 
+        }
     }
 }

@@ -1,0 +1,61 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+@HostAddress = https://localhost:7000
+
+### GET success
+GET {{HostAddress}}/api/samples/1
+
+### GET bad request
+GET {{HostAddress}}/api/samples/0
+
+### POST success
+POST {{HostAddress}}/api/samples
+Content-Type: application/json
+
+{
+	"name": "sample-create",
+	"description": "Created from ApiService.http"
+}
+
+### POST bad request
+POST {{HostAddress}}/api/samples
+Content-Type: application/json
+
+{
+	"name": "",
+	"description": "This triggers BadRequest"
+}
+
+### PUT success
+PUT {{HostAddress}}/api/samples/1
+Content-Type: application/json
+
+{
+	"name": "sample-update",
+	"description": "Updated from ApiService.http"
+}
+
+### PUT problem response
+PUT {{HostAddress}}/api/samples/1?mode=problem
+Content-Type: application/json
+
+{
+	"name": "sample-problem",
+	"description": "This triggers Problem"
+}
+
+### PUT exception
+PUT {{HostAddress}}/api/samples/1?mode=throw
+Content-Type: application/json
+
+{
+	"name": "sample-exception",
+	"description": "This throws an exception"
+}
+
+### DELETE success
+DELETE {{HostAddress}}/api/samples/1?force=true
+
+### DELETE bad request
+DELETE {{HostAddress}}/api/samples/1
+

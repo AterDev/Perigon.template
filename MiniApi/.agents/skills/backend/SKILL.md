@@ -1,11 +1,11 @@
 ﻿---
 name: backend
-description: "ASP.NET Core Minimal API / NativeAOT / Aspire / Perigon.PostgreSQL 后端开发规范。Use when: endpoint group, Manager, DTO, Entity, DbContext, PostgreSQL, AOT, BusinessException, Problem response, backend build, service-centric MiniApi architecture."
+description: "ASP.NET Core / EF Core / Aspire 后端开发规范。Use when: Controller, Manager, DTO, Entity, DbContext, migration, API endpoint, BusinessException, Problem response, backend build, module architecture."
 ---
 
 ## 何时使用
 
-任何涉及后端逻辑、Service 内部分层、Minimal API endpoint、Manager、实体和 PostgreSQL 数据访问的内容。
+任何涉及到后端逻辑和项目架构的内容。
 
 ## 项目结构层级
 
@@ -14,62 +14,128 @@ src/
 ├── Perigon/                 # 基础类库、工具扩展和源生成项目
 ├── Definition/
 │   ├── Entity/              # 实体定义（按模块分文件夹）
-│   ├── EntityFramework/     # 实体与数据库定义，基于 Perigon.PostgreSQL
+│   ├── EntityFramework/     # EF DbContext 和迁移
 │   ├── Share/               # 共享常量、扩展、服务
 │   └── ServiceDefaults/     # 服务注册和中间件
+├── Modules/
+│   └── {ModuleName}/
+│       ├── Managers/        # 业务逻辑层
+│       └── Models/          # DTO 定义（按实体分文件夹）
+│       └── Services/        # 模块内服务（可选）
 └── Services/
-    └── ApiService/
-        ├── Endpoints/       # Minimal API endpoint group 定义
-        ├── Managers/        # 业务逻辑层
-        ├── Models/          # DTO、筛选模型、请求响应模型
-        ├── Services/        # Service 内部辅助服务（可选）
-        └── Program.cs       # 服务入口与依赖注册
+    ├── ApiService/          # 公共 API
+    ├── AdminService/        # 管理后台 API
+    └── MigrationService/    # 数据库迁移服务
 ```
 
-## 核心约定
+### Perigon 目录
 
-- 本模板面向 NativeAOT：优先使用 Minimal API、静态 handler、显式 DTO 投影和源生成可识别的 public 类型。
-- MiniApi 默认不采用完整的独立模块程序集模式；大部分业务代码直接放在 `ApiService` 项目内维护。
-- 不使用 MVC Controller、`ControllerBase`、EF Core、EF migration、多数据库或多租户。
-- 数据访问只使用 `Perigon.PostgreSQL`，当前只支持 PostgreSQL。
-- `DefaultDbContext` 位于 `src/Definition/EntityFramework`。添加实体后要在其中添加 `DbSet<TEntity>` 属性，以便 Perigon.PostgreSQL 源生成实体元数据。
-- 实体应使用 public parameterless constructor 和 public get/set 属性；需要自定义表/列时使用 `Perigon.PostgreSQL.Attributes`。
-- `ApiService` 内按 `Endpoints/Managers/Models/Services` 分层，避免把简单业务拆成额外程序集。
-- Manager 承担业务逻辑，继承 `ManagerBase<TDbContext, TEntity>` 或 `ManagerBase<TDbContext>` / `ManagerBase`；Endpoint 不直接堆叠业务细节。
-- `Endpoints` 目录中定义 endpoint group：类继承 `RestEndpointBase`，提供 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
-- Endpoint handler 只做输入验证、权限验证和 HTTP 结果转换；业务验证放在 Manager，业务错误抛出 `BusinessException`。
-- `Models` 目录放 DTO、过滤器、请求体、响应体；命名优先体现用途，例如 `SampleFilterDto`、`CreateSampleRequest`、`SampleDetailResponse`。
-- `Services` 目录只放 Service 项目内部的辅助服务、第三方集成封装或跨多个 Manager 复用的逻辑；不要把普通 CRUD 直接下沉到这里。
-- Endpoint group 会由源生成器自动收集并通过 `app.MapEndpointGroups()` 注册。
-- `builder.AddModules()` 仅保留为兼容扩展点；在 MiniApi 模板中，没有明确需要时不要先引入模块化结构。
+- `src/Perigon/Perigon.AspNetCore`：提供 Web API 基础类库、常用帮助类和通用扩展。
+- `src/Perigon/Perigon.AspNetCore.Toolkit`：提供可复用的 Web API 工具和扩展能力。
+- `src/Perigon/Perigon.AspNetCore.SourceGeneration`：提供源代码生成能力，用于模块注入、`Localizer` 常量等基础代码生成。
 
-## AOT 编码要求
+Perigon 包含基础的字符串/Queryable/对象映射/时间日期/加解密等扩展方法，要优先使用这些已提供的能力，避免重复实现。
 
-- 避免运行时反射扫描、动态程序集加载、MVC application parts、隐式模型绑定魔法和运行时生成代理。
-- 服务项目启用 Request Delegate Generator；endpoint handler 使用 public static 方法，并返回 `IResult`、`TypedResults` 或 `Task<IResult>` 等 typed Minimal API 结果。
-- 不要把 handler 写成 `RequestDelegate` / `Task` + `ExecuteAsync(HttpContext)` 风格，否则 OpenAPI 可能无法描述返回值；`Task<IResult>` handler 传给 `MapGet` 等方法时必要时显式 `(Delegate)HandlerAsync`，避免误匹配到 `RequestDelegate` 重载。
-- 不要使用已废弃的 `WithOpenApi()` 补 metadata，它会引入 trimming/AOT warning；应使用 `AddOpenApi()`、typed handler、XML 注释和显式 `Produces` / `Accepts` metadata。
-- DTO/响应类型使用具体 public class/record，保持 public setter；避免只依赖私有构造或反射赋值。
-- 查询时优先写显式 `Select(x => new Dto { ... })`，不要依赖运行时自动映射。
-- `Perigon.PostgreSQL` 更新使用 `ExecuteUpdateAsync(setter => setter.Set(...))`，删除使用 `ExecuteDeleteAsync()` 或 ManagerBase 的软删除方法。
-- 批量写入使用 `BulkInsertAsync` / `UpsertManyAsync`，不要引入 EFCore.BulkExtensions。
-- OpenAPI 使用 `Microsoft.AspNetCore.OpenApi` 的 `AddOpenApi` / `MapOpenApi`，启动地址使用 `/openapi/v1.json`。服务项目和被 OpenAPI 使用的引用项目应开启 `GenerateDocumentationFile`，让 XML 注释通过源生成器进入文档。
+### Share共享项目
+
+- Shared constants live in src/Definition/Share/Constants; module-specific constants stay in their module/service.
+- 只包含通用的逻辑算法等，不涉及任何业务数据的操作
+- 封装通用的第三方库的调用，如缓存/邮件/消息队列等
+- 包含多语言文件，源代码生成器会自动生成常量到`Localizer.cs`，在多语言实现时，一定要使用Localizer的常量，避免硬编码字符串。
+
+### Modules 
+
+包含根据业务拆分的模块项目，每个模块包含 Manager（业务逻辑）和 Models（DTO 定义）。模块内可以有自己的 Services（可选），但要避免跨模块直接调用 Manager，应该通过共享服务或事件解耦。
+
+- 模块主要是通过继承 ManagerBase<T> 来实现业务逻辑，所有Manager都要继承 ManagerBase<T> 或 ManagerBase
+- 在模块中业务验证错误，抛出 `BusinessException`
+
+多模块共用的逻辑在`CoreMod`中实现，它作为核心模块被其他模块引用；除此之外，模块间不允许互相引用，以保持模块的独立性和可维护性。
+
+### Services
+
+包含具体的 API 服务项目，通过调用 Manager 来执行业务逻辑。
+
+如果Controller没有绑定特定的Manager，则继承`RestControllerBase`的其他基类。
+
+在Controller层，做用户输入验证和权限验证，不做业务验证，返回 `Problem()` / `NotFound()` 等 HTTP 错误响应。
+
+### 返回值
+- **成功**：`ActionResult<T>` 或直接返回类型
+- **错误**：使用 `Problem()` 或 `NotFound()`，直接使用多语言常量作为错误消息，而不要new一个对象或使用字符串硬编码。
+- **参数绑定**：有歧义时使用显式特性 `[FromBody]` / `[FromQuery]` / `[FromRoute]`
+
+
+**后台任务服务**
+
+- 不直接使用`DbContext`，也不要直接调用Manager，而是通过`DbContextFactory`创建DbContext实例，来执行业务逻辑。
+- 优先复用`IEntityTaskQueue`或`IBackgroundTask`来实现队列
+
+### 项目依赖层次（从下到上）
+
+1. **Entity** → 定义数据模型
+2. **EntityFramework** → 配置 DbContext，依赖 Entity
+3. **Share + ServiceDefaults** → 共享工具和服务注册，依赖 EntityFramework
+4. **Modules** → 模块的业务逻辑实现和DTO，依赖 Entity 和 Share
+5. **Services** → API 控制器，依赖 Modules
 
 ## 开发流程
 
-1. 定义实体，并在 `DefaultDbContext` 添加对应 `DbSet<TEntity>`。
-2. 在 `src/Services/ApiService/Models` 中定义 DTO、筛选模型和请求响应对象；列表和详情查询优先显式投影。
-3. 在 `src/Services/ApiService/Managers` 中实现业务逻辑；不要让 Endpoint 直接承载复杂查询和写入规则。
-4. 在 `src/Services/ApiService/Endpoints` 中定义 endpoint group，handler 调用 Manager。
-5. 仅当存在明确复用需求时，再在 `src/Services/ApiService/Services` 中抽出辅助服务。
-6. 执行 `dotnet build MyProjectName.slnx` 验证；发布 NativeAOT 前执行对应服务的 `dotnet publish -c Release -p:PublishAot=true`。
+1. 定义层，即实体的定义，DbContext的处理，以及共享服务的编写(封装以便简化和复用)
+2. 模块层，即Manager和DTO的生成和编写; 并检查是否添加新的服务注入等。
+3. 服务层，即Controller的生成和编写
+4. **执行构建验证**（必须步骤）：验证编译无错误，当遇到进程被占用时，请尝试使用`aspire resource`停止相应的服务，验证完成后再启动服务。
+6. 判断是否要在执行迁移，如果添加或修改了实体，则执行`scripts/EFMigrations.ps1`脚本(要停止运行中的服务，以防dll锁定)，永远不要手动修改迁移文件。
 
-## 返回值约定
+**要优先使用MCP工具`Perigon`，生成或创建模块/Entity/DTO/Manager/Controller等内容。**
 
-- 成功：返回 `IResult` / `TypedResults` / 具体 DTO。
-- 错误：使用 `RestEndpointBase` 中的 `Problem`、`NotFound`、`BadRequest` 等帮助方法，错误消息优先使用 `Localizer` 常量。
-- 参数绑定：有歧义时使用 `[FromBody]` / `[FromQuery]` / `[FromRoute]`，或将复杂参数拆成明确 DTO。
+## 构建验证（每次修改后必须执行）
 
-## Aspire 集成
+通过 `dotnet build` 构建受影响项目；影响范围较大时构建 `MyProjectName.slnx`。
 
-AppHost 是 Aspire 项目，默认创建 PostgreSQL 和可选 Redis。服务通过 `WithReference(database)` 获得 `ConnectionStrings__Default`，应用侧由 `AddFrameworkServices()` 注册 `DefaultDbContext`。
+### 构建-修复循环
+修改代码 → 构建 → 发现错误 → 修复 → 重新构建，直到无错误
+
+MCP server config lives in [.vscode/mcp.json](../../../.vscode/mcp.json); use configured endpoints when invoking tools.
+
+
+## 约定与规范
+
+- 解决方案使用全局命名空间(`GlobalUsings.cs`)和中央包管理
+- Manager之间不允许直接调用
+- Module之间不会互相依赖
+- Controller调用Manager方法，不直接访问 DbContext
+- 不要面向接口编程。没有多个实现类的服务，不要为其创建接口。
+- 遵守项目核心约定和模式（如Manager继承ManagerBase、控制器继承RestControllerBase）
+- 注意跨平台兼容性，尤其是涉及到 Windows/Linux/MacOS 的文件路径、环境变量、系统调用等方面。
+- 优先保持一个类型一个文件(class)；对于小型枚举，可以在同一文件中定义；测试项目可使用`record`类型来定义测试数据。
+
+### 代码复用
+
+尽可能的将逻辑算法与业务实现(数据访问)分离，如果逻辑算法只在一个模块使用，则放在模块内的Services目录下，如果多个模块使用，则放在Share层，并且要封装通用的第三方库的调用，如缓存/邮件/消息队列等。
+
+业务实体的类型转换，可直接在实体中实现。
+
+在实际编写代码时，优先使用 `src/Perigon` 目录下已经提供好的基础方法、扩展方法和生成结果；只有当现有能力无法覆盖需求时，才新增局部实现。
+
+### 多租户
+
+架构支持多租户，也支持单租户，从AppHost的`appsettings.Development.json`配置中，可以知道当前是单租户还是多租户模式。如果是单租户模式，tenantId默认为Guid.Empty。
+
+### 对象映射
+
+优先使用`Perigon.AspNetCore.Utils.Extensions` 中的扩展方法`Merge/MapTo`进行映射。
+
+### Aspire集成 
+
+AppHost为Aspire项目.
+优先使用Aspire生态提供的功能和中间件，可通过MCP工具搜索微软官方文档了解如何使用。
+
+---
+
+## 代码约定
+
+- 使用文件作用域命名空间
+- 使用主构造函数，并将依赖注入到构造函数参数中，减少属性注入和字段注入
+- 使用集合表达式
+- 优先使用异步编程，并传递 `CancellationToken`

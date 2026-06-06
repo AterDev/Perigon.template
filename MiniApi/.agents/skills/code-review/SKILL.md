@@ -27,12 +27,12 @@ description: "全栈代码审查规范。Use when: Code Review, PR review, REVIE
   - 是否继承 `ManagerBase<T>` 或 `ManagerBase`？
   - 是否避免了 Manager 之间的直接调用？
   - 异常处理是否抛出 `BusinessException`？
-  - 查询是否使用显式 `Select` 投影，避免 AOT 下的运行时自动映射？
-  - 批量操作是否使用 `Perigon.PostgreSQL` 的 `BulkInsertAsync` / `UpsertManyAsync`？
+  - 查询是否使用 `Select` 投影而非 `Include` 加载整个导航属性？
+  - 批量操作是否使用 `EFCore.BulkExtensions`？
   - 事务操作是否使用 `ExecuteInTransactionAsync`？
   
 - **Controller 层**:
-  - 是否继承 `RestEndpointBase` 并定义 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`？
+  - 是否继承 `RestControllerBase`？
   - 是否避免直接访问 `DbContext`？
   - 错误处理是否使用 `Problem()` / `NotFound()`？
   - 是否避免使用 `ApiResponse` 包装器？
@@ -52,7 +52,7 @@ description: "全栈代码审查规范。Use when: Code Review, PR review, REVIE
 
 - **数据库查询**:
   - 是否存在 N+1 查询问题？
-  - 是否滥用大对象加载导致过量数据传输？
+  - 是否滥用 `Include` 导致过量数据加载？
   - 分页查询是否正确实现？
   - 是否缺少必要的索引？
   
@@ -74,7 +74,7 @@ description: "全栈代码审查规范。Use when: Code Review, PR review, REVIE
   - 客户端验证是否与服务端一致？
   
 - **权限控制**:
-  - endpoint group 或 endpoint 是否有适当的授权检查（`RequireAuthorization` / `AllowAnonymous`）？
+  - Controller 是否有适当的授权检查（`[Authorize]`）？
   - 是否存在越权访问风险？
   
 - **敏感信息**:

@@ -27,15 +27,42 @@
 dotnet new --install Perigon.templates 
 ```
 
+## 模板说明
+
+当前仓库提供两套可选模板：
+
+- `MiniApi`：面向轻量接口服务，优先采用 Minimal API、NativeAOT、Request Delegate Generator 与 `Perigon.PostgreSQL`，适合高性能、低资源开销、对 AI 工具友好的后端服务。
+- `ApiStandard`：面向传统 Web API 场景，基于 ASP.NET Core Web API、EF Core 与 Aspire，适合需要标准 MVC/Web API 生态、模块化组织和更传统开发方式的项目。
+
+## MiniApi 模板的作用与使用场景
+
+MiniApi 模板适合以下场景：
+
+- 需要构建轻量级 API 服务，启动快、内存占用低。
+- 希望优先使用 Minimal API 与 NativeAOT，获得更好的发布性能和运行效率。
+- 需要与 AI/代码生成工具配合时，代码结构更直接、层次更清晰。
+- 适用于网关、微服务、数据接口、内部系统接口等对性能和部署成本敏感的项目。
+
 ## 创建项目
 
+下面给出两套模板的创建命令示例：
+
+### 创建 MiniApi 模板
+
 ```pwsh
-dotnet new perigon-webapi  
+dotnet new perigon-minapi -n MyMiniApi
 ```
 
-or
+### 创建 ApiStandard 模板
 
 ```pwsh
+dotnet new perigon-webapi -n MyWebApi
+```
+
+如果你想指定模板名称并直接生成到当前目录，也可以这样：
+
+```pwsh
+dotnet new perigon-minapi -n <projectname>
 dotnet new perigon-webapi -n <projectname>
 ```
 

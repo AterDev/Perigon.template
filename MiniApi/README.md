@@ -1,6 +1,22 @@
 # 说明
 
-本项目基于 `ASP.NET Core Minimal API / NativeAOT / Aspire / Perigon.PostgreSQL` 技术栈，提供结构清晰的模块化单接口服务项目结构，并对 AI 工具提供良好的支持。
+本项目基于 `ASP.NET Core Minimal API / NativeAOT / Aspire / Perigon.PostgreSQL` 技术栈，提供结构清晰的轻量接口服务模板，适合需要高性能、低资源占用、并且对 AI 工具友好的后端项目。
+
+## MiniApi 模板的作用
+
+MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量后端工程，强调：
+
+- 更小的启动开销与更低的运行资源占用。
+- NativeAOT 发布与高性能接口场景支持。
+- 以 `Endpoints / Managers / Models / Services` 为主的直观开发结构。
+- 与 `Perigon.PostgreSQL` 配合使用，适合轻量数据接口与微服务项目。
+
+## 适用场景
+
+- 内部系统接口、网关接口、轻量微服务。
+- 对启动速度、内存占用、部署体积有较高要求的服务。
+- 需要较强 AOT 发布能力的生产环境项目。
+- 希望代码结构更直接、便于 AI/代码生成工具理解和维护的后端工程。
 
 ## 根目录
 

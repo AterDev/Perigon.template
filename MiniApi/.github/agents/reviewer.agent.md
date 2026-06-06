@@ -2,7 +2,6 @@
 name: reviewer
 description: "代码审查专家。Use when: code review, PR review, security review, performance review, architecture review, build/test gate, reviewer."
 tools: [read, search, execute, agent]
-model: GPT-5.3-Codex (copilot)
 
 handoffs: 
    - label: Request Engineer Fix

@@ -1,7 +1,6 @@
 ---
 name: engineer
 description: "实现和修复代码的工程师。Use when: feature implementation, bug fix, refactor, backend, frontend, tests, build errors, Perigon, Aspire, .NET, Angular changes."
-model: [GPT-5.5 (copilot), GPT-5.4 (copilot), GPT-5.4 mini (copilot), GPT-5.3-Codex (copilot)]
 
 handoffs: 
   - label: Request Code Review

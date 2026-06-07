@@ -34,8 +34,9 @@ description: "feature implementation, bug fix, refactor, backend, frontend, test
 1. **上下文感知**：获取`.agents/skills`中的相关skill，了解当前任务的技术栈和规范。
 2. **修改评估**：对代码修改进行评估，先整体后细节，优先复用现有模式和项目内已有扩展，避免不必要的改动。如果是添加新的实体或模块，必须使用 Perigon 命令行先生成模板代码。
 3. **实施修改**：按照模块->实体->Service->Manager->Controller的顺序实施代码的修改。
-4. **验证结果**：按影响范围执行 `dotnet build`、`dotnet test`、`pnpm build` 或 Aspire/Playwright 验证。
-5. **清理交付**：移除临时脚本、日志和无用文件，输出变更摘要、验证结果和剩余风险。
+4. **构建和测试**：先执行`dotnet build`，确保编译无错误；有必要时执行测试。
+5. **运行并调试**: 使用`aspire` skill运行程序，并通过`aspire ps`,`aspire describe`查看服务状态,并通过`aspire resource`指定服务rebuild/stop/restart，以避免进程占用问题。
+6. **清理交付**：移除临时脚本、日志和无用文件，输出变更摘要、验证结果和剩余风险。
 
 </workflow>
 

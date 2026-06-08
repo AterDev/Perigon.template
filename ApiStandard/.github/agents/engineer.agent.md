@@ -20,18 +20,14 @@ description: "feature implementation, bug fix, refactor, backend, frontend, test
 
 <skills>
 
-- 后端、API、EF Core、迁移、模块结构：`.agents/skills/backend/SKILL.md`
-- Angular 页面、路由、表单、Material、i18n：`.agents/skills/angular/SKILL.md`
-- Perigon CLI/MCP、代码生成、请求客户端生成：`.agents/skills/perigon/SKILL.md`
-- Aspire 启动、资源状态、日志、链路、集成：`.agents/skills/aspire/SKILL.md`
-- TUnit、ApiTest、集成测试、测试失败排查：`.agents/skills/test/SKILL.md`
-- Markdown、README、开发/部署文档：`.agents/skills/documentation/SKILL.md`
+- 项目前后端代码编写：`.agents/skills/perigon/SKILL.md`
+- Aspire 启动、资源状态、日志、链路、集成：`.agents/skills/aspire/SKILL.md`和`.agents/skills/aspire-orchestration/SKILL.md`
 
 </skills>
 
 <workflow>
 
-1. **上下文感知**：获取`.agents/skills`中的相关skill，了解当前任务的技术栈和规范。
+1. **必要信息**：根据修改内容，获取`.agents/skills`中的相关skill，以便了解项目结构和可用工具技术，至少要了解perigon和aspire相关技能。
 2. **修改评估**：对代码修改进行评估，先整体后细节，优先复用现有模式和项目内已有扩展，避免不必要的改动。如果是添加新的实体或模块，必须使用 Perigon 命令行先生成模板代码。
 3. **实施修改**：按照模块->实体->Service->Manager->Controller的顺序实施代码的修改。
 4. **构建和测试**：先执行`dotnet build`，确保编译无错误；有必要时执行测试。

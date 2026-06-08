@@ -31,7 +31,6 @@ First inspect the current git diff or staged diff, then combine it with any user
 Body rules:
 
 - Add one blank line between header and body.
-- Each body line should be short and written in Chinese.
 - Focus only on the important secondary changes.
 - You may use plain list lines like:
   - `- 补充 SSO 处理流程文档`

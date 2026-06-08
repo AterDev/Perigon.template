@@ -1,83 +1,54 @@
 ---
 name: perigon
 description: >-
-  使用 Perigon CLI/MCP 做项目脚手架、模块/服务生成、DTO/Manager/Controller/Request 客户端生成、MCP 配置与 Studio。Use when: perigon new, perigon add module, perigon add service, perigon generate dto, perigon generate manager, perigon generate controller, perigon generate request, perigon module list, perigon module install, perigon module pack, perigon mcp init, perigon mcp start, perigon studio, perigon studio update.
+  Perigon 主入口技能：用于基于 Perigon CLI/MCP 进行项目脚手架、模块与服务生成、DTO/Manager/Controller/Request 客户端生成、MCP 配置与 Studio 操作，以及日常后端/前端开发中的代码生成与模板化工作。Use when: any Perigon-based development task, scaffolding, code generation, module/service creation, API client generation, MCP setup, Studio usage, backend/frontend implementation that should follow Perigon conventions.
 ---
 
 # Perigon Skill
 
 This repository uses `Perigon.CLI` for scaffolding, code generation, and MCP integration.
+This is now the single top-level Perigon skill. Framework-specific guidance for Angular, backend, testing, and code review is kept as project-local references under this folder.
 
 ## When to use this skill
 
-Use this skill when the user asks to:
-- create a new solution, add a module or service, or open Studio;
-- generate DTOs, managers, controllers, or typed request clients from an entity or OpenAPI document;
-- install/list/pack module packages from a local zip file or official package name;
-- initialize or start the MCP server for editor/agent integration;
-- inspect CLI help before guessing options.
+Use this skill for nearly all Perigon-related development work, especially when the task involves:
+- 创建新解决方案、模块、服务，或启动 Studio；
+- 生成或更新 DTO、Manager、Controller、Entity、Request Client、前端请求模型；
+- 按照 Perigon 约定完成后端/前端代码骨架与业务代码生成；
+- 安装、列出、打包模块包，或初始化/启动 MCP 服务；
+- 需要先查看 CLI 帮助再执行命令，避免猜测参数；
+- 任何涉及“优先使用 Perigon 生成而不是手写模板代码”的开发任务。
 
-## CLI command reference
+In short: if the work is about implementing or extending a Perigon-based project, this skill should be the default entry point.
 
-| Task | Command |
-|---|---|
-| Create a new solution | `perigon new <name>` |
-| Add a module | `perigon add module <ModuleName>` |
-| Add a service | `perigon add service <ServiceName>` |
-| Generate DTO from an entity | `perigon generate dto <EntityPath>` |
-| Generate manager from an entity | `perigon generate manager <EntityPath>` |
-| Generate controller from an entity and target service | `perigon generate controller <EntityPath> <ServicePath|ServiceName>` |
-| Generate typed request client/models from OpenAPI | `perigon generate request <path|url> <outputPath>` |
-| Generate only models from OpenAPI | `perigon generate request <path|url> <outputPath> -m` |
-| List official module packages | `perigon module list` |
-| Install a module package | `perigon module install <PackagePath|OfficialName> <ServiceName>` |
-| Pack a module into a zip | `perigon module pack <ModuleName> <ServiceName>` |
-| Initialize MCP config | `perigon mcp init` |
-| Start MCP server | `perigon mcp start` |
-| Launch Studio | `perigon studio` |
-| Update Studio | `perigon studio update` |
-| Show command help | `perigon -h` or `perigon <command> -h` |
+## Project structure
 
-## Key workflows
-
-### 1. Scaffolding and solution setup
-
-- Prefer `perigon new <name>` for creating a new solution from the CLI.
-- Prefer `perigon add module <ModuleName>` and `perigon add service <ServiceName>` for adding project structure.
-- `perigon add module <ModuleName>` allows omitting the `Mod` suffix.
-
-### 2. Code generation from entities and services
-
-- Use `perigon generate dto <EntityPath>` to create DTO classes from an entity file.
-- Use `perigon generate manager <EntityPath>` to create manager classes.
-- Use `perigon generate controller <EntityPath> <ServicePath|ServiceName>` to generate controllers that target an existing service.
-- Add `-f` / `--force` when you want to overwrite existing generated files.
-
-### 3. OpenAPI / frontend request generation
-
-Use `perigon generate request` when the task is to generate typed request services or models from a Swagger/OpenAPI document.
-
-```bash
-perigon generate request ./openapi.json ./src/services -t angular
+```sh
+src/
+├── Perigon/                 # 基础类库、工具扩展与源生成项目
+├── Definition/
+│   ├── Entity/              # 实体定义（按模块分文件夹）
+│   ├── EntityFramework/     # EF Core DbContext 与迁移
+│   ├── Share/               # 共享常量、扩展、服务
+│   └── ServiceDefaults/     # 服务注册与中间件
+├── Modules/
+│   └── {ModuleName}/
+│       ├── Managers/        # 业务逻辑层
+│       ├── Models/          # DTO 定义
+│       └── Services/        # 模块内服务（可选）
+└── Services/
+    ├── ApiService/          # 公共 API
+    ├── AdminService/        # 管理后台 API
+    └── MigrationService/    # 数据库迁移服务
 ```
 
-Supported types: `angular` (default), `csharp`, `axios`.
-Use `-m` / `--only-model` to generate only model files.
+## Reference routing
 
-In this repository, the preferred frontend `outputPath` is the absolute path of `src/ClientApp/WebApp/src/app`.
-
-### 4. Module package workflows
-
-- Use `perigon module list` to inspect official module packages.
-- Use `perigon module install <PackagePath|OfficialName> <ServiceName>` to install a local zip or an official module package into the current project.
-- Use `perigon module pack <ModuleName> <ServiceName>` to package a module for distribution.
-- `perigon module pack <ModuleName> <ServiceName>` expects the module name with the `Mod` suffix.
-
-### 5. MCP and Studio workflows
-
-- Use `perigon mcp init` to write the MCP stdio configuration into `.vscode/mcp.json`.
-- Use `perigon mcp start` to launch the MCP server over stdio.
-- Use `perigon studio` to open Perigon Studio, and `perigon studio update` to update it.
+| Task area | Reference |
+|---|---|
+| Perigon CLI / MCP / Studio commands | [references/perigon-cli.md](references/perigon-cli.md) |
+| Angular frontend development | [references/angular.md](references/angular.md) |
+| Backend architecture and service patterns | [references/backend.md](references/backend.md) |
 
 ## Important rules
 

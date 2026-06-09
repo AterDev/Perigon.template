@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.3.4</Version>
+        <Version>1.3.5</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,9 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. update AI workflow files.
-            2. update aspire package dependencies.
-            3. add docker publish exmples.
+        <PackageReleaseNotes>1. update agent and skills;
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

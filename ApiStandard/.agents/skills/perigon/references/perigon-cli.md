@@ -1,13 +1,13 @@
 # Perigon CLI Reference
 
-This reference collects the CLI / MCP guidance for the Perigon skill.
+This reference collects the CLI / agent guidance for the Perigon skill.
 
 ## Scope
 Use this reference whenever the task involves:
 - scaffolding a new solution or adding modules / services;
 - generating DTOs, managers, controllers, and request clients;
 - installing, listing, or packing module packages;
-- initializing or starting MCP / Studio;
+- initializing agent setup, MCP / Skills integration, or Studio;
 - checking CLI help before guessing options.
 
 ## Core command reference
@@ -25,8 +25,8 @@ Use this reference whenever the task involves:
 | List official module packages | `perigon module list` |
 | Install a module package | `perigon module install <PackagePath|OfficialName> <ServiceName>` |
 | Pack a module into a zip | `perigon module pack <ModuleName> <ServiceName>` |
-| Initialize MCP config | `perigon mcp init` |
-| Start MCP server | `perigon mcp start` |
+| Initialize agent setup | `perigon agent init` |
+| Start agent MCP server | `perigon agent mcp start` |
 | Launch Studio | `perigon studio` |
 | Update Studio | `perigon studio update` |
 | Show command help | `perigon -h` or `perigon <command> -h` |
@@ -54,9 +54,11 @@ Use this reference whenever the task involves:
 - Use `perigon module install <PackagePath|OfficialName> <ServiceName>` to install a module into the current project.
 - Use `perigon module pack <ModuleName> <ServiceName>` to package a module for distribution.
 
-### 5. MCP and Studio workflows
-- Use `perigon mcp init` to write MCP stdio config into `.vscode/mcp.json`.
-- Use `perigon mcp start` to launch the MCP server.
+### 5. Agent / MCP / Skills workflows
+- Use `perigon agent init` to choose the setup path.
+- Choose `MCP` to keep the existing behavior: write MCP stdio config into `.vscode/mcp.json`.
+- Choose `Skills` to add agents and skills.
+- Use `perigon agent mcp start` to launch the agent MCP server.
 - Use `perigon studio` to open Studio, and `perigon studio update` to refresh it.
 
 ## Project structure to keep in mind

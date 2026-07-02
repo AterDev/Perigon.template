@@ -3,12 +3,13 @@
 This reference belongs to the Perigon skill and covers the Perigon backend architecture used by this template.
 
 ## When to use
+
 - Design entities, managers, DTOs, controllers, and service defaults.
 - Wire business logic, migrations, and service-layer structure.
 - Implement or review backend logic in a Perigon-based solution.
 
-
 ## Core rules
+
 - Keep business logic in managers instead of controllers.
 - Prefer `ManagerBase<T>` / `ManagerBase` and `RestControllerBase` patterns.
 - Keep controller layers focused on input validation, authorization, and HTTP response shaping.
@@ -17,6 +18,7 @@ This reference belongs to the Perigon skill and covers the Perigon backend archi
 - Avoid direct `DbContext` access in controllers; prefer manager or factory-based flows.
 
 ## Development flow
+
 1. Define entities, DbContext, and shared services.
 2. Implement modules and managers / DTOs.
 3. Implement controllers and API endpoints.
@@ -24,5 +26,6 @@ This reference belongs to the Perigon skill and covers the Perigon backend archi
 5. If entities are changed, review the existing migration workflow and scripts instead of manually altering migrations.
 
 ## Verification
+
 - Run `dotnet build` after backend changes.
 - If the change touches the domain model, review migration and startup behavior before concluding.

@@ -7,6 +7,7 @@ description: "feature implementation, bug fix, refactor, backend, frontend, test
 
 <rules>
 
+- 严格遵循微软官方Csharp编码规范，使用可读性高/可维护的代码风格，严谨的处理空值和异常，避免潜在的空引用和未处理异常。
 - 严格遵循项目规范、技术栈和`Skill`说明；不猜测代码行为，先查证再修改。
 - 保持实现简洁、可读、可维护；避免过度设计和无必要抽象。
 - 涉及脚手架、模块/服务添加、代码生成、OpenAPI 客户端生成、MCP 配置时，优先使用 Perigon 相关能力。

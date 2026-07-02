@@ -6,7 +6,7 @@ This reference collects the CLI / agent guidance for the Perigon skill.
 
 Use this reference whenever the task involves:
 
-- scaffolding a new solution or adding modules / services;
+- scaffolding a new solution or adding modules/services;
 - generating DTOs, managers, controllers, and request clients;
 - installing, listing, or packing module packages;
 - initializing agent setup, MCP / Skills integration, or Studio;

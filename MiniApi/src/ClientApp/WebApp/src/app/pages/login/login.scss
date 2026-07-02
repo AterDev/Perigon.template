@@ -1,0 +1,193 @@
+.login-page {
+  --blue-100: #d8ecff;
+
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(620px 320px at 82% 12%, rgba(255, 253, 242, 0.2), rgba(232, 238, 255, 0.1) 42%, transparent 74%),
+    radial-gradient(920px 420px at 50% -14%, rgba(98, 124, 255, 0.12), transparent 68%),
+    radial-gradient(1500px 920px at 50% 128%, rgba(2, 6, 20, 0.84), rgba(1, 4, 12, 0.96) 72%),
+    linear-gradient(170deg, #04091a 0%, #020611 52%, #01030b 100%);
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(72% 52% at 50% 50%, rgba(15, 15, 15, 0) 44%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(180deg, rgba(7, 7, 7, 0.24) 0%, rgba(14, 13, 13, 0.08) 36%, rgba(15, 15, 15, 0.46) 100%);
+}
+
+.starfield-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.star-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.24;
+  background-image:
+    radial-gradient(1px 1px at 8% 20%, rgba(226, 238, 255, 0.95), transparent),
+    radial-gradient(1px 1px at 19% 74%, rgba(192, 217, 255, 0.82), transparent),
+    radial-gradient(1.5px 1.5px at 32% 44%, rgba(229, 240, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 58% 67%, rgba(214, 233, 255, 0.86), transparent),
+    radial-gradient(1px 1px at 84% 57%, rgba(197, 224, 255, 0.78), transparent),
+    radial-gradient(1.5px 1.5px at 78% 84%, rgba(215, 230, 255, 0.84), transparent),
+    radial-gradient(1px 1px at 42% 88%, rgba(188, 214, 255, 0.72), transparent);
+}
+
+.login-shell {
+  position: relative;
+  z-index: 5;
+  width: min(400px, calc(100vw - 2rem));
+}
+
+.login-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  color: var(--blue-100);
+  background:
+    linear-gradient(140deg, rgba(19, 4, 32, 0.52), rgba(22, 7, 39, 0.42) 65%, rgba(25, 11, 41, 0.34));
+    
+  box-shadow:
+    0 0px 20px 10px rgba(17, 4, 38, 0.58),
+    0 0 2px 2px rgba(140, 171, 255, 0.171);
+}
+
+.login-header {
+  padding: 1.35rem 1.45rem;
+  position: relative;
+  z-index: 1;
+}
+
+mat-card-title {
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #9fd0ff;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.login-form {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  padding: 1.05rem 1.45rem 1.45rem;
+}
+
+.glow-field {
+  width: 100%;
+}
+
+.glow-field :where(.mdc-notched-outline__leading, .mdc-notched-outline__notch, .mdc-notched-outline__trailing) {
+  border-color: rgba(167, 190, 239, 0.44) !important;
+}
+
+.glow-field.mat-focused :where(.mdc-notched-outline__leading, .mdc-notched-outline__notch, .mdc-notched-outline__trailing) {
+  border-color: rgba(120, 194, 255, 0.86) !important;
+  box-shadow: 0 0 0 1px rgba(86, 177, 255, 0.24);
+}
+
+.glow-field :where(.mdc-floating-label, .mat-mdc-form-field-icon-suffix) {
+  color: rgba(198, 218, 248, 0.9) !important;
+}
+
+.glow-field :where(input[matInput]) {
+  color: var(--blue-100);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+mat-error {
+  color: #ffd1df;
+  font-size: 0.8rem;
+}
+
+.login-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.45rem;
+}
+
+.login-btn {
+  --mx: 50%;
+  --my: 50%;
+  min-width: 116px;
+  height: 40px;
+  border-radius: 8px;
+  color: #f6fbff !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(95deg, #5b99f4, #8f7eed) !important;
+  box-shadow:
+    0 4px 14px rgba(94, 122, 255, 0.34),
+    0 0 0 1px rgba(196, 192, 255, 0.18) inset;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.login-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle 90px at var(--mx) var(--my), rgba(255, 255, 255, 0.4), transparent 65%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  z-index: -1;
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: saturate(108%);
+  box-shadow:
+    0 8px 20px rgba(95, 154, 255, 0.34),
+    0 0 18px rgba(160, 130, 255, 0.32);
+}
+
+.login-btn:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.login-btn:disabled {
+  opacity: 0.58;
+}
+
+@media (max-width: 680px) {
+  .login-shell {
+    width: min(400px, calc(100vw - 1rem));
+  }
+
+  .login-card {
+    border-radius: 14px;
+  }
+
+  .login-header {
+    padding: 1.1rem 1rem 0.2rem;
+  }
+
+  .login-form {
+    padding: 0.9rem 1rem 1.1rem;
+  }
+}

@@ -2,7 +2,6 @@
 name: reviewer
 description: "代码审查专家。Use when: code review, PR review, security review, performance review, architecture review, build/test gate, reviewer."
 tools: [read, search, execute, agent]
-model: GPT-5.3-Codex (copilot)
 
 handoffs: 
    - label: Request Engineer Fix
@@ -59,10 +58,9 @@ dotnet test tests/ApiTest/ApiTest.csproj
 
 如果构建或测试失败，直接输出 `REVIEW_STATUS: FAIL` 与 `NEXT_ACTION: ENGINEER_FIX_REQUIRED`，并附失败命令和关键错误摘要。
 
-### 1. 审查标准
+### 1. 重点审查内容
 
-优先遵循 `.agents/skills/code-review/SKILL.md`，并重点检查：
-
+- 代码质量：代码是否简洁易读，空值处理是否合理，异常处理是否充分，命名是否清晰。
 - 架构分层：Controller 不直接访问 DbContext；业务逻辑放在 Manager；模块依赖不越界。
 - 后端规范：文件作用域命名空间、主构造函数、异步与 `CancellationToken`、`BusinessException`、`Problem()` / `NotFound()`。
 - EF Core 性能：避免 N+1、过度 `Include`、无分页全量查询、缺失必要索引。

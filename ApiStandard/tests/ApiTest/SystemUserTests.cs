@@ -1,22 +1,23 @@
 using ApiTest.Data;
 
-namespace ApiTest;
-
-public class SystemUserTests
+namespace ApiTest
 {
-    [ClassDataSource<TestHttpClientData>(Shared = SharedType.PerTestSession)]
-    [Test]
-    public async Task GetUserInfo_ShouldReturnUserDetails(TestHttpClientData httpClientData)
+    public class SystemUserTests
     {
-        //var httpClient = httpClientData.HttpClient;
-        //var response = await httpClient.GetAsync("/api/systemUser/userinfo");
+        [ClassDataSource<TestHttpClientData>(Shared = SharedType.PerTestSession)]
+        [Test]
+        public async Task GetUserInfo_ShouldReturnUserDetails(TestHttpClientData httpClientData)
+        {
+            //var httpClient = httpClientData.HttpClient;
+            //var response = await httpClient.GetAsync("/api/systemUser/userinfo");
 
-        //await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+            //await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
 
-        //var userInfo = await response.Content.ReadFromJsonAsync<UserInfoDto>();
-        //await Assert.That(userInfo).IsNotNull();
-        //await Assert.That(userInfo!.Username).IsNotNullOrEmpty();
-        //await Assert.That(userInfo.Roles).IsNotNull();
-        //await Assert.That(userInfo.Roles!.Length).IsGreaterThan(0);
+            //var userInfo = await response.Content.ReadFromJsonAsync<UserInfoDto>();
+            //await Assert.That(userInfo).IsNotNull();
+            //await Assert.That(userInfo!.Username).IsNotNullOrEmpty();
+            //await Assert.That(userInfo.Roles).IsNotNull();
+            //await Assert.That(userInfo.Roles!.Length).IsGreaterThan(0);
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import { MatIconRegistry } from '@angular/material/icon';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss'
 })
 export class App {

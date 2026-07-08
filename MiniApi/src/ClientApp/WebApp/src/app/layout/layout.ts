@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,6 +15,7 @@ import { BaseMatModules, CommonModules } from '../share/shared-modules';
   imports: [MatToolbarModule, MatMenuModule, ...BaseMatModules, ...CommonModules,
     NavigationComponent, MatButtonToggleModule],
   templateUrl: './layout.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './layout.scss'
 })
 export class LayoutComponent {

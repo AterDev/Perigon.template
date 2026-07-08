@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
@@ -7,6 +7,7 @@ import { MatButton } from '@angular/material/button';
   selector: 'sync-button',
   imports: [MatProgressSpinnerModule, MatButton],
   templateUrl: './sync-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sync-button.component.css'
 })
 export class SyncButtonComponent {

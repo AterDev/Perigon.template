@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, AfterViewInit, signal } from '@angular/core';
+import { Component, Inject, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,7 @@ interface SystemLoginDto {
   selector: 'app-login',
   imports: [CommonFormModules, MatCardModule],
   templateUrl: './login.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./login.scss']
 })
 export class Login implements OnInit, AfterViewInit {

@@ -1,10 +1,11 @@
 import { SlicePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-avatar',
   imports: [SlicePipe],
   templateUrl: './avatar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./avatar.component.css'],
 })
 export class AvatarComponent {

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseMatModules, CommonModules } from 'src/app/share/shared-modules';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -9,6 +9,7 @@ import { MatListModule } from '@angular/material/list';
   selector: 'app-navigation',
   imports: [...BaseMatModules, ...CommonModules, MatSidenavModule, MatExpansionModule, MatListModule],
   templateUrl: './navigation.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navigation.scss'
 })
 export class NavigationComponent {

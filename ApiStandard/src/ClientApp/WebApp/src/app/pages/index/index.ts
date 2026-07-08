@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/share/i18n-keys';
 
@@ -6,6 +6,7 @@ import { I18N_KEYS } from 'src/app/share/i18n-keys';
   selector: 'app-index',
   imports: [TranslateModule],
   templateUrl: './index.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './index.scss'
 })
 export class Index {

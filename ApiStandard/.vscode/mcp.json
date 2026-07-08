@@ -1,10 +1,11 @@
 {
   "servers": {
     "perigon": {
+      "type": "stdio",
       "command": "perigon",
       "args": [
-        "mcp",
-        "start"
+        "agent",
+        "mcp"
       ]
     },
     "aspire": {

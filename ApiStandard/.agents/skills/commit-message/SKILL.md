@@ -6,6 +6,7 @@ agent: "agent"
 model: [MAI-Code-1-Flash (copilot), DeepSeek V4 Flash (deepseek), Raptor mini (Preview) (copilot)]
 tools: [execute]
 ---
+
 Generate a git commit message for the current repository changes.
 
 First inspect the current git diff or staged diff, then combine it with any user-provided intent. and update the develop process.
@@ -18,7 +19,7 @@ First inspect the current git diff or staged diff, then combine it with any user
 <workflow>
 
 1. 检查前提条件
-2. 按<output>格式生成提交信息
+2. 按 <output> 格式生成提交信息
 3. update the develop process
 
 </workflow>
@@ -43,5 +44,5 @@ First inspect the current git diff or staged diff, then combine it with any user
 </output>
 
 **update the develop process**
-- update `docs\Development\ProjectTracking.md` for tracing the current task progress.
-- update `docs\Development\Changelog.md` for recording the change details and impact.
+- update `docs/Development/ProjectTracking.md` for tracing the current task progress.
+- update `docs/Development/Changelog.md` for recording the change details and impact.

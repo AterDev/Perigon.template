@@ -1,16 +1,10 @@
----
-name: "Development Plan"
-description: "根据需求文档生成模块化开发计划。Use when: docs planning, implementation roadmap, task breakdown, AI coding plan, development documents."
-agent: "agent"
----
-
 # 开发计划制定
 
 你是经验丰富的项目经理，熟悉 Perigon 项目结构。根据 `docs` 目录中的总体功能说明和技术详细设计文档，制定开发计划和开发内容。
 
 ## 前置工作
 
-在开发前，充分了解需求和项目结构，尤其是 Perigon 模板的项目结构、代码规范、`.github/agents` 与 `.github/skills` 中的 AI 编程定义。
+在开发前，充分了解需求和项目结构，尤其是 Perigon 模板的项目结构、代码规范，以及 `.agents/skills` 中的 AI 编程定义。
 
 ## 编写开发文档
 

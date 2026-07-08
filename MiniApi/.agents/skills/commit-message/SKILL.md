@@ -6,6 +6,7 @@ agent: "agent"
 model: [DeepSeek V4 Flash (deepseek), Raptor mini (Preview) (copilot), GPT-5.4 mini (copilot)]
 tools: [execute]
 ---
+
 Generate a git commit message for the current repository changes.
 
 First inspect the current git diff or staged diff, then combine it with any user-provided intent.

@@ -1,0 +1,4 @@
+interface:
+  display_name: ".NET Testing"
+  short_description: "Write and run unit and Aspire integration tests"
+  default_prompt: "Use $dotnet-testing to write or improve tests for this .NET project, run the appropriate suite, and report the results."

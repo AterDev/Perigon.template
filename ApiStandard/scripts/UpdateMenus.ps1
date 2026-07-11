@@ -22,7 +22,7 @@ param (
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$menusPath = Join-Path $repoRoot "src\json\menus.json"
+$menusPath = Join-Path $repoRoot "src\ClientApp\WebApp\src\assets\menus.json"
 
 if (-not (Test-Path $menusPath -PathType Leaf)) {
   throw "Menu configuration not found: $menusPath"

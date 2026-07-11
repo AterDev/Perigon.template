@@ -56,7 +56,7 @@ Run project scripts from any working directory; each script resolves the reposit
 
 | Script | Purpose and when to run | Command |
 |---|---|---|
-| `scripts/UpdateMenus.ps1` | Synchronize `src/json/menus.json` into the Admin service database. Run after changing frontend menu items, hierarchy, access codes, or menu types; ensure the target Admin service is running first. The default target is `http://localhost:5002`; pass `production` only after confirming the script's production URL is correct. | `pwsh ./scripts/UpdateMenus.ps1`<br>`pwsh ./scripts/UpdateMenus.ps1 production` |
+| `scripts/UpdateMenus.ps1` | Synchronize `src/ClientApp/WebApp/src/assets/menus.json` into the Admin service database. Run after changing frontend menu items, hierarchy, access codes, or menu types; ensure the target Admin service is running first. The default target is `http://localhost:5002`; pass `production` only after confirming the script's production URL is correct. | `pwsh ./scripts/UpdateMenus.ps1`<br>`pwsh ./scripts/UpdateMenus.ps1 production` |
 | `scripts/PublishDocker.ps1` | Publish the AOT-enabled standalone API service and build its Docker image. Use for service-image packaging or verification; use Aspire AppHost for distributed application orchestration. | `pwsh ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myproject-api-service -Tag v1` |
 | `scripts/CleanBinObj.ps1` | Remove `bin` and `obj` beneath every project to recover from stale build output. Preview paths with `-WhatIf`; run without it only when a clean rebuild is needed. | `pwsh ./scripts/CleanBinObj.ps1 -WhatIf`<br>`pwsh ./scripts/CleanBinObj.ps1` |
 

@@ -16,6 +16,8 @@
 ## 项目结构
 
 - 前端: `src/ClientApp/WebApp`
+  - 基础共享依赖: `src/ClientApp/WebApp/src/app/modules/share`
+  - 业务前端模块: `src/ClientApp/WebApp/src/app/modules/{module}`
 - 后端接口服务: `src/Services`
 - 实体定义m:于 `src/Definition/Entity`
 - 业务逻辑: `src/Modules`，按模块划分
@@ -31,6 +33,7 @@
 - 涉及项目脚手架、模块或服务添加、代码生成、OpenAPI 客户端生成、MCP 配置时，优先使用 `Perigon` 相关能力。
 - 涉及分布式应用启动、资源状态检查、日志链路排查、集成配置时，优先使用 `Aspire` 相关能力；普通构建和测试优先使用 `dotnet build` 或 `dotnet test`。
 - 需要前端功能验证时，优先结合 Playwright 或前端构建校验。
+- 新增或修改前端模块时，复用 `src/app/modules/share` 中的基础组件、守卫、管道、i18n 与 Material 聚合导入；不要重新创建顶层 `src/app/share`。
 
 ### 必读 skill
 

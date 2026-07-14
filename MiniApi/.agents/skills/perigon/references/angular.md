@@ -17,12 +17,14 @@ src/
   │   ├── app.routes.ts
   │   ├── layout/
   │   ├── pages/
-  │   ├── share/
-  │   │   ├── components/
-  │   │   ├── pipe/
-  │   │   ├── auth.guard.ts
-  │   │   ├── custom-paginator-intl.ts
-  │   │   └── i18n-keys.ts
+  │   ├── modules/
+  │   │   ├── share/          # 打包的基础依赖，供所有业务模块复用
+  │   │   │   ├── components/
+  │   │   │   ├── pipe/
+  │   │   │   ├── auth.guard.ts
+  │   │   │   ├── custom-paginator-intl.ts
+  │   │   │   └── i18n-keys.ts
+  │   │   └── {module}/       # 业务前端模块
   │   └── services/
   ├── assets/i18n/
   ├── environments/
@@ -33,9 +35,10 @@ src/
 ## Core rules
 - Prefer standalone components and Angular Material.
 - Prefer signals and typed forms.
-- Use i18n keys instead of hard-coded user-facing strings.
+- Import `I18N_KEYS` from `src/app/modules/share/i18n-keys` and expose it on each translated component. In templates use `i18nKeys.common.save | translate`; for `TranslateService` use `translate.instant(this.i18nKeys.common.save)`. Do not use literal or constructed translation keys.
 - Keep generated request contracts untouched and regenerate them when the backend changes.
 - Avoid inline styles and prefer shared styles / Material tokens.
+- Put reusable frontend infrastructure in `src/app/modules/share` and import it through `src/app/modules/share/...`; do not create `src/app/share`.
 
 ## Recommended workflow
 1. Generate or refresh request clients from backend OpenAPI through Perigon.

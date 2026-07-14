@@ -3,10 +3,10 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { CommonFormModules } from 'src/app/share/shared-modules';
+import { CommonFormModules } from 'src/app/modules/share/shared-modules';
 import { AccessTokenDto, AuthService, UserInfoDto } from 'src/app/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import { I18N_KEYS } from 'src/app/share/i18n-keys';
+import { I18N_KEYS } from 'src/app/modules/share/i18n-keys';
 import { initStarfield } from './starfield';
 
 interface SystemLoginDto {

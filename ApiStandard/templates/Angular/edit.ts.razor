@@ -15,9 +15,9 @@ import { MatCheckboxModule } from '@@angular/material/checkbox';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@@angular/material/card';
 import { TranslateService } from '@@ngx-translate/core';
 import { AdminClient } from 'src/app/services/admin/admin-client';
-import { I18N_KEYS } from 'src/app/share/i18n-keys';
-import { CommonFormModules } from 'src/app/share/shared-modules';
-@{ if (hasEnumUpdate) { WriteLiteral("import { ToKeyValuePipe } from 'src/app/share/pipe/to-key-value.pipe';\n"); WriteLiteral("import { EnumTextPipe } from 'src/app/pipe/admin/enum-text.pipe';\n"); } }
+import { I18N_KEYS } from 'src/app/modules/share/i18n-keys';
+import { CommonFormModules } from 'src/app/modules/share/shared-modules';
+@{ if (hasEnumUpdate) { WriteLiteral("import { ToKeyValuePipe } from 'src/app/modules/share/pipe/to-key-value.pipe';\n"); WriteLiteral("import { EnumTextPipe } from 'src/app/pipe/admin/enum-text.pipe';\n"); } }
 @{ if (hasIdUpdateFields) { WriteLiteral("import { forkJoin, Observable } from 'rxjs';\n"); WriteLiteral("import { PageList } from 'src/app/services/admin/models/perigon/page-list.model';\n"); } }
 @{ 
   foreach (var field in idUpdateFields) 
@@ -122,7 +122,8 @@ export class @(ModelName)Edit implements OnInit {
     const errors = control.errors;
     const key = Object.keys(errors)[0];
     const params = errors[key];
-    return this.translate.instant(`validation.${key.toLowerCase()}`, params);
+    const validationKey = this.i18nKeys.validation[key.toLowerCase() as keyof typeof this.i18nKeys.validation];
+    return validationKey ? this.translate.instant(validationKey, params) : '';
   }
 
   submit() {

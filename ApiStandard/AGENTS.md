@@ -19,7 +19,7 @@
   - 基础共享依赖: `src/ClientApp/WebApp/src/app/modules/share`
   - 业务前端模块: `src/ClientApp/WebApp/src/app/modules/{module}`
 - 后端接口服务: `src/Services`
-- 实体定义m:于 `src/Definition/Entity`
+- 实体定义: `src/Definition/Entity`
 - 业务逻辑: `src/Modules`，按模块划分
 - Share 共享项目: `src/Definition/Share`
 - 服务扩展: `src/Definition/ServiceDefaults`
@@ -42,7 +42,7 @@
 - `.agents/skills/perigon/SKILL.md`
 - `.agents/skills/aspire/SKILL.md`
 
-### 主要技术 skill
+### 主要 skill
 
 - `perigon`：Perigon CLI、MCP、脚手架、代码生成与模板约定
 - `aspire`：Aspire AppHost、资源编排、运行、观察与相关子工作流

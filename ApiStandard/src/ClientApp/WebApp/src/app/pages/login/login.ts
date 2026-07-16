@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, Inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
@@ -19,10 +19,10 @@ interface SystemLoginDto {
   selector: 'app-login',
   imports: [CommonFormModules, MatCardModule],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./login.scss']
 })
-export class Login implements OnInit, AfterViewInit {
+export class Login implements AfterViewInit {
   i18nKeys = I18N_KEYS;
   isLoading = signal(false);
 
@@ -31,6 +31,7 @@ export class Login implements OnInit, AfterViewInit {
     private router: Router,
     private http: HttpClient,
     private translate: TranslateService,
+    private destroyRef: DestroyRef,
     @Inject('ADMIN_BASE_URL') private adminBaseUrl: string
   ) {
     if (authService.isLogin) {
@@ -57,13 +58,11 @@ export class Login implements OnInit, AfterViewInit {
     return this.loginForm.controls.password;
   }
 
-  ngOnInit(): void {
-  }
-
   ngAfterViewInit(): void {
     const canvas = document.getElementById('starfield') as HTMLCanvasElement | null;
     if (canvas) {
-      initStarfield(canvas);
+      const stopStarfield = initStarfield(canvas);
+      this.destroyRef.onDestroy(stopStarfield);
     }
   }
 

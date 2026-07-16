@@ -34,6 +34,7 @@
 - 涉及分布式应用启动、资源状态检查、日志链路排查、集成配置时，优先使用 `Aspire` 相关能力；普通构建和测试优先使用 `dotnet build` 或 `dotnet test`。
 - 需要前端功能验证时，优先结合 Playwright 或前端构建校验。
 - 新增或修改前端模块时，复用 `src/app/modules/share` 中的基础组件、守卫、管道、i18n 与 Material 聚合导入；不要重新创建顶层 `src/app/share`。
+- 涉及页面布局、控件选择、交互流程、状态反馈、响应式设计或可访问性时，必须读取 `.agents/skills/ux/SKILL.md`，并按目标平台加载 `common.md` 与 Web、Desktop 或 Phone reference；Angular 实现同时遵循 Perigon 的 Angular reference。
 
 ### 必读 skill
 
@@ -48,6 +49,7 @@
 - `aspire`：Aspire AppHost、资源编排、运行、观察与相关子工作流
 - `dotnet-guidelines`：.NET 开发规范
 - `angular-guidelines`：Angular 开发规范
+- `ux`：Web（Angular Material + Bootstrap）、Desktop（WPF/Avalonia）和 Phone（Android Material）的 UI 设计、控件与交互规范
 - `commit-message`：提交信息生成规范
 - `development-plan`：开发计划制定规范
 - `playwright-cli`：前端自动化验证与页面交互

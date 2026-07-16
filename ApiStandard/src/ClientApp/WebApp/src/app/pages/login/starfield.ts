@@ -140,10 +140,10 @@ function getStarCount(width: number) {
   return width > 900 ? 54 : 30;
 }
 
-export function initStarfield(canvas: HTMLCanvasElement) {
+export function initStarfield(canvas: HTMLCanvasElement): () => void {
   const context = canvas.getContext('2d');
   if (!context) {
-    return;
+    return () => {};
   }
   const ctx = context;
 
@@ -155,9 +155,12 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   let smoothedPointerX = 0;
   let smoothedPointerY = 0;
   let lastTime = performance.now();
+  let animationFrame = 0;
+  let stopped = false;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     w = canvas.offsetWidth;
     h = canvas.offsetHeight;
 
@@ -177,7 +180,21 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     pointerY = ((event.clientY / h) - 0.5) * 2;
   }
 
+  function onVisibilityChange() {
+    if (document.hidden) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    } else if (!stopped && !animationFrame && !reducedMotion.matches) {
+      lastTime = performance.now();
+      animationFrame = requestAnimationFrame(draw);
+    }
+  }
+
   function draw(now: number) {
+    if (stopped) {
+      return;
+    }
+
     const dt = Math.min((now - lastTime) / 16.67, 2);
     lastTime = now;
 
@@ -194,26 +211,40 @@ export function initStarfield(canvas: HTMLCanvasElement) {
       const sx = wrap(star.x + smoothedPointerX * parallax * 2.8, w);
       const sy = wrap(star.y + smoothedPointerY * parallax * 1.8, h);
 
-      const twinkle = 1 + Math.sin(now * 0.0012 * star.twinkleSpeed + star.twinklePhase) * star.twinkleAmount;
+      const wave = (Math.sin(now * 0.0012 * star.twinkleSpeed + star.twinklePhase) + 1) / 2;
+      const twinkle = 1 - star.twinkleAmount * 0.35 + wave * star.twinkleAmount;
       const depthAttenuation = 0.34 + star.depth * 0.82;
       const alpha = Math.max(0.06, Math.min(1, star.baseAlpha * twinkle * depthAttenuation));
 
-      ctx.save();
       ctx.beginPath();
-      ctx.arc(sx, sy, star.r, 0, Math.PI * 2);
+      ctx.arc(sx, sy, star.r * (0.9 + wave * 0.1), 0, Math.PI * 2);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = star.color;
-      ctx.shadowColor = star.glowColor;
-      ctx.shadowBlur = 0.7 + star.depth * 4.2;
       ctx.fill();
-      ctx.restore();
     }
 
-    requestAnimationFrame(draw);
+    ctx.globalAlpha = 1;
+    animationFrame = requestAnimationFrame(draw);
   }
 
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('mousemove', onPointerMove, { passive: true });
-  requestAnimationFrame(draw);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
+  if (reducedMotion.matches) {
+    draw(performance.now());
+    cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+  } else if (!document.hidden) {
+    animationFrame = requestAnimationFrame(draw);
+  }
+
+  return () => {
+    stopped = true;
+    cancelAnimationFrame(animationFrame);
+    window.removeEventListener('resize', resize);
+    window.removeEventListener('mousemove', onPointerMove);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+  };
 }

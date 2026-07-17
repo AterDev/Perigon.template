@@ -1,4 +1,5 @@
 global using ApiService.Extension;
+global using ApiService.Clients;
 global using Perigon.AspNetCore.Abstraction;
 global using Perigon.AspNetCore.Constants;
 global using Perigon.AspNetCore.Utils;

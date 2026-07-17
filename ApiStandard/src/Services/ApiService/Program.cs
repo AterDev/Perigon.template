@@ -3,6 +3,11 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // 共享基础服务:health check, service discovery, opentelemetry, http retry etc.
 builder.AddServiceDefaults();
 
+builder.Services.AddHttpClient<AdminServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("https+http://AdminService");
+});
+
 // 框架依赖服务:options, cache, dbContext
 builder.AddFrameworkServices();
 

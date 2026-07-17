@@ -1,4 +1,5 @@
 using AppHost;
+using Aspire.Hosting.ApplicationModel;
 using Perigon.AspNetCore.Constants;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -51,17 +52,22 @@ devPassword.WithParentRelationship(infrastructureGroup);
 database?.WithParentRelationship(infrastructureGroup);
 cache?.WithParentRelationship(infrastructureGroup);
 
+database?.WithResetSchemaCommand();
+
 #endregion
 
 #region services
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var migration = builder.AddProject<Projects.MigrationService>("MigrationService")
     .WithParentRelationship(serviceGroup);
-var apiService = builder.AddProject<Projects.ApiService>("ApiService")
-    .WaitForCompletion(migration)
-    .WithParentRelationship(serviceGroup);
+
 var adminService = builder.AddProject<Projects.AdminService>("AdminService")
     .WaitForCompletion(migration)
+    .WithParentRelationship(serviceGroup);
+
+var apiService = builder.AddProject<Projects.ApiService>("ApiService")
+    .WaitForCompletion(migration)
+    .WithReference(adminService)
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first

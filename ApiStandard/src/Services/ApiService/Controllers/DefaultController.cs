@@ -5,16 +5,15 @@ namespace ApiService.Controllers;
 public class DefaultController(AdminServiceClient adminServiceClient) : ControllerBase
 {
     [HttpGet("info")]
-    public IActionResult Info()
+    public ActionResult Info()
     {
         return Ok("ApiService");
     }
 
     [HttpGet("inner-link")]
-    public async Task<IActionResult> InnerLink(CancellationToken cancellationToken)
+    public async Task<ActionResult> InnerLink(CancellationToken cancellationToken)
     {
         var content = await adminServiceClient.GetInfoAsync(cancellationToken);
-
         return Content(content, "application/json");
     }
 }

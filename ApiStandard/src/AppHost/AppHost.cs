@@ -71,7 +71,7 @@ var apiService = builder.AddProject<Projects.ApiService>("ApiService")
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first
-//var webApp = builder.AddJavaScriptApp("frontend", "../ClientApp/WebApp")
+//var webApp = builder.AddJavaScriptApp("frontend", "../ClientApp/WebApp", "start")
 //    .WithPnpm()
 //    .WithUrl("http://localhost:4200")
 //    .WaitFor(adminService)

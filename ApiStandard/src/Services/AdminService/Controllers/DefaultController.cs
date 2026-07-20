@@ -5,7 +5,7 @@ namespace AdminService.Controllers;
 public class DefaultController : ControllerBase
 {
     [HttpGet("info")]
-    public IActionResult Info()
+    public ActionResult Info()
     {
         return Ok("AdminService");
     }

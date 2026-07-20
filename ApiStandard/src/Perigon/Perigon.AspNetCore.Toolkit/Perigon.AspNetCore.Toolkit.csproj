@@ -21,8 +21,9 @@
                 <PackageReference Include="AWSSDK.S3" />
                 <PackageReference Include="MailKit" />
                 <PackageReference Include="MiniExcel" />
-                <PackageReference Include="SkiaSharp" />
-                <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
+                <PackageReference Include="SixLabors.Fonts" />
+                <PackageReference Include="SixLabors.ImageSharp" />
+                <PackageReference Include="SixLabors.ImageSharp.Drawing" />
         </ItemGroup>
         <ItemGroup>
                 <None Include="..\logo.png">

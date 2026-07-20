@@ -16,6 +16,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\AppHost\AppHost.csproj" />
 	  <ProjectReference Include="..\..\src\Definition\Share\Share.csproj" />
+	  <ProjectReference Include="..\..\src\Perigon\Perigon.AspNetCore.Toolkit\Perigon.AspNetCore.Toolkit.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

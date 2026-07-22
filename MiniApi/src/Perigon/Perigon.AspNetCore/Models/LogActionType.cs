@@ -1,31 +1,30 @@
-namespace Perigon.AspNetCore.Models
+namespace Perigon.AspNetCore.Models;
+
+public enum LogActionType
 {
-    public enum LogActionType
-    {
-        /// <summary>
-        /// 无
-        /// </summary>
-        None,
+    /// <summary>
+    /// 无
+    /// </summary>
+    None,
 
-        /// <summary>
-        /// 新增
-        /// </summary>
-        Add,
+    /// <summary>
+    /// 新增
+    /// </summary>
+    Add,
 
-        /// <summary>
-        /// 修改
-        /// </summary>
-        Update,
+    /// <summary>
+    /// 修改
+    /// </summary>
+    Update,
 
-        /// <summary>
-        /// 新增或修改
-        /// </summary>
-        AddOrUpdate,
+    /// <summary>
+    /// 新增或修改
+    /// </summary>
+    AddOrUpdate,
 
-        /// <summary>
-        /// 删除
-        /// </summary>
-        Delete,
-        All,
-    }
+    /// <summary>
+    /// 删除
+    /// </summary>
+    Delete,
+    All,
 }

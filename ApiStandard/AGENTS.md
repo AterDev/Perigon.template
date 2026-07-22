@@ -53,10 +53,8 @@
 
 ### 主要 skill
 
-- `perigon`：Perigon CLI、MCP、脚手架、代码生成与模板约定
+- `perigon`：Perigon CLI、MCP、脚手架、代码生成与模板约定，前后端代码规范
 - `aspire`：Aspire AppHost、资源编排、运行、观察与相关子工作流
-- `dotnet-guidelines`：.NET 开发规范
-- `angular-guidelines`：Angular 开发规范
 - `ux`：Web（Angular Material + Bootstrap）、Desktop（WPF/Avalonia）和 Phone（Android Material）的 UI 设计、控件与交互规范
 - `commit-message`：提交信息生成规范
 - `development-plan`：开发计划制定规范

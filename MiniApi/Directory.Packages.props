@@ -30,8 +30,13 @@
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.6.0" />
     <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.8" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.6.0" />
-    <!-- Microsoft Code Analysis Packages (for Source Generators) -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" />
+    <!--
+      Source generator compatibility baseline: keep Microsoft.CodeAnalysis.CSharp at Roslyn 5.0.0.
+      The generator is loaded by the compiler bundled with the consuming .NET SDK.
+      SDK 10.0.100 ships Roslyn 5.0, and it cannot load a generator compiled against
+      a newer Roslyn version (CS9057). Do not upgrade these versions unless the
+      minimum supported SDK is raised for every template consumer.
+    -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <!-- OpenTelemetry Packages -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />

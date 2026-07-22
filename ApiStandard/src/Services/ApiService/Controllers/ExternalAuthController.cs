@@ -15,7 +15,7 @@ namespace ApiService.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet("signin-microsoft")]
-        public IActionResult SignInMicrosoft(string returnUrl = "/")
+        public ActionResult SignInMicrosoft(string returnUrl = "/")
         {
             var props = new AuthenticationProperties
             {
@@ -33,7 +33,7 @@ namespace ApiService.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet("signin-google")]
-        public IActionResult SignInGoogle(string returnUrl = "/")
+        public ActionResult SignInGoogle(string returnUrl = "/")
         {
             var props = new AuthenticationProperties
             {
@@ -52,7 +52,7 @@ namespace ApiService.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet("getToken")]
-        public async Task<IActionResult> GetToken(string type, string returnUrl = "/")
+        public async Task<ActionResult> GetToken(string type, string returnUrl = "/")
         {
             logger.LogInformation("{type} login callback initiated.", type);
 

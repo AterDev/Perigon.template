@@ -11,6 +11,9 @@ This reference belongs to the Perigon skill and covers the Perigon backend archi
 ## Core rules
 
 - Keep business logic in managers instead of controllers.
+- controller 应该在Service中，而不是Module中。
+- 接口不要使用IActionResult，而是ActionResult<T>。
+- 方法体不要使用`=>`去简化返回，而是使用`{}`。
 - Prefer `ManagerBase<T>` / `ManagerBase` and `RestControllerBase` patterns.
 - Keep controller layers focused on input validation, authorization, and HTTP response shaping.
 - Use shared utilities from `src/Perigon` before adding local duplicates.

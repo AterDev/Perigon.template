@@ -11,7 +11,7 @@ This reference belongs to the Perigon skill and covers the Perigon backend archi
 ## Core rules
 
 - Keep business logic in managers instead of controllers.
-- controller 应该在Service中，而不是Module中。
+- controller 应该在Service中，而不是Module中，控制器方法必须要有xml注释。
 - 接口不要使用IActionResult，而是ActionResult<T>。
 - 方法体不要使用`=>`去简化返回，而是使用`{}`。
 - Prefer `ManagerBase<T>` / `ManagerBase` and `RestControllerBase` patterns.
@@ -25,7 +25,7 @@ This reference belongs to the Perigon skill and covers the Perigon backend archi
 - 异步方法优先传递 `CancellationToken`，避免同步阻塞和不必要的内存分配。
 - 优先复用 `src/Perigon` 提供的扩展和工具，例如 `Merge`、`MapTo`；多语言文本使用 `Localizer` 常量。
 - 修改实体或 DbContext 后，通过 `scripts/EFMigrations.ps1` 生成迁移；不要手动编写或修改迁移文件。
-- 优先保持一个类型一个文件；对于小型枚举，可以在同一文件中定义；对于实体和 DTO，优先使用 class 而非 record。
+- 保持C#一个文件对应一个class；对于小型枚举，可以在同一文件中定义；对于实体和 DTO，优先使用 class 而非 record。
 - 测试代码可适当使用 `record` 来简化数据结构定义，提升可读性和维护性。
 
 ## DTO 目录与命名规范（强制）

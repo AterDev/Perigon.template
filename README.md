@@ -5,6 +5,7 @@
 模板已被集成在`Perigon.CLI`代码辅助工具中，建议使用该命令行工具来创建解决方案，以获得更好的体验。
 
 ## 要求
+
 - .NET 10.0 SDK 或更高版本
 - Aspire 13.0 或更高版本
 
@@ -70,7 +71,6 @@ dotnet new perigon-webapi -n <projectname>
 
 模板默认支持`PostgreSQL`和`SqlServer`，你可以在`AppHost`项目的`appsettings.json`中进行选择。
 
-
 ## 数据迁移
 
 可直接运行`scripts\EFMigrations.ps1`脚本生成迁移内容，程序在启动时会执行迁移。
@@ -85,6 +85,5 @@ cd scripts
 ## 运行项目
 
 直接运行`AppHost`项目即可。
-
 
 默认管理账号：`admin@default.com/Perigon.2026`.

@@ -21,13 +21,18 @@ public class TestHttpClientData : IAsyncInitializer, IAsyncDisposable
                 .WaitAsync(TimeSpan.FromSeconds(30));
         }
 
-        // Authenticate once and set bearer token for subsequent requests
-
-        var loginDto = new
+        // Authenticate only when the optional SystemMod test account is
+        // explicitly supplied. The base template does not create an admin
+        // account, so integration tests must not depend on a repository
+        // credential.
+        var email = Environment.GetEnvironmentVariable("PERIGON_TEST_ADMIN_EMAIL");
+        var password = Environment.GetEnvironmentVariable("PERIGON_TEST_ADMIN_PASSWORD");
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            Email = "admin@default.com",
-            Password = "Perigon.2026",
-        };
+            return;
+        }
+
+        var loginDto = new { Email = email, Password = password };
 
         using var resp = await HttpClient.PostAsJsonAsync("/api/systemUser/authorize", loginDto);
         resp.EnsureSuccessStatusCode();

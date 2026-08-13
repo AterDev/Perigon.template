@@ -22,8 +22,27 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Restore template solutions
+        run: |
+          dotnet restore ApiStandard/MyProjectName.slnx
+          dotnet restore MiniApi/MyProjectName.slnx
+          dotnet restore Pack.csproj
+
+      - name: Build template solutions
+        run: |
+          dotnet build ApiStandard/MyProjectName.slnx --configuration Release --no-restore
+          dotnet build MiniApi/MyProjectName.slnx --configuration Release --no-restore
+
+      - name: Run ApiStandard unit tests
+        working-directory: ApiStandard
+        run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
+
+      - name: Run MiniApi unit tests
+        working-directory: MiniApi
+        run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
+
       - name: Pack NuGet package
-        run: dotnet pack  -c Release --output ./artifacts
+        run: dotnet pack Pack.csproj -c Release --output ./artifacts --no-restore
 
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1

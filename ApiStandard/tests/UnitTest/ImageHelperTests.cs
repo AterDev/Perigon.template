@@ -2,7 +2,7 @@ using Perigon.AspNetCore.Toolkit.Helpers;
 using SixLabors.ImageSharp;
 using TUnit.Assertions;
 
-namespace ApiTest;
+namespace UnitTest;
 
 public sealed class ImageHelperTests
 {

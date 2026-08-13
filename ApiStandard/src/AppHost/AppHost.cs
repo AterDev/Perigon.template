@@ -38,15 +38,14 @@ _ = aspireSetting.DatabaseType?.ToLowerInvariant() switch
     _ => null,
 
 };
-_ = aspireSetting.CacheType?.ToLowerInvariant() switch
+if (aspireSetting.UsesRedis)
 {
-    "memory" => null,
-    _ => cache = builder
+    cache = builder
         .AddRedis("Cache", password: devPassword, port: aspireSetting.CachePort)
         .WithImageTag("8.2-alpine")
         .WithDataVolume()
-        .WithPersistence(interval: TimeSpan.FromMinutes(5)),
-};
+        .WithPersistence(interval: TimeSpan.FromMinutes(5));
+}
 
 devPassword.WithParentRelationship(infrastructureGroup);
 database?.WithParentRelationship(infrastructureGroup);
@@ -59,15 +58,20 @@ database?.WithResetSchemaCommand();
 #region services
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var migration = builder.AddProject<Projects.MigrationService>("MigrationService")
+    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithParentRelationship(serviceGroup);
 
 var adminService = builder.AddProject<Projects.AdminService>("AdminService")
     .WaitForCompletion(migration)
+    .WithEnvironment("Components__Cache", aspireSetting.CacheType)
+    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithParentRelationship(serviceGroup);
 
 var apiService = builder.AddProject<Projects.ApiService>("ApiService")
     .WaitForCompletion(migration)
     .WithReference(adminService)
+    .WithEnvironment("Components__Cache", aspireSetting.CacheType)
+    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first

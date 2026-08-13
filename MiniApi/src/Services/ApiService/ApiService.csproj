@@ -5,7 +5,7 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<NoWarn>1701;1702;1591</NoWarn>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>1e75aae5-d684-4140-a34b-a1afb03ab13f</UserSecretsId>
+		<UserSecretsId>4c7b2d64-0f27-42bb-8d0f-6f3ddf6ed6e5</UserSecretsId>
 		<IsAotCompatible>true</IsAotCompatible>
 		<EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
 		<PublishAot>true</PublishAot>

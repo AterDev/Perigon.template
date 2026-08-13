@@ -25,11 +25,25 @@
 
 ## 项目运行
 
-项目基于`Aspire`，直接运行`AppHost`项目即可启动所有服务。
+项目基于`Aspire`，使用 Aspire CLI 启动 AppHost 即可启动基础设施和服务。
 
-如使用`dotnet run  --project .\src\AppHost\AppHost.csproj`.
+```pwsh
+aspire start --non-interactive
+```
 
-或者使用`aspire run`命令运行.
+默认不启动 Angular 前端；如选择 Angular 前端并完成 `pnpm install`，可按 AppHost 中的可选示例启用它。
+
+Standard 的 OpenAPI JSON 默认位于 `/swagger/v1/swagger.json`，模板不默认提供 Swagger UI。
+
+Standard 使用 EF Core 迁移：修改实体后运行 `.\scripts\EFMigrations.ps1 Init`。模板默认不包含 `SystemMod`，因此不会预置管理员账号。
+
+单元测试不会启动 Aspire：
+
+```pwsh
+dotnet test --project tests/UnitTest/UnitTest.csproj
+```
+
+需要 Docker/Podman 和真实服务时，再运行 `tests/ApiTest` 中标记为 `Integration` 的测试。
 
 ## 文档
 

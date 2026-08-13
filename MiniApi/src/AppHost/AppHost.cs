@@ -26,15 +26,14 @@ var database = builder
     .WithImageTag("18.1-alpine")
     .WithDataVolume()
     .AddDatabase(AppConst.Default, databaseName: defaultName);
-_ = aspireSetting.CacheType?.ToLowerInvariant() switch
+if (aspireSetting.UsesRedis)
 {
-    "memory" => null,
-    _ => cache = builder
+    cache = builder
         .AddRedis("Cache", password: devPassword, port: aspireSetting.CachePort)
         .WithImageTag("8.2-alpine")
         .WithDataVolume()
-        .WithPersistence(interval: TimeSpan.FromMinutes(5)),
-};
+        .WithPersistence(interval: TimeSpan.FromMinutes(5));
+}
 
 devPassword.WithParentRelationship(infrastructureGroup);
 database.WithParentRelationship(infrastructureGroup);
@@ -45,6 +44,7 @@ cache?.WithParentRelationship(infrastructureGroup);
 #region services
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var apiService = builder.AddProject<Projects.ApiService>("ApiService")
+    .WithEnvironment("Components__Cache", aspireSetting.CacheType)
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first

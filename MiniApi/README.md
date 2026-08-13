@@ -41,11 +41,13 @@ MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量�
 
 ## 项目运行
 
-项目基于 `Aspire`，直接运行 `AppHost` 项目即可启动 PostgreSQL、缓存和 `ApiService`。
+项目基于 `Aspire`，使用 Aspire CLI 启动 AppHost 即可启动 PostgreSQL、按配置选择的 Redis 和 `ApiService`。
 
-如使用`dotnet run  --project .\src\AppHost\AppHost.csproj`.
+```pwsh
+aspire start --non-interactive
+```
 
-或者使用 `aspire run` 命令运行。
+默认不包含数据库迁移服务，也不启动 Angular 前端。OpenAPI JSON 默认位于 `/openapi/v1.json`。
 
 ## AOT 与数据访问
 
@@ -56,6 +58,14 @@ MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量�
 - OpenAPI 文档地址为 `/openapi/v1.json`，服务项目与共享模型项目默认生成 XML 文档，XML 注释会由 `Microsoft.AspNetCore.OpenApi` 源生成器写入 OpenAPI 文档。Endpoint handler 应使用 public static typed Minimal API 方法，避免 `RequestDelegate` 风格导致 OpenAPI 无法描述接口。
 - 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用 `DbContextOptions<TContext>` 和 `options.UseNpgsql(connectionString)` 的注册方式。新增实体后，在 `src/Definition/EntityFramework/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
 - `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
+
+单元测试不会启动 Aspire：
+
+```pwsh
+dotnet test --project tests/UnitTest/UnitTest.csproj
+```
+
+需要 Docker/Podman 和真实服务时，再运行 `tests/ApiTest` 中标记为 `Integration` 的测试。
 
 ## 文档
 

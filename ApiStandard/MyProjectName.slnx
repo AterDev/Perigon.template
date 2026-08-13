@@ -35,5 +35,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/ApiTest/ApiTest.csproj" Id="76a6ee38-e083-4d7a-a1f4-5f490942d94b" />
+    <Project Path="tests/UnitTest/UnitTest.csproj" />
   </Folder>
 </Solution>

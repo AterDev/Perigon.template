@@ -4,7 +4,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <UserSecretsId>a56db14e-ae84-4411-a0ab-6e8f2896f1c2</UserSecretsId>
+        <UserSecretsId>9b1d6f21-0b5f-4a9e-9e3a-2f33a05d5f2d</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Npgsql" />

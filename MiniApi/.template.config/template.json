@@ -58,6 +58,16 @@
       ],
       "defaultValue": "None",
       "description": "Select a Frontend framework"
+    },
+    "appHostUserSecretsId": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "9b1d6f21-0b5f-4a9e-9e3a-2f33a05d5f2d"
+    },
+    "serviceUserSecretsId": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "4c7b2d64-0f27-42bb-8d0f-6f3ddf6ed6e5"
     }
   }
 }

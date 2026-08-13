@@ -6,8 +6,8 @@
 
 ## 要求
 
-- .NET 10.0 SDK 或更高版本
-- Aspire 13.0 或更高版本
+- .NET 10.0 SDK（建议 10.0.103 或兼容的 .NET 10 SDK）
+- Aspire CLI/SDK 13.4.6（与模板包 1.3.12 对应）
 
 ## 文档
 
@@ -22,17 +22,17 @@
 
 ## 使用Nuget安装
 
-模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.template)上，请根据你的项目版本下载对应的模板。
+模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.templates)上，请根据你的项目版本下载对应的模板。
 
 ```pwsh
-dotnet new --install Perigon.templates 
+dotnet new install Perigon.templates --version 1.3.12
 ```
 
 ## 模板说明
 
 当前仓库提供两套可选模板：
 
-- `MiniApi`：面向轻量接口服务，优先采用 Minimal API、NativeAOT、Request Delegate Generator 与 `Perigon.PostgreSQL`，适合高性能、低资源开销、对 AI 工具友好的后端服务。
+- `MiniApi`：面向轻量接口服务，优先采用 Minimal API、NativeAOT、Request Delegate Generator 与 `Perigon.PostgreSQL`，适合高性能、低资源开销、对 AI 工具友好的后端服务。模板短名称为 `perigon-miniapi`。
 - `ApiStandard`：面向传统 Web API 场景，基于 ASP.NET Core Web API、EF Core 与 Aspire，适合需要标准 MVC/Web API 生态、模块化组织和更传统开发方式的项目。
 
 ## MiniApi 模板的作用与使用场景
@@ -51,7 +51,7 @@ MiniApi 模板适合以下场景：
 ### 创建 MiniApi 模板
 
 ```pwsh
-dotnet new perigon-minapi -n MyMiniApi
+dotnet new perigon-miniapi -n MyMiniApi
 ```
 
 ### 创建 ApiStandard 模板
@@ -63,27 +63,28 @@ dotnet new perigon-webapi -n MyWebApi
 如果你想指定模板名称并直接生成到当前目录，也可以这样：
 
 ```pwsh
-dotnet new perigon-minapi -n <projectname>
+dotnet new perigon-miniapi -n <projectname>
 dotnet new perigon-webapi -n <projectname>
 ```
 
 ## 数据库
 
-模板默认支持`PostgreSQL`和`SqlServer`，你可以在`AppHost`项目的`appsettings.json`中进行选择。
+- `ApiStandard` 支持在 AppHost 的 `Components:Database` 中选择 `PostgreSQL` 或 `SqlServer`。
+- `MiniApi` 固定使用 PostgreSQL，数据访问通过 `Perigon.PostgreSQL` 提供。
 
 ## 数据迁移
 
-可直接运行`scripts\EFMigrations.ps1`脚本生成迁移内容，程序在启动时会执行迁移。
+`ApiStandard` 使用 EF Core 和 `MigrationService`。修改实体后，在项目根目录运行
+`.\scripts\EFMigrations.ps1 Init` 生成迁移；AppHost 启动时会执行迁移。
 
-```pwsh
-cd scripts
-.\EFMigrations.ps1
-```
-
-该脚本提供一个参数，指定迁移生成时的名称，如`.\EFMigrations.ps1  Init` .
+`MiniApi` 不包含 `MigrationService`，也不要求运行迁移脚本；请按项目的 PostgreSQL 数据访问约定管理数据库变更。
 
 ## 运行项目
 
-直接运行`AppHost`项目即可。
+使用 Aspire CLI 启动 `AppHost`：
 
-默认管理账号：`admin@default.com/Perigon.2026`.
+```pwsh
+aspire start --non-interactive
+```
+
+模板默认不包含 `SystemMod`，因此不会预置可登录的管理员账号。安装模块后请按模块文档初始化账号，不要把示例凭据带入生产环境。

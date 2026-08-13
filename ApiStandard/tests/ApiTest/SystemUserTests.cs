@@ -6,6 +6,7 @@ public class SystemUserTests
 {
     [ClassDataSource<TestHttpClientData>(Shared = SharedType.PerTestSession)]
     [Test]
+    [Category("Integration")]
     public async Task GetUserInfo_ShouldReturnUserDetails(TestHttpClientData httpClientData)
     {
         //var httpClient = httpClientData.HttpClient;

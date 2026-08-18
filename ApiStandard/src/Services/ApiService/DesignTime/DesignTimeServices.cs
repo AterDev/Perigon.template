@@ -1,21 +1,18 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MigrationService.DesignTime;
+namespace ApiService.DesignTime;
 
 public class DesignTimeServices : IDesignTimeServices
 {
     public void ConfigureDesignTimeServices(IServiceCollection services)
     {
-        Console.WriteLine("DesignTimeServices.ConfigureDesignTimeServices invoked (MigrationService)");
+        Console.WriteLine("DesignTimeServices.ConfigureDesignTimeServices invoked (ApiService)");
         try
         {
-            IServiceProvider tempProvider = null!;
-            tempProvider = services.BuildServiceProvider(validateScopes: false);
+            IServiceProvider tempProvider = services.BuildServiceProvider(validateScopes: false);
             using var scope = tempProvider.CreateScope();
-            IMigrationsModelDiffer? inner = null;
-
-            inner = scope.ServiceProvider.GetService<IMigrationsModelDiffer>();
+            IMigrationsModelDiffer? inner = scope.ServiceProvider.GetService<IMigrationsModelDiffer>();
             services.AddSingleton<IMigrationsModelDiffer>(sp =>
             {
                 var proxy = MigrationsModelDifferProxy.Create<IMigrationsModelDiffer>(inner!);

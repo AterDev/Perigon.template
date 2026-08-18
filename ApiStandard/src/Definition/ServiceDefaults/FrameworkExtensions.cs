@@ -1,3 +1,4 @@
+using EntityFramework.AppDbContext;
 using EntityFramework.AppDbFactory;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
@@ -81,11 +82,17 @@ public static class FrameworkExtensions
             switch (components.Database)
             {
                 case DatabaseType.SqlServer:
-                    builder.AddSqlServerDbContext<DefaultDbContext>(AppConst.Default);
+                    builder.AddSqlServerDbContext<DefaultDbContext>(
+                        AppConst.Default,
+                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding()
+                    );
                     break;
 
                 case DatabaseType.PostgreSql:
-                    builder.AddNpgsqlDbContext<DefaultDbContext>(AppConst.Default);
+                    builder.AddNpgsqlDbContext<DefaultDbContext>(
+                        AppConst.Default,
+                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding()
+                    );
                     break;
             }
             return builder;

@@ -14,11 +14,12 @@
         <PackageReference Include="Aspire.Hosting.Redis" />
         <PackageReference Include="Aspire.Hosting.SqlServer" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+        <PackageReference Include="Aspire.Hosting.EntityFrameworkCore" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" IsAspireProjectResource="false" />
         <ProjectReference Include="..\Services\AdminService\AdminService.csproj" />
         <ProjectReference Include="..\Services\ApiService\ApiService.csproj" />
-        <ProjectReference Include="..\Services\MigrationService\MigrationService.csproj" />
+        <ProjectReference Include="..\Definition\EntityFramework\EntityFramework.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 </Project>

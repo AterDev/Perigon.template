@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
-namespace MigrationService.DesignTime;
+namespace ApiService.DesignTime;
 
 internal class MigrationsModelDifferProxy : DispatchProxy
 {
@@ -36,7 +36,6 @@ internal class MigrationsModelDifferProxy : DispatchProxy
                 var list = enumOps.ToList();
                 var filtered = FilterOperations(list);
 
-                // match return type
                 var returnType = targetMethod.ReturnType;
                 if (returnType.IsAssignableFrom(filtered.GetType()))
                 {
@@ -71,7 +70,6 @@ internal class MigrationsModelDifferProxy : DispatchProxy
 
             var list = ops.ToList();
 
-            // 1. 识别所有包含 TenantId 的表
             var tablesWithTenantId = new HashSet<string>();
             foreach (var op in list.OfType<CreateTableOperation>())
             {
@@ -93,7 +91,7 @@ internal class MigrationsModelDifferProxy : DispatchProxy
             }
 
             var dbEnv = Environment.GetEnvironmentVariable("Components__Database") ?? "PostgreSQL";
-            dbEnv = dbEnv?.ToLowerInvariant() ?? string.Empty;
+            dbEnv = dbEnv.ToLowerInvariant();
             string uniqueFilter = dbEnv.Equals("postgresql") ? "\"IsDeleted\" = false"
                 : dbEnv.Equals("sqlserver") ? "[IsDeleted] = 0"
                 : "`IsDeleted` = 0";
@@ -106,7 +104,6 @@ internal class MigrationsModelDifferProxy : DispatchProxy
                 var op = list[idx];
                 if (op is CreateIndexOperation ci)
                 {
-                    // 2. 只处理那些属于多租户表的索引
                     if (!tablesWithTenantId.Contains(ci.Table))
                     {
                         continue;

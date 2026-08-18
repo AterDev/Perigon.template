@@ -12,7 +12,8 @@ param (
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $scriptRoot ".."))
 $appSettingsPath = Join-Path $repoRoot "src\AppHost\appsettings.Development.json"
-$migrationServicePath = Join-Path $repoRoot "src\Services\MigrationService"
+$apiServicePath = Join-Path $repoRoot "src\Services\ApiService"
+$apiServiceProjectPath = Join-Path $apiServicePath "ApiService.csproj"
 $entityFrameworkProjectPath = Join-Path $repoRoot "src\Definition\EntityFramework\EntityFramework.csproj"
 
 $toolManifestPath = @(
@@ -59,15 +60,19 @@ Write-Host "✅ Set environment variable 'Components__Database' to '$DatabaseTyp
 $env:Components__IsMultiTenant = $IsMultiTenant
 Write-Host "✅ Set environment variable 'Components__IsMultiTenant' to '$IsMultiTenant' for this session."
 
-if (-not (Test-Path $migrationServicePath)) {
-    throw "MigrationService path not found: $migrationServicePath"
+if (-not (Test-Path $apiServicePath)) {
+    throw "ApiService path not found: $apiServicePath"
+}
+
+if (-not (Test-Path $apiServiceProjectPath)) {
+    throw "ApiService project path not found: $apiServiceProjectPath"
 }
 
 if (-not (Test-Path $entityFrameworkProjectPath)) {
     throw "EntityFramework project path not found: $entityFrameworkProjectPath"
 }
 
-Push-Location $migrationServicePath
+Push-Location $apiServicePath
 try {
     if ([string]::IsNullOrWhiteSpace($Name)) {
         $Name = [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
@@ -75,10 +80,10 @@ try {
 
     dotnet build
     if ($Name -eq "Remove") {
-        dotnet ef migrations remove -c DefaultDbContext --no-build --project $entityFrameworkProjectPath
+        dotnet ef migrations remove -c DefaultDbContext --no-build --project $entityFrameworkProjectPath --startup-project $apiServiceProjectPath
     }
     else {
-        dotnet ef migrations add $Name -c DefaultDbContext --no-build --project $entityFrameworkProjectPath
+        dotnet ef migrations add $Name -c DefaultDbContext --no-build --project $entityFrameworkProjectPath --startup-project $apiServiceProjectPath
     }
 }
 finally {

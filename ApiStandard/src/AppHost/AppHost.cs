@@ -5,6 +5,7 @@ using Perigon.AspNetCore.Constants;
 var builder = DistributedApplication.CreateBuilder(args);
 var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
+var isMultiTenant = builder.Configuration["Components:IsMultiTenant"] ?? "false";
 
 IResourceBuilder<IResourceWithConnectionString>? database = null;
 IResourceBuilder<IResourceWithConnectionString>? cache = null;
@@ -57,21 +58,17 @@ database?.WithResetSchemaCommand();
 
 #region services
 var serviceGroup = builder.AddGroup("Services", "Globe");
-var migration = builder.AddProject<Projects.MigrationService>("MigrationService")
-    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
-    .WithParentRelationship(serviceGroup);
-
 var adminService = builder.AddProject<Projects.AdminService>("AdminService")
-    .WaitForCompletion(migration)
     .WithEnvironment("Components__Cache", aspireSetting.CacheType)
     .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
+    .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithParentRelationship(serviceGroup);
 
 var apiService = builder.AddProject<Projects.ApiService>("ApiService")
-    .WaitForCompletion(migration)
     .WithReference(adminService)
     .WithEnvironment("Components__Cache", aspireSetting.CacheType)
     .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
+    .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithParentRelationship(serviceGroup);
 
 // run frontend app, you should install npm packages first
@@ -83,7 +80,6 @@ var apiService = builder.AddProject<Projects.ApiService>("ApiService")
 
 if (database != null)
 {
-    migration.WithReference(database).WaitFor(database);
     apiService.WithReference(database);
     adminService.WithReference(database);
 }
@@ -92,6 +88,25 @@ if (cache != null)
     apiService.WithReference(cache);
     adminService.WithReference(cache);
 }
+
+var apiMigrations = apiService
+    .AddEFMigrations(
+        "ApiService-Migrations",
+        "EntityFramework.AppDbContext.DefaultDbContext"
+    )
+    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
+    .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
+    .WithMigrationsProject("..\\Definition\\EntityFramework\\EntityFramework.csproj")
+    .RunDatabaseUpdateOnStart()
+    .WithParentRelationship(serviceGroup);
+
+if (database != null)
+{
+    apiMigrations.WithReference(database).WaitFor(database);
+}
+
+apiService.WaitForCompletion(apiMigrations);
+adminService.WaitForCompletion(apiMigrations);
 # endregion
 
 builder.Build().Run();

@@ -1,6 +1,4 @@
 
-
-
 namespace EntityFramework.AppDbContext;
 
 /// <summary>

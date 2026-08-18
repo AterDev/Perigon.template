@@ -33,7 +33,6 @@ builder.Services.AddManagers();
 builder.AddModules();
 
 WebApplication app = builder.Build();
-
 app.MapDefaultEndpoints();
 
 // 使用中间件

@@ -36,9 +36,11 @@ src/
 │       ├── Managers/        # 业务逻辑层
 │       ├── Models/          # DTO 定义
 │       └── Services/        # 模块内服务（可选）
-└── Services/
-    ├── ApiService/          # 公共 API 与 EF Core 迁移启动项目
-    └── AdminService/        # 管理后台 API
+│── Services/
+│   ├── ApiService/          # 公共 API 与 EF Core 迁移启动项目
+│   └── AdminService/        # 管理后台 API
+│── Tools/                   # 工具项目
+└── ServiceClients/          # 生成的http请求客户端项目
 ```
 
 ## Reference routing

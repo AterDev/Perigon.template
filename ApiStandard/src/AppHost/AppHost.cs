@@ -1,8 +1,12 @@
 using AppHost;
+using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Kubernetes.Resources;
 using Perigon.AspNetCore.Constants;
+using YamlDotNet.Serialization;
 
 var builder = DistributedApplication.CreateBuilder(args);
+builder.AddKubernetesEnvironment("k8s");
 var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
 var isMultiTenant = builder.Configuration["Components:IsMultiTenant"] ?? "false";
@@ -98,6 +102,24 @@ var apiMigrations = apiService
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithMigrationsProject("..\\Definition\\EntityFramework\\EntityFramework.csproj")
     .RunDatabaseUpdateOnStart()
+    .PublishAsMigrationBundle(publishContainer: true)
+    .PublishAsKubernetesService(resource =>
+    {
+        if (resource.Workload is Deployment deployment)
+        {
+            // Migration bundles are finite workloads. Replace Aspire's default Deployment
+            // with a Job so Kubernetes does not recreate a completed migration container.
+            deployment.PodTemplate.Spec.RestartPolicy = "OnFailure";
+            resource.Workload = new MigrationJob
+            {
+                Metadata = deployment.Metadata,
+                Spec = new MigrationJobSpec
+                {
+                    Template = deployment.Spec.Template
+                }
+            };
+        }
+    })
     .WithParentRelationship(serviceGroup);
 
 if (database != null)
@@ -110,3 +132,27 @@ adminService.WaitForCompletion(apiMigrations);
 # endregion
 
 builder.Build().Run();
+
+[YamlSerializable]
+internal sealed class MigrationJob : Workload
+{
+    public MigrationJob()
+        : base("batch/v1", "Job")
+    {
+    }
+
+    [YamlMember(Alias = "spec")]
+    public MigrationJobSpec Spec { get; set; } = new();
+
+    public override PodTemplateSpecV1 PodTemplate => Spec.Template;
+}
+
+[YamlSerializable]
+internal sealed class MigrationJobSpec
+{
+    [YamlMember(Alias = "template")]
+    public PodTemplateSpecV1 Template { get; set; } = new();
+
+    [YamlMember(Alias = "backoffLimit")]
+    public int BackoffLimit { get; set; } = 1;
+}

@@ -15,6 +15,7 @@
         <PackageReference Include="Aspire.Hosting.SqlServer" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
         <PackageReference Include="Aspire.Hosting.EntityFrameworkCore" />
+        <PackageReference Include="Aspire.Hosting.Kubernetes" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" IsAspireProjectResource="false" />

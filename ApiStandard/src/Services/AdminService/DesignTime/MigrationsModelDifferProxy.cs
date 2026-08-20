@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
-namespace ApiService.DesignTime;
+namespace AdminService.DesignTime;
 
 internal class MigrationsModelDifferProxy : DispatchProxy
 {

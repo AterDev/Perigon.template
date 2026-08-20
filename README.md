@@ -74,10 +74,11 @@ dotnet new perigon-webapi -n <projectname>
 
 ## 数据迁移
 
-`ApiStandard` 使用 EF Core 和 `MigrationService`。修改实体后，在项目根目录运行
-`.\scripts\EFMigrations.ps1 Init` 生成迁移；AppHost 启动时会执行迁移。
+`ApiStandard` 使用 EF Core 和 Aspire `AddEFMigrations`。修改实体后，在
+`ApiStandard` 目录运行 `.\scripts\EFMigrations.ps1 Init` 生成迁移；EF CLI 使用默认的
+`AdminService` 作为启动项目，AppHost 启动或发布的 Kubernetes Job 会执行迁移。
 
-`MiniApi` 不包含 `MigrationService`，也不要求运行迁移脚本；请按项目的 PostgreSQL 数据访问约定管理数据库变更。
+`MiniApi` 不包含 EF Core 迁移服务，也不要求运行该迁移脚本；请按项目的 PostgreSQL 数据访问约定管理数据库变更。
 
 ## 运行项目
 

@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ApiService.DesignTime;
+namespace AdminService.DesignTime;
 
 public class DesignTimeServices : IDesignTimeServices
 {
     public void ConfigureDesignTimeServices(IServiceCollection services)
     {
-        Console.WriteLine("DesignTimeServices.ConfigureDesignTimeServices invoked (ApiService)");
+        Console.WriteLine("DesignTimeServices.ConfigureDesignTimeServices invoked (AdminService)");
         try
         {
             IServiceProvider tempProvider = services.BuildServiceProvider(validateScopes: false);

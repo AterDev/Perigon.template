@@ -92,9 +92,9 @@ if (cache != null)
     adminService.WithReference(cache);
 }
 
-var apiMigrations = apiService
+var adminMigrations = adminService
     .AddEFMigrations(
-        "ApiService-Migrations",
+        "AdminService-Migrations",
         "EntityFramework.AppDbContext.DefaultDbContext"
     )
     .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
@@ -120,7 +120,7 @@ var apiMigrations = apiService
             }
         };
 
-        job.Metadata.Name = "apiservice-migrations-job";
+        job.Metadata.Name = "adminservice-migrations-job";
         job.Metadata.Annotations["argocd.argoproj.io/hook"] = "Sync";
         job.Metadata.Annotations["argocd.argoproj.io/sync-wave"] = "-1";
         job.Metadata.Annotations["argocd.argoproj.io/hook-delete-policy"] =
@@ -136,11 +136,11 @@ var apiMigrations = apiService
 
 if (database != null)
 {
-    apiMigrations.WithReference(database).WaitFor(database);
+    adminMigrations.WithReference(database).WaitFor(database);
 }
 
-apiService.WaitForCompletion(apiMigrations);
-adminService.WaitForCompletion(apiMigrations);
+apiService.WaitForCompletion(adminMigrations);
+adminService.WaitForCompletion(adminMigrations);
 # endregion
 
 builder.Build().Run();

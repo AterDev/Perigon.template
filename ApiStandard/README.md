@@ -35,7 +35,7 @@ aspire start --non-interactive
 
 Standard 的 OpenAPI JSON 默认位于 `/swagger/v1/swagger.json`，模板不默认提供 Swagger UI。
 
-Standard 使用 Aspire 的 `AddEFMigrations` 管理 EF Core 迁移：`AdminService` 负责 EF CLI 的设计时启动，迁移文件位于 `Definition/EntityFramework`；AppHost 本地启动时会先应用 `DefaultDbContext` 的待处理迁移，再启动 API 与后台服务，发布到 Kubernetes 时使用一次性 Job 执行迁移。默认系统租户通过 `DefaultDbContext` 的 `UseSeeding`/`UseAsyncSeeding` 在迁移后幂等初始化；该全局租户不会设置 `TenantId`。修改实体后运行 `.\scripts\EFMigrations.ps1 Init` 生成迁移。模板默认不包含 `SystemMod`，因此不会预置管理员账号。
+Standard 使用 Aspire 的 `AddEFMigrations` 管理 EF Core 迁移：`AdminService` 提供 EF CLI 必需的设计时启动适配入口，具体的迁移定制实现位于 `Definition/EntityFramework/DesignTime`，迁移文件位于 `Definition/EntityFramework`；AppHost 本地启动时会先应用 `DefaultDbContext` 的待处理迁移，再启动 API 与后台服务，发布到 Kubernetes 时使用一次性 Job 执行迁移。默认系统租户通过 `DefaultDbContext` 的 `UseSeeding`/`UseAsyncSeeding` 在迁移后幂等初始化；该全局租户不会设置 `TenantId`。修改实体后运行 `.\scripts\EFMigrations.ps1 Init` 生成迁移。模板默认不包含 `SystemMod`，因此不会预置管理员账号。
 
 单元测试不会启动 Aspire：
 

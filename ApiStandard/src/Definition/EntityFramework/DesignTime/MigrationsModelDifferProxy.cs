@@ -1,7 +1,8 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Perigon.AspNetCore.Constants;
 
-namespace AdminService.DesignTime;
+namespace EntityFramework.DesignTime;
 
 internal class MigrationsModelDifferProxy : DispatchProxy
 {

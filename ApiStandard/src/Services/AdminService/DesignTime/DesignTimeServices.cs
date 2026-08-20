@@ -1,27 +1,14 @@
+using EntityFramework.DesignTime;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AdminService.DesignTime;
 
-public class DesignTimeServices : IDesignTimeServices
+// EF Core discovers IDesignTimeServices from the startup assembly. Keep this adapter here;
+// the actual migration customization lives with the DbContext in EntityFramework.
+public sealed class DesignTimeServices : IDesignTimeServices
 {
     public void ConfigureDesignTimeServices(IServiceCollection services)
     {
-        Console.WriteLine("DesignTimeServices.ConfigureDesignTimeServices invoked (AdminService)");
-        try
-        {
-            IServiceProvider tempProvider = services.BuildServiceProvider(validateScopes: false);
-            using var scope = tempProvider.CreateScope();
-            IMigrationsModelDiffer? inner = scope.ServiceProvider.GetService<IMigrationsModelDiffer>();
-            services.AddSingleton<IMigrationsModelDiffer>(sp =>
-            {
-                var proxy = MigrationsModelDifferProxy.Create<IMigrationsModelDiffer>(inner!);
-                return proxy;
-            });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("DesignTimeServices: exception while registering proxy: " + ex.Message);
-        }
+        EntityFrameworkDesignTimeServices.Configure(services);
     }
 }

@@ -1,11 +1,23 @@
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EntityFramework.AppDbContext;
 
 public abstract class ContextBase(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Tenant> Tenants { get; set; }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Conventions.Add(serviceProvider =>
+            new TenantIndexConvention(
+                serviceProvider.GetRequiredService<IDatabaseProvider>().Name
+            )
+        );
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

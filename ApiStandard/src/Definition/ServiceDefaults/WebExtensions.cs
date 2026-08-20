@@ -96,14 +96,9 @@ public static class WebExtensions
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseAuthentication();
 
-        // tenant resolution should be after authentication, because it needs tenant id from user context which is set in authentication middleware
-        var componentOption = app.Configuration
-            .GetSection(ComponentOption.ConfigPath)
-            .Get<ComponentOption>();
-        if (componentOption?.IsMultiTenant == true)
-        {
-            app.UseMiddleware<TenantResolutionMiddleware>();
-        }
+        // Tenant resolution is always enabled. Single-tenant deployments use the seeded
+        // default tenant, while multi-tenant deployments may resolve a tenant-specific database.
+        app.UseMiddleware<TenantResolutionMiddleware>();
         app.UseAuthorization();
         app.MapControllers();
         return app;
@@ -419,10 +414,15 @@ public static class WebExtensions
     {
         services
             .AddAuthorizationBuilder()
-            .AddPolicy(WebConst.Default, policy => policy.RequireAuthenticatedUser())
+            .AddPolicy(
+                WebConst.Default,
+                policy => policy.RequireAuthenticatedUser().RequireClaim(CustomClaimTypes.TenantId)
+            )
             .AddPolicy(
                 WebConst.User,
-                policy => policy.RequireRole(WebConst.User, WebConst.AdminUser, WebConst.SuperAdmin)
+                policy => policy
+                    .RequireClaim(CustomClaimTypes.TenantId)
+                    .RequireRole(WebConst.User, WebConst.AdminUser, WebConst.SuperAdmin)
             );
 
         return services;

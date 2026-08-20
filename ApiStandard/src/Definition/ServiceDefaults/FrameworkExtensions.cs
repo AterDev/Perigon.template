@@ -2,6 +2,7 @@ using EntityFramework.AppDbContext;
 using EntityFramework.AppDbFactory;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using Perigon.AspNetCore.Abstraction;
@@ -24,6 +25,7 @@ public static class FrameworkExtensions
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContext, UserContext>();
+            builder.Services.AddTransient<IClaimsTransformation, LocalUserClaimsTransformation>();
 
             var components = builder.Configuration.GetSection(ComponentOption.ConfigPath)
                 .Get<ComponentOption>() ?? new ComponentOption();

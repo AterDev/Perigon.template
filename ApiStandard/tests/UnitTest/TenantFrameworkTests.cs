@@ -91,6 +91,33 @@ public sealed class TenantFrameworkTests
 
     [Test]
     [Category("Unit")]
+    public async Task AnalysisDbContext_WhenSavingTenantCatalog_AllowsWriteAndQuery()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync();
+
+        var options = new DbContextOptionsBuilder<AnalysisDbContext>()
+            .UseSqlite(connection)
+            .Options;
+        await using var context = new AnalysisDbContext(options);
+        await context.Database.EnsureCreatedAsync();
+
+        var tenant = new Tenant
+        {
+            Domain = "analysis-test.example",
+            Name = "Analysis Test",
+        };
+        context.Tenants.Add(tenant);
+        await context.SaveChangesAsync();
+
+        var loadedTenant = await context.Tenants.SingleAsync(item => item.Id == tenant.Id);
+
+        await Assert.That(loadedTenant.Id).IsEqualTo(tenant.Id);
+        await Assert.That(loadedTenant.Name).IsEqualTo("Analysis Test");
+    }
+
+    [Test]
+    [Category("Unit")]
     public async Task TenantContext_WhenTenantIdIsMissing_CanSaveAndQueryTenantCatalog()
     {
         await using var connection = new SqliteConnection("Data Source=:memory:");

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.ComponentModel.DataAnnotations.Schema;
 using Entity;
 using EntityFramework.AppDbContext;
+using EntityFramework.AppDbFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.Extensions.Configuration;
 using Perigon.AspNetCore.Abstraction;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Perigon.AspNetCore.Constants;
 using Perigon.AspNetCore.Options;
@@ -84,6 +87,34 @@ public sealed class TenantFrameworkTests
         await Assert.That(tenant).IsNotNull();
         await Assert.That(tenant!.Id).IsNotEqualTo(Guid.Empty);
         await Assert.That(tenant.Name).IsEqualTo(AppConst.Default);
+    }
+
+    [Test]
+    [Category("Unit")]
+    public async Task TenantContext_WhenTenantIdIsMissing_CanSaveAndQueryTenantCatalog()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync();
+
+        var options = new DbContextOptionsBuilder<DefaultDbContext>()
+            .UseSqlite(connection)
+            .Options;
+        await using var context = new DefaultDbContext(options);
+        await context.Database.EnsureCreatedAsync();
+
+        var tenant = new Tenant
+        {
+            Domain = "catalog-test.example",
+            Name = "Catalog Test",
+        };
+        context.Tenants.Add(tenant);
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var loadedTenant = await context.Tenants.SingleAsync(item => item.Id == tenant.Id);
+
+        await Assert.That(loadedTenant.Id).IsEqualTo(tenant.Id);
+        await Assert.That(loadedTenant.TenantId).IsEqualTo(Guid.Empty);
     }
 
     [Test]
@@ -229,6 +260,45 @@ public sealed class TenantFrameworkTests
         }
     }
 
+    [Test]
+    [Category("Unit")]
+    public async Task TenantManager_WhenTenantIdIsMissing_DoesNotRequireTenantContext()
+    {
+        var userContext = new TestUserContext();
+
+        var manager = new TenantManager(
+            CreateAppDbFactory(),
+            userContext,
+            NullLogger<TenantManager>.Instance
+        );
+
+        await Assert.That(manager).IsNotNull();
+    }
+
+    [Test]
+    [Category("Unit")]
+    public async Task TenantScopedManager_WhenTenantIdIsMissing_ThrowsImmediately()
+    {
+        var userContext = new TestUserContext();
+        Exception? exception = null;
+
+        try
+        {
+            _ = new TenantFrameworkTestEntityManager(
+                CreateAppDbFactory(),
+                userContext,
+                NullLogger<TenantFrameworkTestEntityManager>.Instance
+            );
+        }
+        catch (Exception caught)
+        {
+            exception = caught;
+        }
+
+        await Assert.That(exception).IsTypeOf<InvalidOperationException>();
+        await Assert.That(exception!.Message).Contains("TenantId");
+    }
+
     private static ConventionTestDbContext CreateConventionContext()
     {
         var options = new DbContextOptionsBuilder<ConventionTestDbContext>()
@@ -246,6 +316,63 @@ public sealed class TenantFrameworkTests
             .UseSqlite(connection)
             .Options;
         return new ConventionTestDbContext(options, tenantId);
+    }
+
+    private static AppDbFactory CreateAppDbFactory()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(
+                new Dictionary<string, string?>
+                {
+                    [$"ConnectionStrings:{AppConst.Default}"] =
+                        "Host=localhost;Database=tenant-framework-tests;Username=test;Password=test",
+                }
+            )
+            .Build();
+
+        return new AppDbFactory(
+            Options.Create(new ComponentOption { Database = DatabaseType.PostgreSql }),
+            cache: null!,
+            configuration
+        );
+    }
+
+    private sealed class TestUserContext : IUserContext
+    {
+        public Guid UserId => Guid.Empty;
+        public Guid? GroupId => null;
+        public Guid TenantId { get; set; }
+        public string? TenantType { get; set; }
+        public string? UserName => null;
+        public string? Email => null;
+        public bool IsAdmin => false;
+        public string? CurrentRole => null;
+        public IReadOnlyList<string>? Roles => [];
+        public HttpContext? HttpContext { get; set; }
+
+        public bool IsRole(string roleName) => false;
+    }
+
+    private sealed class TenantManager(
+        AppDbFactory dbContextFactory,
+        IUserContext userContext,
+        Microsoft.Extensions.Logging.ILogger logger
+    ) : ManagerBase<DefaultDbContext, Tenant>(dbContextFactory, userContext, logger)
+    {
+        public override Task<bool> HasPermissionAsync(Guid id) => Task.FromResult(true);
+    }
+
+    private sealed class TenantFrameworkTestEntityManager(
+        AppDbFactory dbContextFactory,
+        IUserContext userContext,
+        Microsoft.Extensions.Logging.ILogger logger
+    ) : ManagerBase<DefaultDbContext, TenantFrameworkTestEntity>(
+        dbContextFactory,
+        userContext,
+        logger
+    )
+    {
+        public override Task<bool> HasPermissionAsync(Guid id) => Task.FromResult(true);
     }
 }
 

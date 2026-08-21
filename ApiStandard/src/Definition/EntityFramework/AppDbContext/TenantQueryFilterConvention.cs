@@ -36,7 +36,7 @@ internal sealed class TenantQueryFilterConvention(ContextBase dbContext) : IMode
             // Tenant is the root catalog and must remain visible to the middleware,
             // claims transformation, and migration seeding code.
             if (
-                typeof(Tenant).IsAssignableFrom(entityType.ClrType)
+                entityType.ClrType == typeof(Tenant)
                 || !typeof(ITenantEntityBase).IsAssignableFrom(entityType.ClrType)
             )
             {

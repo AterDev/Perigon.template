@@ -28,7 +28,7 @@ public class AppDbFactory(IOptions<ComponentOption> options, CacheService cache,
                 break;
         }
         var context = new DefaultDbContext(builder.Options);
-        context.SetTenantId(NormalizeTenantId(tenantId));
+        context.SetTenantId(tenantId);
         return context;
     }
 
@@ -51,7 +51,7 @@ public class AppDbFactory(IOptions<ComponentOption> options, CacheService cache,
                 break;
         }
         var context = new AnalysisDbContext(builder.Options);
-        context.SetTenantId(NormalizeTenantId(tenantId));
+        context.SetTenantId(tenantId);
         return context;
     }
 
@@ -82,10 +82,5 @@ public class AppDbFactory(IOptions<ComponentOption> options, CacheService cache,
         var tenantDbConnectionString = tenant.DbConnectionString ?? defaultConnectionString;
         var tenantAnalysisConnectionString = tenant.AnalysisConnectionString ?? defaultAnalysisConnectionString;
         return (tenantDbConnectionString, tenantAnalysisConnectionString);
-    }
-
-    private static Guid? NormalizeTenantId(Guid? tenantId)
-    {
-        return tenantId is { } value && value != Guid.Empty ? value : null;
     }
 }

@@ -19,7 +19,7 @@ IResourceBuilder<IResourceWithConnectionString>? cache = null;
 // qdrant = builder.AddConnectionString("qdrant");
 
 #region infrastructure
-var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
+var defaultName = isTesting ? "MyProjectNameTest" : "MyProjectNameDev";
 var devPassword = builder.AddParameter(
     "dev-password",
     value: aspireSetting.DevPassword,
@@ -93,10 +93,7 @@ if (cache != null)
 }
 
 var adminMigrations = adminService
-    .AddEFMigrations(
-        "AdminService-Migrations",
-        "EntityFramework.AppDbContext.DefaultDbContext"
-    )
+    .AddEFMigrations("AdminService-Migrations", "EntityFramework.AppDbContext.DefaultDbContext")
     .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithMigrationsProject("..\\Definition\\EntityFramework\\EntityFramework.csproj")

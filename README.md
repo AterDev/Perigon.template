@@ -7,7 +7,7 @@
 ## 要求
 
 - .NET 10.0 SDK（建议 10.0.103 或兼容的 .NET 10 SDK）
-- Aspire CLI/SDK 13.4.6（与模板包 1.3.12 对应）
+- Aspire CLI/SDK 13.5.0（与模板包 1.3.13 对应）
 
 ## 文档
 
@@ -25,7 +25,7 @@
 模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.templates)上，请根据你的项目版本下载对应的模板。
 
 ```pwsh
-dotnet new install Perigon.templates --version 1.3.12
+dotnet new install Perigon.templates --version 1.3.13
 ```
 
 ## 模板说明
@@ -74,10 +74,11 @@ dotnet new perigon-webapi -n <projectname>
 
 ## 数据迁移
 
-`ApiStandard` 使用 EF Core 和 `MigrationService`。修改实体后，在项目根目录运行
-`.\scripts\EFMigrations.ps1 Init` 生成迁移；AppHost 启动时会执行迁移。
+`ApiStandard` 使用 EF Core 和 Aspire `AddEFMigrations`。修改实体后，在
+`ApiStandard` 目录运行 `.\scripts\EFMigrations.ps1 Init` 生成迁移；EF CLI 使用默认的
+`AdminService` 作为启动项目，AppHost 启动或发布的 Kubernetes Job 会执行迁移。
 
-`MiniApi` 不包含 `MigrationService`，也不要求运行迁移脚本；请按项目的 PostgreSQL 数据访问约定管理数据库变更。
+`MiniApi` 不包含 EF Core 迁移服务，也不要求运行该迁移脚本；请按项目的 PostgreSQL 数据访问约定管理数据库变更。
 
 ## 运行项目
 

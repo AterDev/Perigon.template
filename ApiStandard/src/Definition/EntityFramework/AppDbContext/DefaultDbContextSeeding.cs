@@ -4,6 +4,8 @@ namespace EntityFramework.AppDbContext;
 
 public static class DefaultDbContextSeeding
 {
+    public const string DefaultTenantDomain = "default.com";
+
     public static DbContextOptionsBuilder UseDefaultDbContextSeeding(
         this DbContextOptionsBuilder optionsBuilder
     )
@@ -17,11 +19,17 @@ public static class DefaultDbContextSeeding
 
     private static void SeedDefaultTenant(DbContext context)
     {
-        const string domain = "default.com";
-
         var tenants = context.Set<Tenant>();
-        if (tenants.IgnoreQueryFilters().Any(t => t.Domain == domain))
+        var defaultTenant = tenants
+            .IgnoreQueryFilters([ContextBase.SoftDeletionFilterName])
+            .SingleOrDefault(t => t.Domain == DefaultTenantDomain);
+        if (defaultTenant is not null)
         {
+            if (defaultTenant.IsDeleted)
+            {
+                defaultTenant.IsDeleted = false;
+                context.SaveChanges();
+            }
             return;
         }
 
@@ -29,7 +37,7 @@ public static class DefaultDbContextSeeding
         // Tenant.TenantId, so this seed must not assign a tenant id to the entity.
         tenants.Add(new Tenant
         {
-            Domain = domain,
+            Domain = DefaultTenantDomain,
             Name = AppConst.Default,
             Description = "This is default tenant, created by system.",
         });
@@ -42,22 +50,24 @@ public static class DefaultDbContextSeeding
         CancellationToken cancellationToken
     )
     {
-        const string domain = "default.com";
-
         var tenants = context.Set<Tenant>();
-        if (
-            await tenants
-                .IgnoreQueryFilters()
-                .AnyAsync(t => t.Domain == domain, cancellationToken)
-        )
+        var defaultTenant = await tenants
+            .IgnoreQueryFilters([ContextBase.SoftDeletionFilterName])
+            .SingleOrDefaultAsync(t => t.Domain == DefaultTenantDomain, cancellationToken);
+        if (defaultTenant is not null)
         {
+            if (defaultTenant.IsDeleted)
+            {
+                defaultTenant.IsDeleted = false;
+                await context.SaveChangesAsync(cancellationToken);
+            }
             return;
         }
 
         // Keep the async path equivalent to the synchronous path used by EF tooling.
         tenants.Add(new Tenant
         {
-            Domain = domain,
+            Domain = DefaultTenantDomain,
             Name = AppConst.Default,
             Description = "This is default tenant, created by system.",
         });

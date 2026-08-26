@@ -9,10 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="TUnit" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Definition\EntityFramework\EntityFramework.csproj" />
+    <ProjectReference Include="..\..\src\Definition\ServiceDefaults\ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\src\Definition\Share\Share.csproj" />
     <ProjectReference Include="..\..\src\Perigon\Perigon.AspNetCore.Toolkit\Perigon.AspNetCore.Toolkit.csproj" />
   </ItemGroup>
 </Project>

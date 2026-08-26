@@ -15,14 +15,18 @@ builder
         WebConst.AdminUser,
         policy =>
         {
-            policy.RequireRole(WebConst.AdminUser, WebConst.SuperAdmin);
+            policy
+                .RequireClaim(CustomClaimTypes.TenantId)
+                .RequireRole(WebConst.AdminUser, WebConst.SuperAdmin);
         }
     )
     .AddPolicy(
         WebConst.SuperAdmin,
         policy =>
         {
-            policy.RequireRole(WebConst.SuperAdmin);
+            policy
+                .RequireClaim(CustomClaimTypes.TenantId)
+                .RequireRole(WebConst.SuperAdmin);
         }
     );
 

@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using Entity;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Perigon.AspNetCore.Services;
 
 namespace ServiceDefaults;
@@ -14,30 +16,72 @@ public class LocalUserClaimsTransformation(DefaultDbContext context, CacheServic
             return principal;
         }
 
-        if (identity.HasClaim(claim => claim.Type == ClaimTypes.Role))
+        var tenant = await ResolveTenantAsync(identity);
+        if (tenant is not null)
         {
-            return principal;
+            ReplaceTenantClaims(identity, tenant);
         }
 
         var userIdentity = FindUserIdentity(principal);
-        if (string.IsNullOrWhiteSpace(userIdentity))
+        if (!string.IsNullOrWhiteSpace(userIdentity)
+            && !identity.HasClaim(claim => claim.Type == ClaimTypes.Role))
         {
-            return principal;
+            var cacheKey = $"local-user-info:{userIdentity}";
+
+            // the sample of get user roles from local system, you can replace this with your own implementation, such as query from database or call external service.
+            var roles = await cache.GetOrCreateAsync(
+                cacheKey,
+                cancellation => new ValueTask<string[]>(
+                    QueryRolesFromLocalSystemAsync(userIdentity, cancellation)
+                )
+            );
+
+            identity.AddClaims(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         }
 
-        var cacheKey = $"local-user-info:{userIdentity}";
-
-        // the sample of get user roles from local system, you can replace it with your own implementation, such as query from database or call external service.
-        var roles = await cache.GetOrCreateAsync(
-            cacheKey,
-            cancellation => new ValueTask<string[]>(
-                QueryRolesFromLocalSystemAsync(userIdentity, cancellation)
-            )
-        );
-
-        identity.AddClaims(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
         return principal;
+    }
+
+    private async Task<Tenant?> ResolveTenantAsync(ClaimsIdentity identity)
+    {
+        var tenantIdValue = identity.FindFirst(CustomClaimTypes.TenantId)?.Value;
+        if (tenantIdValue is not null)
+        {
+            return Guid.TryParse(tenantIdValue, out var tenantId) && tenantId != Guid.Empty
+                ? await context.Tenants
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(t => t.Id == tenantId)
+                : null;
+        }
+
+        var tenant = await context.Tenants
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Domain == DefaultDbContextSeeding.DefaultTenantDomain);
+
+        return tenant
+            ?? throw new InvalidOperationException(
+                "The default tenant is not initialized. Apply the database migrations and seed data before authenticating users."
+            );
+    }
+
+    private static void ReplaceTenantClaims(ClaimsIdentity identity, Tenant tenant)
+    {
+        foreach (var claimType in new[]
+        {
+            CustomClaimTypes.TenantId,
+            CustomClaimTypes.TenantType,
+            CustomClaimTypes.TenantName,
+        })
+        {
+            foreach (var claim in identity.FindAll(claimType).ToArray())
+            {
+                identity.RemoveClaim(claim);
+            }
+        }
+
+        identity.AddClaim(new Claim(CustomClaimTypes.TenantId, tenant.Id.ToString()));
+        identity.AddClaim(new Claim(CustomClaimTypes.TenantType, tenant.Type.ToString()));
+        identity.AddClaim(new Claim(CustomClaimTypes.TenantName, tenant.Name));
     }
 
     /// <summary>

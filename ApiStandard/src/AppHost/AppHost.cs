@@ -3,7 +3,6 @@ using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Kubernetes.Resources;
 using Perigon.AspNetCore.Constants;
-using YamlDotNet.Serialization;
 
 var builder = DistributedApplication.CreateBuilder(args);
 builder.AddKubernetesEnvironment("k8s");
@@ -20,7 +19,7 @@ IResourceBuilder<IResourceWithConnectionString>? cache = null;
 // qdrant = builder.AddConnectionString("qdrant");
 
 #region infrastructure
-var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
+var defaultName = isTesting ? "MyProjectNameTest" : "MyProjectNameDev";
 var devPassword = builder.AddParameter(
     "dev-password",
     value: aspireSetting.DevPassword,
@@ -93,11 +92,8 @@ if (cache != null)
     adminService.WithReference(cache);
 }
 
-var apiMigrations = apiService
-    .AddEFMigrations(
-        "ApiService-Migrations",
-        "EntityFramework.AppDbContext.DefaultDbContext"
-    )
+var adminMigrations = adminService
+    .AddEFMigrations("AdminService-Migrations", "EntityFramework.AppDbContext.DefaultDbContext")
     .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithMigrationsProject("..\\Definition\\EntityFramework\\EntityFramework.csproj")
@@ -105,54 +101,43 @@ var apiMigrations = apiService
     .PublishAsMigrationBundle(publishContainer: true)
     .PublishAsKubernetesService(resource =>
     {
-        if (resource.Workload is Deployment deployment)
+        if (resource.Workload is not Deployment deployment)
         {
-            // Migration bundles are finite workloads. Replace Aspire's default Deployment
-            // with a Job so Kubernetes does not recreate a completed migration container.
-            deployment.PodTemplate.Spec.RestartPolicy = "OnFailure";
-            resource.Workload = new MigrationJob
-            {
-                Metadata = deployment.Metadata,
-                Spec = new MigrationJobSpec
-                {
-                    Template = deployment.Spec.Template
-                }
-            };
+            throw new InvalidOperationException(
+                "Aspire did not generate a Deployment workload for the EF migration resource."
+            );
         }
+
+        var job = new KubernetesJobResource
+        {
+            Metadata = deployment.Metadata,
+            Spec = new KubernetesJobSpec
+            {
+                Template = deployment.Spec.Template
+            }
+        };
+
+        job.Metadata.Name = "adminservice-migrations-job";
+        job.Metadata.Annotations["argocd.argoproj.io/hook"] = "Sync";
+        job.Metadata.Annotations["argocd.argoproj.io/sync-wave"] = "-1";
+        job.Metadata.Annotations["argocd.argoproj.io/hook-delete-policy"] =
+            "BeforeHookCreation,HookSucceeded";
+        job.Spec.Template.Spec.RestartPolicy = "OnFailure";
+
+        // Migration bundles are finite workloads. Remove Aspire's default Deployment
+        // and publish the Job as an additional Kubernetes resource.
+        resource.Workload = null;
+        resource.AdditionalResources.Add(job);
     })
     .WithParentRelationship(serviceGroup);
 
 if (database != null)
 {
-    apiMigrations.WithReference(database).WaitFor(database);
+    adminMigrations.WithReference(database).WaitFor(database);
 }
 
-apiService.WaitForCompletion(apiMigrations);
-adminService.WaitForCompletion(apiMigrations);
+apiService.WaitForCompletion(adminMigrations);
+adminService.WaitForCompletion(adminMigrations);
 # endregion
 
 builder.Build().Run();
-
-[YamlSerializable]
-internal sealed class MigrationJob : Workload
-{
-    public MigrationJob()
-        : base("batch/v1", "Job")
-    {
-    }
-
-    [YamlMember(Alias = "spec")]
-    public MigrationJobSpec Spec { get; set; } = new();
-
-    public override PodTemplateSpecV1 PodTemplate => Spec.Template;
-}
-
-[YamlSerializable]
-internal sealed class MigrationJobSpec
-{
-    [YamlMember(Alias = "template")]
-    public PodTemplateSpecV1 Template { get; set; } = new();
-
-    [YamlMember(Alias = "backoffLimit")]
-    public int BackoffLimit { get; set; } = 1;
-}

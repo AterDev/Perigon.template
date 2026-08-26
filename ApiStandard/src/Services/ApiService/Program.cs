@@ -19,7 +19,9 @@ builder.Services.AddAuthorizationBuilder()
         WebConst.User,
         policy =>
         {
-            policy.RequireRole(WebConst.User);
+            policy
+                .RequireClaim(CustomClaimTypes.TenantId)
+                .RequireRole(WebConst.User);
         }
     );
 

@@ -90,6 +90,7 @@ public static class WebExtensions
         if (!app.Environment.IsProduction())
         {
             app.MapSwagger().CacheOutput("openapi");
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("./v1/swagger.json", "v1"));
         }
 
         //app.UseMiddleware<JwtMiddleware>();

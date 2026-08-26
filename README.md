@@ -7,7 +7,7 @@
 ## 要求
 
 - .NET 10.0 SDK（建议 10.0.103 或兼容的 .NET 10 SDK）
-- Aspire CLI/SDK 13.4.6（与模板包 1.3.12 对应）
+- Aspire CLI/SDK 13.5.0（与模板包 1.3.13 对应）
 
 ## 文档
 
@@ -25,7 +25,7 @@
 模板已经发布到[`nuget`](https://www.nuget.org/packages/Perigon.templates)上，请根据你的项目版本下载对应的模板。
 
 ```pwsh
-dotnet new install Perigon.templates --version 1.3.12
+dotnet new install Perigon.templates --version 1.3.13
 ```
 
 ## 模板说明

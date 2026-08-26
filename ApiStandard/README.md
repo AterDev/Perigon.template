@@ -33,7 +33,7 @@ aspire start --non-interactive
 
 默认不启动 Angular 前端；如选择 Angular 前端并完成 `pnpm install`，可按 AppHost 中的可选示例启用它。
 
-Standard 的 OpenAPI JSON 默认位于 `/swagger/v1/swagger.json`，模板不默认提供 Swagger UI。
+Standard 的 OpenAPI JSON 默认位于 `/swagger/v1/swagger.json`，非生产环境还提供 Swagger UI：`/swagger`。
 
 Standard 使用 Aspire 的 `AddEFMigrations` 管理 EF Core 迁移：`AdminService` 作为 EF CLI 的启动项目提供数据库配置，`EntityFramework` 中的模型约定会自动为 `EntityBase` 派生实体的索引补充 `TenantId`，迁移文件位于 `Definition/EntityFramework`；AppHost 本地启动时会先应用 `DefaultDbContext` 的待处理迁移，再启动 API 与后台服务，发布到 Kubernetes 时使用一次性 Job 执行迁移。默认系统租户通过 `DefaultDbContext` 的 `UseSeeding`/`UseAsyncSeeding` 在迁移后幂等初始化；该全局租户不会设置 `TenantId`。修改实体后运行 `.\scripts\EFMigrations.ps1 Init` 生成迁移。模板默认不包含 `SystemMod`，因此不会预置管理员账号。
 

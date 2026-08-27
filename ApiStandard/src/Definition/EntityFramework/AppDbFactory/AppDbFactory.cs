@@ -1,17 +1,21 @@
 using EntityFramework.AppDbContext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Perigon.AspNetCore.Constants;
-using Perigon.AspNetCore.Services;
 
 namespace EntityFramework.AppDbFactory;
 
 /// <summary>
 /// factory for create TenantDbContext
 /// </summary>
-/// <param name="cache"></param>
 /// <param name="configuration"></param>
-public class AppDbFactory(IOptions<ComponentOption> options, CacheService cache, IConfiguration configuration)
+/// <param name="tenantScopeFactory"></param>
+public class AppDbFactory(
+    IOptions<ComponentOption> options,
+    IConfiguration configuration,
+    IServiceScopeFactory tenantScopeFactory
+)
 {
     public DefaultDbContext CreateDbContext(Guid? tenantId)
     {
@@ -67,16 +71,28 @@ public class AppDbFactory(IOptions<ComponentOption> options, CacheService cache,
         var defaultAnalysisConnectionString = configuration.GetConnectionString(AppConst.Analysis)
             ?? defaultConnectionString;
 
-        if (!tenantId.HasValue || tenantId.Value == Guid.Empty)
+        // A null tenant id is reserved for the system tenant catalog context.
+        if (!tenantId.HasValue)
         {
             return (defaultConnectionString, defaultAnalysisConnectionString);
         }
 
-        var cacheKey = $"{WebConst.TenantId}__{tenantId.Value}";
-        var tenant = cache.GetMemory<Tenant>(cacheKey);
+        if (tenantId.Value == Guid.Empty)
+        {
+            throw new InvalidOperationException(
+                "A non-empty TenantId is required for tenant-scoped database access."
+            );
+        }
+
+        using IServiceScope scope = tenantScopeFactory.CreateScope();
+        var tenant = scope.ServiceProvider
+            .GetRequiredService<ITenantResolver>()
+            .GetById(tenantId.Value);
         if (tenant is null)
         {
-            return (defaultConnectionString, defaultAnalysisConnectionString);
+            throw new InvalidOperationException(
+                $"Tenant '{tenantId.Value}' was not found in the tenant catalog."
+            );
         }
 
         var tenantDbConnectionString = tenant.DbConnectionString ?? defaultConnectionString;

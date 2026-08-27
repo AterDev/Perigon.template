@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using Entity;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using Perigon.AspNetCore.Services;
+using Share.Services;
 
 namespace ServiceDefaults;
 
-public class LocalUserClaimsTransformation(DefaultDbContext context, CacheService cache)
+public class UserClaimsTransformation(TenantService tenantService, CacheService cache)
     : IClaimsTransformation
 {
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
@@ -17,16 +17,21 @@ public class LocalUserClaimsTransformation(DefaultDbContext context, CacheServic
         }
 
         var tenant = await ResolveTenantAsync(identity);
-        if (tenant is not null)
+        if (tenant is null)
         {
-            ReplaceTenantClaims(identity, tenant);
+            // TenantId is mandatory for authenticated requests. Leave the
+            // principal untouched here so the tenant middleware can reject it
+            // with a 403 instead of silently selecting the default tenant.
+            return principal;
         }
+
+        ReplaceTenantClaims(identity, tenant);
 
         var userIdentity = FindUserIdentity(principal);
         if (!string.IsNullOrWhiteSpace(userIdentity)
             && !identity.HasClaim(claim => claim.Type == ClaimTypes.Role))
         {
-            var cacheKey = $"local-user-info:{userIdentity}";
+            var cacheKey = $"local-user-info:{tenant.Id}:{userIdentity}";
 
             // the sample of get user roles from local system, you can replace this with your own implementation, such as query from database or call external service.
             var roles = await cache.GetOrCreateAsync(
@@ -45,23 +50,9 @@ public class LocalUserClaimsTransformation(DefaultDbContext context, CacheServic
     private async Task<Tenant?> ResolveTenantAsync(ClaimsIdentity identity)
     {
         var tenantIdValue = identity.FindFirst(CustomClaimTypes.TenantId)?.Value;
-        if (tenantIdValue is not null)
-        {
-            return Guid.TryParse(tenantIdValue, out var tenantId) && tenantId != Guid.Empty
-                ? await context.Tenants
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.Id == tenantId)
-                : null;
-        }
-
-        var tenant = await context.Tenants
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Domain == DefaultDbContextSeeding.DefaultTenantDomain);
-
-        return tenant
-            ?? throw new InvalidOperationException(
-                "The default tenant is not initialized. Apply the database migrations and seed data before authenticating users."
-            );
+        return Guid.TryParse(tenantIdValue, out var tenantId) && tenantId != Guid.Empty
+            ? await tenantService.GetByIdAsync(tenantId)
+            : null;
     }
 
     private static void ReplaceTenantClaims(ClaimsIdentity identity, Tenant tenant)
@@ -94,19 +85,18 @@ public class LocalUserClaimsTransformation(DefaultDbContext context, CacheServic
             ?? principal.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 
-    private async Task<string[]> QueryRolesFromLocalSystemAsync(
+    private static Task<string[]> QueryRolesFromLocalSystemAsync(
         string userIdentity,
         CancellationToken cancellation
     )
     {
-        await Task.CompletedTask;
-
-        _ = context;
         _ = cancellation;
 
-        return userIdentity.Equals("admin", StringComparison.OrdinalIgnoreCase)
-            ? [WebConst.User, WebConst.AdminUser]
-            : [WebConst.User];
+        return Task.FromResult(
+            userIdentity.Equals("admin", StringComparison.OrdinalIgnoreCase)
+                ? new[] { WebConst.User, WebConst.AdminUser }
+                : new[] { WebConst.User }
+        );
     }
 
 }

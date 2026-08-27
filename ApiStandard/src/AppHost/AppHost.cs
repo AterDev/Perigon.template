@@ -8,7 +8,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 builder.AddKubernetesEnvironment("k8s");
 var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
-var isMultiTenant = builder.Configuration["Components:IsMultiTenant"] ?? "false";
+var isMultiTenant = builder.Configuration["Components:IsMultiTenant"] ?? "true";
 
 IResourceBuilder<IResourceWithConnectionString>? database = null;
 IResourceBuilder<IResourceWithConnectionString>? cache = null;

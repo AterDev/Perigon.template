@@ -4,7 +4,7 @@ using Perigon.AspNetCore.Services;
 
 namespace ServiceDefaults;
 
-public class LocalUserClaimsTransformation(DefaultDbContext context, CacheService cache)
+public class UserClaimsTransformation(DefaultDbContext context, CacheService cache)
     : IClaimsTransformation
 {
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)

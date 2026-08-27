@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.3.13</Version>
+        <Version>1.3.14</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,9 +21,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. Upgrade the templates to Aspire 13.5.0 with standardized EF Core migrations, seeding, and Kubernetes migration Job support.
-2. Unify ApiStandard tenant-aware query and index conventions, including read/write analysis context support.
-3. Enable Swagger UI for ApiStandard development services and retain .NET 10 Roslyn 5 source-generator compatibility.
+        <PackageReleaseNotes>1. Make ApiStandard tenant resolution fail closed: authenticated requests require a valid TenantId, and unknown tenant IDs no longer fall back to the catalog default connection.
+2. Seed the default.com tenant with the default and analysis connection strings, while preserving the system tenant catalog context.
+3. Align the templates with multi-tenant defaults and tenant-aware claims, caching, filtering, and database context behavior.
         </PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>

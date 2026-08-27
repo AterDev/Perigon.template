@@ -97,8 +97,8 @@ public static class WebExtensions
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseAuthentication();
 
-        // Tenant resolution is always enabled. Single-tenant deployments use the seeded
-        // default tenant, while multi-tenant deployments may resolve a tenant-specific database.
+        // Tenant resolution is always enabled. Authenticated requests must carry a valid
+        // TenantId; the seeded default tenant only guarantees catalog initialization.
         app.UseMiddleware<TenantResolutionMiddleware>();
         app.UseAuthorization();
         app.MapControllers();

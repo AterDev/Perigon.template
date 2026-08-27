@@ -9,6 +9,7 @@ using Perigon.AspNetCore.Abstraction;
 using Perigon.AspNetCore.Services;
 using Perigon.AspNetCore.Toolkit.Services;
 using Share.Implement;
+using Share.Services;
 
 namespace ServiceDefaults;
 
@@ -25,7 +26,7 @@ public static class FrameworkExtensions
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContext, UserContext>();
-            builder.Services.AddTransient<IClaimsTransformation, LocalUserClaimsTransformation>();
+            builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
 
             var components = builder.Configuration.GetSection(ComponentOption.ConfigPath)
                 .Get<ComponentOption>() ?? new ComponentOption();
@@ -33,6 +34,10 @@ public static class FrameworkExtensions
             builder.AddCache(components);
             builder.AddDbFactory();
             builder.AddDbContext(components);
+            builder.Services.AddScoped<TenantService>();
+            builder.Services.AddScoped<ITenantResolver>(services =>
+                services.GetRequiredService<TenantService>()
+            );
 
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<SmtpService>();
@@ -81,19 +86,27 @@ public static class FrameworkExtensions
             ComponentOption components
         )
         {
+            var analysisConnectionString = builder.Configuration.GetConnectionString(
+                AppConst.Analysis
+            );
+
             switch (components.Database)
             {
                 case DatabaseType.SqlServer:
                     builder.AddSqlServerDbContext<DefaultDbContext>(
                         AppConst.Default,
-                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding()
+                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding(
+                            analysisConnectionString
+                        )
                     );
                     break;
 
                 case DatabaseType.PostgreSql:
                     builder.AddNpgsqlDbContext<DefaultDbContext>(
                         AppConst.Default,
-                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding()
+                        configureDbContextOptions: options => options.UseDefaultDbContextSeeding(
+                            analysisConnectionString
+                        )
                     );
                     break;
             }

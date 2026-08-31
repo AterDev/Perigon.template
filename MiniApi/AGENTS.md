@@ -1,63 +1,84 @@
-# AGENTS.md
+# AGENTS
 
-## 总体指导原则
+## 总体原则
 
-- 从不猜测，确定性与准确是第一原则，保持高效与严谨。
-- 代码和文档的可读性和可维护性优先，通过适当注释、清晰命名和局部变量降低复杂度。
-- 没有明确要求时，不要在项目内生成内容总结、更新记录或测试报告类文档。
-- 优先使用操作系统、IDE 和项目内已有工具与能力，例如 `pwsh`、`dotnet`、`pnpm`、代码搜索和重构工具。
+- 以仓库代码、配置、工具帮助和实际验证为事实依据；不确定内容显式调查或标记待确认。
+- 代码和文档以可读、可维护为先，使用清晰命名、小而单一的职责和必要注释控制复杂度。
+- 纯调研或只读审查不额外生成文档。任何 AI coding 都必须在结束前同步对应迭代 PT、`ProjectTracking.md` 和受影响 PD，记录实现、验证及 AOT 影响。
+- 代码修改后执行与影响面匹配的最小充分验证。没有实现证据和通过的必需验证，不宣称任务完成。
 
-## 关键技术栈
+## 技术栈与架构边界
 
-1. 基于最新的 C# 14 语言特性。
-2. 后端强依赖于 Aspire 13+、ASP.NET Core 10、EF Core 10。
-3. 前端默认使用 Angular，具体以仓库现有代码为准。
+1. C# 14、.NET 10、ASP.NET Core Minimal API、EF Core 10。
+2. ApiService 默认启用 Native AOT、Trim、Request Delegate Generator，目标为 `linux-musl-x64` 自包含发布。
+3. Aspire 13+ 负责 PostgreSQL、缓存、服务编排和可观测性。
+4. 前端默认使用 Angular，具体以仓库现有代码和版本为准。
+
+MiniApi 不等同于 ApiStandard：不要假设存在 `AdminService`、Controller、`src/Modules`、多数据库选项或 AppHost EF migration 资源。
 
 ## 项目结构
 
-- 前端: `src/ClientApp/WebApp`
-  - 基础共享依赖: `src/ClientApp/WebApp/src/app/modules/share`
-  - 业务前端模块: `src/ClientApp/WebApp/src/app/modules/{module}`
-- 后端接口服务: `src/Services`
-- 实体定义m:于 `src/Definition/Entity`
-- 业务逻辑: `src/Modules`，按模块划分
-- Share 共享项目: `src/Definition/Share`
-- 服务扩展: `src/Definition/ServiceDefaults`
-- 文档位于 `docs/`
-- 脚本： `scripts/`
-- 测试： `tests/`
-- Razor 模板: `templates/`
+- 前端：`src/ClientApp/WebApp`
+- API：`src/Services/ApiService`
+  - Endpoint groups：`Endpoints`
+  - 业务逻辑按需要放置：`Managers`、`Services`
+  - 请求/响应模型按功能组织：`Models`
+- 实体：`src/Definition/Entity`
+- EF Core：`src/Definition/EntityFramework`
+- 共享定义：`src/Definition/Share`
+- 服务扩展：`src/Definition/ServiceDefaults`
+- AppHost：`src/AppHost`
+- 文档：
+  - 总览：`docs/UserStory/Demand.md`、`docs/UserStory/Design.md`
+  - 功能设计：`docs/UserStory/Iter<number>-<Name>/PD<4-digit>-<Module>.md`
+  - 计划记录：`docs/Development/Iter<number>-<Name>/PT<4-digit>-<Module>.md`
+  - 总进度：`docs/Development/ProjectTracking.md`
+- 脚本：`scripts`
+- 测试：`tests`
 
-## 工具优先级
+## Minimal API 与 AOT 规则
 
-- 涉及项目脚手架、模块或服务添加、代码生成、OpenAPI 客户端生成、MCP 配置时，优先使用 `Perigon` 相关能力。
-- 涉及分布式应用启动、资源状态检查、日志链路排查、集成配置时，优先使用 `Aspire` 相关能力；普通构建和测试优先使用 `dotnet build` 或 `dotnet test`。
-- 需要前端功能验证时，优先结合 Playwright 或前端构建校验。
-- 新增或修改前端模块时，复用 `src/app/modules/share` 中的基础组件、守卫、管道、i18n 与 Material 聚合导入；不要重新创建顶层 `src/app/share`。
+- Endpoint group 继承 `RestEndpointBase` 并提供 `public static void MapEndpoints(IEndpointRouteBuilder)`，由源生成的 `MapEndpointGroups()` 注册。
+- handler 优先使用具名 `public static` typed method；绑定来源和响应契约保持静态可分析。
+- Endpoint 负责路由、绑定、授权、验证和 HTTP 结果；业务流程与数据访问进入 Manager/Service。
+- 新增 DTO、converter、多态、反射、动态代码、程序集扫描、DI 自动发现、EF 模型或第三方依赖时必须评估 AOT/Trim。
+- 优先源生成、显式注册和静态映射。不要用 warning suppression 或 linker descriptor 掩盖未理解的可达性问题。
+- 普通 Debug/Release build 不能代替 Native AOT publish；AOT-sensitive 变更还应运行发布产物验证真实绑定和序列化。
 
-### 必读 skill
+## 工具与 skill 路由
 
-任何实现、规划、审查任务开始前，必须先读取以下两个skill：
+- Perigon 架构、CLI、生成、Endpoint/Manager/模型和模板约定：`perigon`。
+- Native AOT、Trim、RDG、JSON、反射、依赖和发布兼容：`native-aot`。
+- AppHost、资源、启停、状态、日志或部署：使用环境中可用的 Aspire skill；普通构建/测试直接使用 `dotnet`。
+- 需求、设计、迭代 PD/PT、实现记录：`docs`。
+- AI coding 后同步、计划执行、完成审计和收敛：`delivery-loop`。
+- TUnit、Aspire API 集成测试和 AOT 测试证据：`test`。
+- 差异审查和质量门：`code-review`。
+- 页面布局与交互：`ux`；Angular 实现同时遵循 `perigon` 的 Angular reference。
+- 提交信息：`commit-message`。
 
-- `.agents/skills/perigon/SKILL.md`
-- `.agents/skills/aspire/SKILL.md`
+规划、实现和审查业务代码前读取 `.agents/skills/perigon/SKILL.md`。只有任务触及相应边界时再读取 `native-aot`、测试、Aspire 或 UX 技能，避免无关工作启动基础设施。
 
-### 主要技术 skill
+## AI coding 交付流程
 
-- `perigon`：Perigon CLI、MCP、脚手架、代码生成与模板约定
-- `aspire`：Aspire AppHost、资源编排、运行、观察与相关子工作流
-- `dotnet-guidelines`：.NET 开发规范
-- `angular-guidelines`：Angular 开发规范
-- `commit-message`：提交信息生成规范
-- `development-plan`：开发计划制定规范
-- `playwright-cli`：前端自动化验证与页面交互
-- `docs`：开发文档编写规范
-- `code-review`：代码审查规范
+1. 只读探索现状，确认迭代、功能范围和关键待确认项。
+2. 编写或更新对应 PD 与 PT；简单修复可用简短 PT，但不跳过跟踪。
+3. 实现前检查需求覆盖、依赖、验证以及 Minimal API/AOT 风险；阻断问题未解决时不开始。
+4. 按依赖执行最小 ready task，每项实现后立即验证；AOT-sensitive 任务按 `native-aot` 验证。
+5. 对照意图检查 Completeness、Correctness、Coherence；缺口以新任务追加。
+6. 每次代码修改后更新 PT 的 checkbox、进度、实现结果、验证/AOT 证据，同步 `ProjectTracking.md` 和受影响 PD。
 
-## 思维模型
+## 完成定义
 
-作为以目标为导向的架构师编写代码：
+- 纳入范围的必须行为均已实现，无未说明范围漂移；
+- 必需 build、test、OpenAPI、AOT/Trim、容器或运行验证已通过；
+- endpoint 绑定、JSON 契约、失败路径、鉴权授权和回归风险按影响面覆盖；
+- 没有未解释的 linker/AOT warning；无法运行的目标架构验证已明确记录；
+- 公开契约、文档、PD/PT 和项目进度与代码一致；
+- 无未解决阻断，剩余风险明确。
 
-1. 命名清晰、简洁、易理解，充分利用C#语言的表达能力和类型系统，写出结构清晰、可维护的代码。
-1. 代码结构清晰，模块划分合理， 以面向对象思维定义和组织类和方法，避免函数式编程风格的过度使用。
-1. 方法和类符合单一职责原则，并补充必要说明。
+## 工程决策
+
+1. 优先官方、主流、活跃维护且公开声明支持 Native AOT 的方案。
+2. 复用现有 `src/Perigon`、`Definition/Share`、`ServiceDefaults` 和源生成能力，避免过度抽象。
+3. 以类型系统、静态可分析契约、清晰分层和单一职责表达业务意图。

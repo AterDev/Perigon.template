@@ -1,57 +1,50 @@
 ---
 name: test
-description: Add, run, and diagnose tests for Perigon.Modules using TUnit, Microsoft.Testing.Platform, and Aspire.Hosting.Testing. Use for unit tests, module API integration tests, AppHost test fixtures, authenticated HttpClient setup, resource readiness, test database lifecycle, or focused regression verification.
+description: 为 MiniApi 规划、编写、运行和诊断 TUnit 单元测试、Aspire.Hosting.Testing API 集成测试及 Native AOT 发布验证。用于验收场景、Minimal API 契约、序列化、AppHost fixture、测试数据库、AOT 回归或完成证据；静态文档改动不要启动 Aspire。
 ---
 
-# Module Testing
+# MiniApi 测试
 
-Use the root `global.json` test runner settings. This repository uses TUnit on Microsoft.Testing.Platform, not the VSTest command model.
+使用 `global.json` 配置的 Microsoft.Testing.Platform 和 TUnit，不套用 VSTest 的 `--filter` 语法。先将需求场景和高风险设计决定映射到测试，再选择最小充分层级。
 
-## Choose the smallest useful level
+## 分层
 
-- Use a unit test for pure validation, mapping, calculation, or domain behavior that does not need the distributed app.
-- Use `test/ApiTest` for routing, authorization, serialization, Manager/EF behavior, migrations, initialization, or multi-service integration.
-- Add a package-structure check when the regression concerns `metadata.json` or zip contents rather than runtime behavior.
+- `tests/UnitTest`：纯验证、转换、计算和不需要分布式资源的行为。
+- `tests/ApiTest`：Minimal API 路由/绑定、JSON、OpenAPI、鉴权授权、Manager/EF、真实 AppHost 资源和服务集成。
+- Native AOT：AOT-sensitive 变化使用 `native-aot` 执行 Release publish；必要时运行二进制或容器验证健康端点和真实 API 契约。
+- 静态结构检查：文档链接、包内容、模板文件或规则不变式；不因为名称是“测试”就启动 Aspire。
 
-Do not start Aspire for a documentation, skill, or static structure change.
+每个强制验收场景至少对应一项自动测试或有理由的人工验收。AOT-sensitive 场景不能只在 JIT 测试宿主中证明。
 
-## Follow the existing Aspire fixture
+## 编写测试
 
-`GlobalHooks` creates `DistributedApplicationTestingBuilder.CreateAsync<Projects.AppHost>()`, sets `ASPIRE_ENVIRONMENT=Testing`, configures logging/resilience, and starts one application for the test session. `TestHttpClientData` waits for `AdminService`, creates its HttpClient, authenticates, and supplies the bearer token.
+- 用可观察行为和期望结果命名。
+- API 测试先断言状态码，再断言绑定、响应契约和持久化结果。
+- 按风险覆盖认证、授权、验证、not-found/conflict、重复请求和破坏性操作。
+- 对请求/响应 DTO、converter 或多态变化，覆盖真实 JSON 输入输出；不要只直接调用 handler。
+- 高风险回归或明确 TDD 任务先让测试以预期原因失败，再实现并通过。
+- 不留无意义断言、注释断言或恒通过占位测试。当前模板 smoke test 仅证明 AppHost 启动，不证明 endpoint 或 AOT 正确。
 
-Reuse that session fixture instead of starting an AppHost per test. Wait for the specific resource state before sending requests. Keep each test independent at the data level and avoid relying on execution order; the assembly-level retry must not hide deterministic failures.
+## Aspire fixture 与数据库安全
 
-The current cleanup path connects with Npgsql and drops `Perigon.Modules_test`. Treat it as PostgreSQL-specific: before running or changing database-provider tests, verify AppHost configuration, container runtime, database name, and cleanup safety. Never point this fixture at a non-test database.
+`GlobalHooks` 通过 `DistributedApplicationTestingBuilder.CreateAsync<Projects.AppHost>()` 每个测试会话启动一次 AppHost，并设置 `ASPIRE_ENVIRONMENT=Testing`。复用该应用，不要每个测试重启容器；发送请求前等待 `ApiService` 和依赖资源达到目标状态。
 
-## Write tests
+AppHost 是测试数据库名的事实源：Testing 环境使用 `MyProjectName_test`。清理逻辑从 AppHost 实际连接字符串读取数据库名，删除前必须精确断言目标是 `MyProjectName_test`，随后切换到 `postgres` 管理库并安全引用标识符。`appsettings.Test.json` 必须保持一致。不得绕过断言或指向开发/生产库。
 
-- Name tests after observable behavior and expected result.
-- Arrange only the minimum data needed; use unique values when constraints or retries can collide.
-- Assert status code first, then the response contract and persisted/visible outcome.
-- Cover authentication, authorization/tenant boundaries, validation, not-found/conflict paths, and destructive operations when relevant.
-- Prefer public HTTP behavior for module integration tests; test Manager internals directly only when the behavior cannot be observed through the contract.
-- Clean up test-created state or design data to be isolated within the test database.
+## 运行
 
-Do not leave meaningful assertions commented out. A placeholder test that always passes is not regression coverage.
-
-## Run and filter
-
-From the repository root, list discovered tests with:
+在 `MiniApi` 根目录：
 
 ```powershell
-dotnet test --project test/ApiTest/ApiTest.csproj --list-tests
+dotnet test --project tests/UnitTest/UnitTest.csproj
+dotnet test --project tests/ApiTest/ApiTest.csproj --list-tests
+dotnet test --project tests/ApiTest/ApiTest.csproj
 ```
 
-Run the same project for the full integration suite. For focused selection, use TUnit/MTP `--treenode-filter` syntax rather than VSTest `--filter`. Check the installed runner's help before composing a complex expression.
+聚焦选择使用 TUnit/MTP `--treenode-filter`。涉及 endpoint、DTO/JSON、依赖、反射、EF 或发布时，再按 `native-aot` 运行 Release build、Native AOT publish 和必要的运行验证。
 
-## Diagnose failures
+## 失败分类与完成证据
 
-Preserve the first meaningful exception and separate these categories:
+保留首个有意义异常，区分：编译/发现、容器/DCP/readiness、数据库/认证/清理、业务回归、AOT/Trim/RDG warning 或 publish、运行时序列化/绑定、断言通过后的清理失败。不能增加 retry、弱化断言或抑制未知 warning 制造绿灯。
 
-- compile or test-discovery failure;
-- Docker/Podman, DCP, port, image, or resource-readiness failure;
-- migration, seed, authentication, or provider-specific cleanup failure;
-- actual endpoint/business regression;
-- cleanup-only failure after assertions passed.
-
-Use resource logs and state only as needed. Do not weaken assertions, increase retries, or swallow initialization exceptions to make the suite green.
+每项证据记录场景/风险、测试层、精确命令、结果和未覆盖范围。“测试存在”“普通 build 通过”都不能代替相应测试或 AOT publish 通过。

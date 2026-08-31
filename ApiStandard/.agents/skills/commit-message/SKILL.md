@@ -1,48 +1,30 @@
 ---
-description: "Generate a concise git commit message that follows Conventional Commits and fits git-flow branch context."
-name: "Commit Message"
-argument-hint: "Describe the intent or constraints for this commit"
-agent: "agent"
-model: [MAI-Code-1-Flash (copilot), DeepSeek V4 Flash (deepseek), Raptor mini (Preview) (copilot)]
-tools: [execute]
+name: commit-message
+description: 检查当前 diff 并生成符合 Perigon 约定的 Conventional Commit 信息。用于拟定提交标题和简短说明；不执行提交，也不为了凑提交记录自动修改跟踪或 Changelog。
 ---
 
-Generate a git commit message for the current repository changes.
+# 提交信息
 
-First inspect the current git diff or staged diff, then combine it with any user-provided intent. and update the develop process.
+先检查 staged diff；没有 staged 变更时检查 working-tree diff。结合用户说明判断主要意图，不只按文件数量决定 type。
 
-**前提条件**:
+## 安全与交付前检查
 
-- 检查本次提交内容是否存在机密信息泄露风险，如密码、token、敏感配置等。如存在，则给出警告，不再生成提交信息。
-- 如果包含大量测试或生成内容，或者体积很大的文件，给出警告，让用户确认是否需要添加到忽略列表。
+- 如果 diff 含密码、token、私钥、生产连接或其他敏感信息，停止并警告。
+- 对异常大的生成物、二进制或测试输出，先提示检查是否应忽略。
+- 定位当前迭代与受影响 `PTnnnn-Name.md`，检查任务 checkbox、进度、实现记录、验证证据和 `ProjectTracking.md` 是否与 diff 一致。AI coding 的文档未同步时停止生成提交信息，要求先完成闭环。
+- 若可观察行为或设计改变，检查来源 `PDnnnn-Name.md` 已同步；纯实现细节变化应在 PT 记录“无 PD 影响”及理由。
+- `Changelog.md` 只记已交付的用户可见行为；内部重构和进行中工作不强制写入。
 
-<workflow>
+## 格式
 
-1. 检查前提条件
-2. 按 <output> 格式生成提交信息
-3. update the develop process
+```text
+<emoji> <type>(<scope>): <subject>
 
-</workflow>
+- <optional concise detail>
+```
 
-<rules>
-
-1. Use Conventional Commits format:
-   - `type(scope): subject`
-2. `type` must be one of:
-   - `feat` `fix` `docs` `refactor` `test` `chore`
-3. Infer `scope` from the main module, such as:
-   - `api`, `admin`, `webapp`, `entity`, `ef`, `modules`, `apphost`, `aspire`, `perigon`, `docs`, `test`, `templates`
-4. If one commit contains several **related** changes, choose the primary type for the header and use a short body to summarize secondary changes.
-
-</rules>
-
-<output>
-
-`type(scope): subject`
-   - item1
-   - item2
-</output>
-
-**update the develop process**
-- update `docs/Development/ProjectTracking.md` for tracing the current task progress.
-- update `docs/Development/Changelog.md` for recording the change details and impact.
+- `type`：`feat` `fix` `docs` `refactor` `test` `chore` 之一。
+- `scope`：优先使用 `api` `admin` `webapp` `entity` `ef` `modules` `apphost` `aspire` `perigon` `docs` `test` `templates` 或实际模块名。
+- `subject`：命令式、简洁，表达产生的结果，不以句号结尾。
+- emoji 与 type 语义一致：`feat` 🎉、`fix` 🐛、`docs` 📝、`refactor` ♻️、`test` ✅、`chore` 🔧。
+- 多个相关变更选主要 type，次要内容用简短 body；不相关变更建议拆分提交。

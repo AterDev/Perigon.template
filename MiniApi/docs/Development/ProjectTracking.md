@@ -21,7 +21,7 @@
 
 ## 最近实现记录
 
-| Date | Iteration / PT | Task | Result | Verification | Remaining |
+| Date | Iteration / PT | Task | Result | Verification / AOT | Remaining |
 |---|---|---|---|---|---|
 
 ## 阻塞与决定
@@ -36,8 +36,8 @@
 
 ## 状态与同步规则
 
-- PD/PT 文档状态使用 `draft | planned | in-progress | blocked | verifying | complete`；其中 task 状态使用 `planned | in-progress | blocked | done | waived`。
-- 每次 AI coding 后必须更新当前 PT 的实现记录、checkbox、进度与验证证据，再同步本文档。
-- 代码改变需求、验收场景或设计时同步 PD；无 PD 影响时在 PT 记录原因。
-- 实现和必需验证通过后才勾选 task。没有 ready task 但仍有 pending task 时标记 `blocked`并写明解除条件。
-- 完成前检查 Completeness、Correctness 和 Coherence；有缺口时在当前 PT 追加 Convergence 任务并返回执行循环。
+- PD/PT 文档状态使用 `draft | planned | in-progress | blocked | verifying | complete`；task 状态使用 `planned | in-progress | blocked | done | waived`。
+- 每次 AI coding 后更新当前 PT 的实现记录、checkbox、进度、验证与 AOT evidence，再同步本文档。
+- 代码改变需求、场景或设计时同步 PD；无 PD 影响时在 PT 记录原因。
+- 实现和必需验证通过后才勾选 task；AOT-sensitive 任务缺少 publish/运行证据时不得完成。
+- 完成前检查 Completeness、Correctness 和 Coherence；缺口追加 Convergence 任务。

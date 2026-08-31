@@ -43,16 +43,24 @@ public class GlobalHooks
         if (App != null)
         {
             var connectionString = await App.GetConnectionStringAsync(AppConst.Default);
-
-            var builder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString)
+            var builder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+            var testDatabaseName = builder.Database
+                ?? throw new InvalidOperationException("AppHost did not provide a database name.");
+            if (!string.Equals(testDatabaseName, "MyProjectName_test", StringComparison.Ordinal))
             {
-                Database = "postgres"
-            };
+                throw new InvalidOperationException(
+                    $"Refusing to clean unexpected database '{testDatabaseName}'."
+                );
+            }
+
+            builder.Database = "postgres";
             using var conn = new Npgsql.NpgsqlConnection(builder.ToString());
             await conn.OpenAsync();
 
             // 强制断开所有连接并删除库
-            var dropSql = $"DROP DATABASE IF EXISTS \"MyProjectName_test\" WITH (FORCE);";
+            var quotedDatabaseName = new Npgsql.NpgsqlCommandBuilder()
+                .QuoteIdentifier(testDatabaseName);
+            var dropSql = $"DROP DATABASE IF EXISTS {quotedDatabaseName} WITH (FORCE);";
             using var cmd = new Npgsql.NpgsqlCommand(dropSql, conn);
             await cmd.ExecuteNonQueryAsync();
 

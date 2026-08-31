@@ -6,9 +6,15 @@
 
 ## 全局架构与模块边界
 
-## 服务与数据所有权
+- API 使用 ASP.NET Core Minimal API。
+- ApiService 默认启用 Native AOT、Trim 与 Request Delegate Generator。
+- 数据库固定使用 PostgreSQL；AppHost 不包含内置 migration resource。
 
-## 全局鉴权、授权与租户约束
+## Endpoint、服务与数据所有权
+
+## Native AOT、Trim 与 JSON 基线
+
+## 全局鉴权与安全约束
 
 ## 全局兼容、发布与回滚策略
 

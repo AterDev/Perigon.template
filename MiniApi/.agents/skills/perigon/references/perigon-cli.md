@@ -22,16 +22,16 @@ Perigon 用于创建、安装和生成，不代替 `dotnet build/test`、前端�
 
 仅当当前帮助确认支持时才使用其他命令或选项。`-f/--force` 会覆盖生成文件，执行前必须确认目标和 diff。
 
-## 内置生成器边界
+## MiniApi 生成边界
 
-DTO、Manager、Controller 内置生成器适用于 Standard；`.config/perigon.config.toml` 中 `isAOT = true` 的 MiniApi 不支持这组生成器。MiniApi 应采用现有 Minimal API 结构或经验证的自定义生成任务。
+`.config/perigon.config.toml` 中 `isAOT = true` 的 MiniApi 不支持 Standard 的 DTO、Manager、Controller 内置生成器。不要调用这些命令再手工改造；采用现有 `Endpoints/Managers/Models/Services` 结构或经过验证的自定义生成任务。
 
-生成依赖链为 Controller → Manager → DTO；生成 Controller 会补齐依赖。生成前确认实体路径、模块、目标 Service 和现有文件：
+自定义生成结果必须遵循：
 
-- Manager 位于模块并承载业务逻辑；Controller 位于目标 Service。
-- DTO 默认按 Item、Detail、Filter、Add、Update 用途裁剪属性。生成后重点检查导航属性、敏感字段、可空性、部分更新语义、长文本和二进制字段。
-- 模块 DTO 放在 `Models/{Entity}Dtos`，一个类型一个文件，数据传输类型以 `Dto` 结尾。
-- Controller 生成的 CRUD、权限和 OwnedIds 逻辑只是起点，必须审查真实授权、租户和业务规则。
+- Endpoint 继承 `RestEndpointBase`，包含 `public static MapEndpoints` 和 typed static handlers。
+- Manager 承载业务逻辑与数据访问，模型明确区分请求、响应和实体。
+- 检查导航属性、敏感字段、可空性、部分更新、无界集合、长文本和二进制。
+- 检查授权、输入验证、查询成本、OpenAPI、Request Delegate Generator、JSON 与 Native AOT。
 
 ## OpenAPI 客户端
 
@@ -64,7 +64,7 @@ DTO、Manager、Controller 内置生成器适用于 Standard；`.config/perigon.
 ## 生成后检查
 
 1. 检查新增/覆盖文件数量、目录、命名空间和目标服务。
-2. 检查 DTO、Manager、Controller/Endpoint 的职责边界。
-3. 检查授权、租户、输入验证、分页/查询规模和敏感字段。
+2. 检查 Model、Manager、Endpoint 的职责边界和源码生成注册。
+3. 检查授权、输入验证、分页/查询规模和敏感字段。
 4. 实体变化按模板处理迁移；公开契约变化同步 OpenAPI 与客户端。
-5. 运行受影响项目的构建和测试；MiniApi 额外验证 NativeAOT publish。
+5. 运行受影响项目的构建和测试；AOT-sensitive 生成结果按 `native-aot` 验证 publish 和运行行为。

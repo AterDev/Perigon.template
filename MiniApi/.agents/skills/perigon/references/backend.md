@@ -1,70 +1,48 @@
-# 后端开发最佳实践
+# MiniApi 后端开发
 
-## 实体与模型
+## 实体与 DbContext
 
-- 实体通常继承 `EntityBase`：Guid V7 主键、UTC `DateTimeOffset` 时间、软删除和租户字段由框架约定处理。
-- 字符串明确最大长度；decimal 明确精度；枚举值添加 `[Description]`；纯日期/时间分别使用 `DateOnly` / `TimeOnly`。
-- 简单映射可用 Data Annotation，复杂关系、转换器和 JSON 使用 Fluent API；项目内保持一致。
-- 每个业务实体都考虑唯一性。租户实体索引由 `TenantIndexConvention` 把 `TenantId` 放在首列，并为唯一索引排除软删除数据，不要机械重复配置。
-- 同模块实体优先显式外键和导航属性；跨模块/服务可只保留关联 Id。多对多优先显式中间实体；JSON/数组仅在确实能降低关系复杂度时使用。
-- 需要并发保护时使用经数据库提供程序验证的乐观并发标记。
+- 实体通常继承 `EntityBase`，明确字符串长度、decimal 精度、唯一性、软删除和时间语义。
+- `Data.DefaultDbContext` 由 DI 使用 `DbContextOptions<DefaultDbContext>` 注册，数据库固定为 PostgreSQL。
+- `EntityFramework.AppDbContext.DefaultDbContext` 用于显式连接字符串场景；不要虚构 ApiStandard 的多数据库 factory 或租户上下文。
+- 新增实体后在相应 `DefaultDbContext` 添加显式 `DbSet<TEntity>`，保留 `DynamicallyAccessedMembers` 约束并执行 AOT publish 验证。
+- MiniApi 不内置 AppHost migration 资源。数据库 schema 的生成、部署顺序、失败恢复和回滚责任必须在计划与部署管线中明确。
 
-## DbContext 与租户
+## 请求/响应模型
 
-- `DefaultDbContext`：主业务读写。
-- `ReadonlyDbContext`：禁止 EF SaveChanges，但不能替代只读数据库账号，也不能容许原生写 SQL。
-- `AnalysisDbContext`：租户感知、可读写；优先 Analysis 连接，缺失时回退 Default。
-- `AppDbFactory`：主库/分析库和租户感知连接选择。
-- `UniversalDbFactory`：按 DbContext 类型名选择独立连接，不读取当前租户；不能替代 AppDbFactory。
-- 工厂创建的上下文不由 DI 跟踪，始终用 `using` / `await using` 及时释放。
-- 跨库事务复杂，优先服务调用或消息队列实现最终一致性。
+- 按功能放在 `ApiService/Models` 或相邻功能目录，一个公开契约类型一个文件；不要把 EF 实体直接作为 HTTP 契约。
+- Add/Update 排除 Id、系统时间、软删除和不可赋值字段；Update 可空性准确表达更新语义。
+- 列表/详情避免泄漏导航、无界集合、长文本、二进制或敏感字段。
+- Filter 只暴露有明确语义和可控成本的筛选；所有列表必须有边界或分页。
+- 新增或改变 JSON 契约时检查 AOT/Trim 与真实 HTTP 序列化。需要 converter、多态或运行时类型时使用可静态生成的 System.Text.Json 元数据策略。
 
-ApiStandard 始终采用租户感知模型。普通业务请求由 Token Claims → `IUserContext` → 租户解析中间件 → `AppDbFactory` 建立边界。不要手写绕过全局过滤器，也不要通过修改实体 TenantId“切换租户”。
+## Manager 与 Service
 
-后台任务没有 HTTP 上下文：先通过受控的全局目录上下文取得 Tenant，再为每个租户创建独立短生命周期上下文；使用独立连接前确保租户配置已进入缓存。禁止跨租户复用同一个 DbContext。
+- 数据访问和业务流程放 Manager；第三方或基础设施依赖放可注入 Service。Endpoint 不直接堆积 DbContext 查询与事务。
+- CRUD Manager 按需要继承 `ManagerBase<TDbContext,TEntity>`；无实体时使用非泛型基类。
+- 非抽象、非泛型 Manager 由源码生成器注册，不要重复手写 DI 注册。
+- Manager 返回领域结果或响应模型，不返回 `IResult`，不依赖 `HttpContext`。
+- 优先复用分页、CRUD、批量和事务能力。表达式必须保持数据库可翻译和 AOT 可分析；不要用运行时编译表达式替代查询。
+- 工厂或手动创建的上下文及时释放；事务范围小而明确。
+- 业务异常使用项目既有 `BusinessException`/全局中间件策略，不吞掉错误。
 
-## DTO
+## Minimal API Endpoint
 
-模块 DTO 放在 `Models/{Entity}Dtos`，一个类型一个文件，使用 `{Entity}AddDto`、`UpdateDto`、`FilterDto`、`DetailDto`、`ItemDto`。数据传输类型都以 `Dto` 结尾，不用 Input/Request/Response 代替 DTO；嵌套成员也使用 DTO，不能泄漏实体。
-
-生成 DTO 后审查：
-
-- Add/Update 是否排除了 Id、系统时间、软删除和不可赋值字段。
-- Update 可空性是否真的表达部分更新。
-- Item/Detail 是否泄漏导航、集合、长文本、二进制或敏感字段。
-- Filter 是否只暴露有索引、可控成本和明确语义的筛选条件。
-
-## Manager
-
-- 业务流程、DbContext 和缓存访问放在 Manager；Controller/Endpoint 不直接操作 DbContext。
-- 有实体 CRUD 时继承合适的 `ManagerBase<TDbContext,TEntity>`；无特定实体时继承非泛型 ManagerBase。继承后由源生成器注册，不要重复注入。
-- Manager 返回实体或 DTO，不返回 `ActionResult`，不依赖 `HttpContext`，也不互相引用形成循环。
-- `Queryable` 默认无跟踪；优先复用基类的分页、CRUD、批量和事务能力。基类写方法通常已经执行数据库操作，不要无依据再调用 SaveChanges。
-- 业务校验失败抛 `BusinessException` 并使用可本地化消息。
-- Manager 过大时：第三方/中间件调用拆到可注入 Service，纯算法拆到可单测类，数据转换留在模型或 Helper。
-- Helper 通常是无 DI 的静态能力；Service 是需要 DI 或外部依赖的实现。不要为每个 Manager 机械创建接口。
-
-## Controller 与 Minimal API
-
-ApiStandard Controller 只负责路由、模型验证、授权、调用 Manager、状态码和响应塑形：
-
-- 使用标准 HTTP 谓词和状态码；成功直接返回模型或 `ActionResult<T>`。
-- 不使用统一 `ApiResponse<T>` 包装，不让所有错误返回 200。
-- 错误使用 `Problem()`，不存在使用 `NotFound()`；业务异常留给全局中间件。
-- 公开接口保持唯一、稳定的 OperationId/动作名，便于客户端生成。
-- Controller 放在目标 Service，不放在 Module。
-
-MiniApi 使用可被 OpenAPI 和 Request Delegate Generator 静态分析的 typed handler，优先 `public static` 方法；避免反射驱动绑定和无法由 AOT 分析的动态行为。
+- Endpoint group 继承 `RestEndpointBase`，实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`；源码生成器会生成 `MapEndpointGroups()` 调用。
+- 使用 `MapGroup` 统一路径、tag 和授权策略。路由、HTTP 谓词和 OperationId/metadata 应稳定且唯一。
+- Handler 优先具名 `public static` typed method，显式表达路由、查询、header、body 和 DI 绑定；避免反射驱动绑定、运行时扫描或无法由 Request Delegate Generator 分析的动态行为。
+- Endpoint 只负责 HTTP 边界、输入验证、授权、调用 Manager/Service、状态码和响应塑形。
+- 使用标准状态码和项目现有错误模型。认证、授权、not-found、conflict 和验证失败路径均应有契约与测试。
+- 公开契约变化同步 OpenAPI 和客户端，并通过实际 HTTP JSON 路径测试；不能只直接调用 handler。
 
 ## 横切能力
 
-- 共享常量放 `Definition/Share/Constants`；模块/服务专用常量留在所有者内。不要把所有常量堆入共享层。
-- 缓存使用模板的 `CacheService` / HybridCache；键包含必要租户边界，值大小和过期策略按数据变化频率设置。
-- 应用日志使用 `ILogger` 和 OpenTelemetry；导出端点使用 `OTEL_EXPORTER_OTLP_ENDPOINT`。
-- 业务审计日志结构化记录操作者、动作、模块、目标和描述；大量落库使用队列 + HostedService，避免阻塞主请求，同时保证关闭/失败策略明确。
-- JWT/第三方认证配置完整时由模板注册。生产 JWT 必须配置 Sign、Issuer、Audiences；OAuth/OIDC 生产环境要求 HTTPS metadata。
-- 登录时若需识别租户，应先从可信域名/标识解析租户，再把 `tenant_id` / `tenant_type` 写入 Token。
+- 共享能力放 `Definition/Share` 或 `ServiceDefaults`，服务专属能力留在 ApiService；不要为少量代码增加新层。
+- 缓存键包含必要的数据隔离维度，值大小与过期策略按变化频率设置。
+- 日志使用 `ILogger` 与 OpenTelemetry，不记录 token、密码或敏感正文。
+- JWT/OAuth 生产配置通过 Secret/环境变量注入；生产 OAuth/OIDC 要求 HTTPS metadata。
+- 反射、动态代码、程序集扫描、通用 JSON helper 和新第三方包都是 AOT-sensitive；实现和审查时使用 `native-aot`。
 
 ## 数据库变更
 
-先修改实体与映射，再使用当前模板的迁移流程生成迁移；审查表、索引、外键、默认值、租户和软删除影响。不要手写生成迁移，也不要修改已经用于生产的历史迁移。生产迁移作为一次性步骤，在成功后才向新版本服务放流量。
+先修改实体、`DbSet` 和映射，再使用项目选定的迁移方式生成并审查 schema 变化。不要手写已生成迁移，也不要修改已进入生产的历史迁移。部署前明确迁移执行者、备份/恢复点、前后版本兼容窗口和 API 启动顺序。

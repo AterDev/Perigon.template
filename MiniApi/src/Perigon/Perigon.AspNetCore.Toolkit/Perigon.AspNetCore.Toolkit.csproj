@@ -15,15 +15,12 @@
                 <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
                 <RepositoryType>git</RepositoryType>
                 <PackageReleaseNotes></PackageReleaseNotes>
-                <Description>Utility toolkit for Perigon ASP.NET Core applications, including image processing, SMTP, AWS S3, Excel, and file logging helpers.</Description>
+                <Description>Utility toolkit for Perigon ASP.NET Core applications, including SMTP, AWS S3, Excel, and file logging helpers.</Description>
         </PropertyGroup>
         <ItemGroup>
                 <PackageReference Include="AWSSDK.S3" />
                 <PackageReference Include="MailKit" />
                 <PackageReference Include="MiniExcel" />
-                <PackageReference Include="SixLabors.Fonts" />
-                <PackageReference Include="SixLabors.ImageSharp" />
-                <PackageReference Include="SixLabors.ImageSharp.Drawing" />
         </ItemGroup>
         <ItemGroup>
                 <None Include="..\logo.png">

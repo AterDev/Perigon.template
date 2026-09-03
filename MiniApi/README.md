@@ -59,13 +59,7 @@ aspire start --non-interactive
 - 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用 `DbContextOptions<TContext>` 和 `options.UseNpgsql(connectionString)` 的注册方式。新增实体后，在 `src/Definition/EntityFramework/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
 - `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
 
-单元测试不会启动 Aspire：
-
-```pwsh
-dotnet test --project tests/UnitTest/UnitTest.csproj
-```
-
-需要 Docker/Podman 和真实服务时，再运行 `tests/ApiTest` 中标记为 `Integration` 的测试。
+当前模板没有独立单元测试项目。需要 Docker/Podman 和真实服务时，运行 `tests/ApiTest` 中标记为 `Integration` 的测试。
 
 ## 文档
 

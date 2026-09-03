@@ -25,7 +25,7 @@ pwsh ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myprojectname-ap
 - ApiStandard：framework-dependent，明确关闭 Trim/AOT。
 - MiniApi：`linux-musl-x64` self-contained NativeAOT，开启 Trim/AOT。
 - `-NoRestore` 只在目标 RID 已完成 restore 时使用。
-- 只有验证码、报表、PDF、图片文字等服务端渲染场景才安装字体。
+- 只有确需服务端图片或文字渲染（如报表、PDF 等）时才安装字体。
 - 发布前先 Release build；之后检查镜像大小、启动日志、健康端点和运行架构。
 
 ### `UpdateMenus.ps1`

@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. Add iteration-based Product Design and Plan Task documentation templates to ApiStandard and MiniApi, with an AI delivery loop that records implementation progress and verification evidence.
+        <PackageReleaseNotes>1. Keep repository maintenance Product Design, Plan Task, ProjectTracking and Changelog records under the repository root; retain only the baseline starter documents intended for generated projects in ApiStandard and MiniApi templates.
 2. Add MiniApi-specific Minimal API and Native AOT skills covering endpoint generation, trimming, serialization, dependency review, testing, and completion gates.
 3. Align test database configuration and cleanup with each template's AppHost testing database, including guarded cleanup of the resolved test database.
         </PackageReleaseNotes>
@@ -31,7 +31,7 @@
     <PropertyGroup>
         <!-- 定义通用排除模式 -->
         <StandardExcludes>
-            **\bin\**;**\obj\**;**\.vs\**;**\node_modules\**;**\.angular\**;**\*.lock;**\pnpm-lock.yaml;**\dist\**</StandardExcludes>
+            **\bin\**;**\obj\**;**\.vs\**;**\node_modules\**;**\.angular\**;**\*.lock;**\pnpm-lock.yaml;**\dist\**;ApiStandard\src\Perigon\Perigon.AspNetCore.SourceGeneration\**;MiniApi\src\Perigon\Perigon.AspNetCore.SourceGeneration\**</StandardExcludes>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="ApiStandard\**\*"

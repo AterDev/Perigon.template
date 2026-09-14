@@ -8,6 +8,10 @@ builder.AddFrameworkServices();
 
 // Web中间件服务:route, openapi, jwt, cors, auth, rateLimiter etc.
 builder.AddMiddlewareServices();
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, ApiService.ApiJsonSerializerContext.Default);
+});
 builder.Services.AddOpenApi();
 
 builder.Services.AddAuthorizationBuilder()

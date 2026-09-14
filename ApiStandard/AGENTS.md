@@ -47,7 +47,7 @@
 
 - 脚手架、模块/服务、代码生成、OpenAPI 客户端和模板约定：使用 `perigon`。
 - AppHost、分布式资源、启停、状态、日志、trace 或部署：使用 `aspire` 及它路由的子工作流。普通构建/测试使用 `dotnet build`/`dotnet test`。
-- 需求、规格、设计、迭代 PD/PT、实现记录或变更说明：使用 `docs`。
+- 需求、规格、设计、迭代 PD/PT、实现记录或变更说明：使用模板项目内的 `docs`。
 - 任何 AI coding 后的进度/文档同步，以及计划执行、完成审计和收敛：使用 `delivery-loop`。
 - TUnit、Microsoft.Testing.Platform 和 Aspire API 集成测试：使用 `test`。
 - 代码/差异审查和质量门：使用 `code-review`。

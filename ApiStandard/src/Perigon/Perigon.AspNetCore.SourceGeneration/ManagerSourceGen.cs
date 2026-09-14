@@ -13,6 +13,7 @@ namespace Perigon.AspNetCore.SourceGeneration;
 public class ManagerSourceGen : IIncrementalGenerator
 {
     public const string BaseManagerName = "ManagerBase";
+    public const string BaseEndpointGroupName = "RestEndpointBase";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -38,12 +39,33 @@ public class ManagerSourceGen : IIncrementalGenerator
             )
             .Where(static info => !string.IsNullOrEmpty(info.FullName));
 
+        var localEndpointGroupsProvider = context
+            .SyntaxProvider.CreateSyntaxProvider(
+                predicate: static (node, _) => HasBaseList(node),
+                transform: static (ctx, cancellationToken) =>
+                {
+                    var classDecl = (ClassDeclarationSyntax)ctx.Node;
+
+                    if (
+                        ctx.SemanticModel.GetDeclaredSymbol(classDecl, cancellationToken)
+                            is INamedTypeSymbol symbol
+                        && CanRegisterLocalEndpointGroup(symbol)
+                    )
+                    {
+                        return new EndpointGroupInfo(symbol.ToDisplayString());
+                    }
+                    return default;
+                }
+            )
+            .Where(static info => !string.IsNullOrEmpty(info.FullName));
+
         // Step 2: 从引用的程序集中提取 Manager 类和模块信息（转换为纯数据）
         var referencedDataProvider = context.CompilationProvider.Select(
             static (compilation, cancellationToken) =>
             {
                 var managers = new List<ManagerInfo>();
                 var modules = new List<ModuleInfo>();
+                var endpointGroups = new List<EndpointGroupInfo>();
 
                 foreach (var reference in compilation.References)
                 {
@@ -69,6 +91,11 @@ public class ManagerSourceGen : IIncrementalGenerator
                                 if (CanRegisterReferencedManager(namedType))
                                 {
                                     managers.Add(new ManagerInfo(namedType.ToDisplayString()));
+                                }
+
+                                if (CanRegisterReferencedEndpointGroup(namedType))
+                                {
+                                    endpointGroups.Add(new EndpointGroupInfo(namedType.ToDisplayString()));
                                 }
 
                                 // 检查是否是 ModuleExtensions 类
@@ -99,7 +126,8 @@ public class ManagerSourceGen : IIncrementalGenerator
 
                 return new ReferencedData(
                     managers.OrderBy(m => m.FullName).ToImmutableArray(),
-                    modules.OrderBy(m => m.AssemblyName).ToImmutableArray()
+                    modules.OrderBy(m => m.AssemblyName).ToImmutableArray(),
+                    endpointGroups.OrderBy(group => group.FullName).ToImmutableArray()
                 );
             }
         );
@@ -112,6 +140,7 @@ public class ManagerSourceGen : IIncrementalGenerator
         // Step 4: 合并所有数据
         var combinedData = localManagersProvider
             .Collect()
+            .Combine(localEndpointGroupsProvider.Collect())
             .Combine(referencedDataProvider)
             .Combine(assemblyNameProvider);
 
@@ -120,7 +149,7 @@ public class ManagerSourceGen : IIncrementalGenerator
             combinedData,
             static (spc, data) =>
             {
-                var ((localManagers, referencedData), assemblyName) = data;
+                var (((localManagers, localEndpointGroups), referencedData), assemblyName) = data;
 
                 // 过滤 Share 程序集
                 if (assemblyName == "Share")
@@ -133,6 +162,12 @@ public class ManagerSourceGen : IIncrementalGenerator
                     .Concat(referencedData.Managers)
                     .Distinct()
                     .OrderBy(m => m.FullName)
+                    .ToImmutableArray();
+
+                var allEndpointGroups = localEndpointGroups
+                    .Concat(referencedData.EndpointGroups)
+                    .Distinct()
+                    .OrderBy(group => group.FullName)
                     .ToImmutableArray();
 
                 // 生成 Manager 扩展
@@ -152,6 +187,16 @@ public class ManagerSourceGen : IIncrementalGenerator
                     spc.AddSource(
                         "__AterAutoGen__ModuleExtensions.g.cs",
                         SourceText.From(modSource!, Encoding.UTF8)
+                    );
+                }
+
+                // 生成 Minimal API endpoint group 扩展
+                var endpointSource = GenerateEndpointGroupExtensions(assemblyName, allEndpointGroups);
+                if (!string.IsNullOrWhiteSpace(endpointSource))
+                {
+                    spc.AddSource(
+                        "__AterAutoGen__EndpointGroupExtensions.g.cs",
+                        SourceText.From(endpointSource!, Encoding.UTF8)
                     );
                 }
             }
@@ -204,6 +249,30 @@ public class ManagerSourceGen : IIncrementalGenerator
         return false;
     }
 
+    private static bool InheritsFromEndpointGroupBase(INamedTypeSymbol symbol)
+    {
+        var baseType = symbol.BaseType;
+        while (baseType != null)
+        {
+            if (baseType.Name == BaseEndpointGroupName)
+            {
+                return true;
+            }
+            baseType = baseType.BaseType;
+        }
+        return false;
+    }
+
+    private static bool HasPublicMapEndpointsMethod(INamedTypeSymbol symbol)
+    {
+        return symbol.GetMembers()
+            .OfType<IMethodSymbol>()
+            .Any(method => method.Name == "MapEndpoints"
+                && method.DeclaredAccessibility == Accessibility.Public
+                && method.IsStatic
+                && method.Parameters.Length == 1);
+    }
+
     private static bool CanRegisterLocalManager(INamedTypeSymbol symbol)
     {
         return !symbol.IsAbstract
@@ -215,6 +284,20 @@ public class ManagerSourceGen : IIncrementalGenerator
     {
         return symbol.DeclaredAccessibility == Accessibility.Public
             && CanRegisterLocalManager(symbol);
+    }
+
+    private static bool CanRegisterLocalEndpointGroup(INamedTypeSymbol symbol)
+    {
+        return !symbol.IsAbstract
+            && !symbol.IsGenericType
+            && InheritsFromEndpointGroupBase(symbol)
+            && HasPublicMapEndpointsMethod(symbol);
+    }
+
+    private static bool CanRegisterReferencedEndpointGroup(INamedTypeSymbol symbol)
+    {
+        return symbol.DeclaredAccessibility == Accessibility.Public
+            && CanRegisterLocalEndpointGroup(symbol);
     }
 
     /// <summary>
@@ -283,6 +366,38 @@ public class ManagerSourceGen : IIncrementalGenerator
             """;
     }
 
+    private static string? GenerateEndpointGroupExtensions(
+        string namespaceName,
+        ImmutableArray<EndpointGroupInfo> endpointGroups
+    )
+    {
+        if (endpointGroups.Length == 0)
+        {
+            return null;
+        }
+
+        var sb = new StringBuilder();
+        foreach (var endpointGroup in endpointGroups)
+        {
+            sb.AppendLine($"        {endpointGroup.FullName}.MapEndpoints(endpoints);");
+        }
+
+        return $$"""
+            // <auto-generated by perigon/>
+            using Microsoft.AspNetCore.Routing;
+
+            namespace {{namespaceName}}.Extension;
+            public static partial class __AterAutoGen__EndpointGroupExtensions
+            {
+                public static IEndpointRouteBuilder MapEndpointGroups(this IEndpointRouteBuilder endpoints)
+                {
+            {{sb}}
+                    return endpoints;
+                }
+            }
+            """;
+    }
+
     #region 数据结构（实现值相等以支持增量缓存）
 
     /// <summary>
@@ -323,6 +438,22 @@ public class ManagerSourceGen : IIncrementalGenerator
         public override int GetHashCode() => AssemblyName?.GetHashCode() ?? 0;
     }
 
+    private readonly struct EndpointGroupInfo : IEquatable<EndpointGroupInfo>
+    {
+        public string FullName { get; }
+
+        public EndpointGroupInfo(string fullName)
+        {
+            FullName = fullName;
+        }
+
+        public bool Equals(EndpointGroupInfo other) => FullName == other.FullName;
+
+        public override bool Equals(object obj) => obj is EndpointGroupInfo other && Equals(other);
+
+        public override int GetHashCode() => FullName?.GetHashCode() ?? 0;
+    }
+
     /// <summary>
     /// 引用程序集的数据
     /// </summary>
@@ -330,19 +461,24 @@ public class ManagerSourceGen : IIncrementalGenerator
     {
         public ImmutableArray<ManagerInfo> Managers { get; }
         public ImmutableArray<ModuleInfo> Modules { get; }
+        public ImmutableArray<EndpointGroupInfo> EndpointGroups { get; }
 
         public ReferencedData(
             ImmutableArray<ManagerInfo> managers,
-            ImmutableArray<ModuleInfo> modules
+            ImmutableArray<ModuleInfo> modules,
+            ImmutableArray<EndpointGroupInfo> endpointGroups
         )
         {
             Managers = managers;
             Modules = modules;
+            EndpointGroups = endpointGroups;
         }
 
         public bool Equals(ReferencedData other)
         {
-            return Managers.SequenceEqual(other.Managers) && Modules.SequenceEqual(other.Modules);
+            return Managers.SequenceEqual(other.Managers)
+                && Modules.SequenceEqual(other.Modules)
+                && EndpointGroups.SequenceEqual(other.EndpointGroups);
         }
 
         public override bool Equals(object obj) => obj is ReferencedData other && Equals(other);
@@ -357,6 +493,10 @@ public class ManagerSourceGen : IIncrementalGenerator
             foreach (var m in Modules)
             {
                 hash = (hash * 31) + m.GetHashCode();
+            }
+            foreach (var endpointGroup in EndpointGroups)
+            {
+                hash = (hash * 31) + endpointGroup.GetHashCode();
             }
             return hash;
         }

@@ -31,7 +31,7 @@
 - `dotnet pack Pack.csproj -c Release --output ./artifacts --no-restore`：通过；包 ID/版本/ReleaseNotes 正确，含两套模板和两个模板配置文件，不含根目录维护文档。
 - Perigon.docs 校验 191 个 Markdown 文件通过，`build.ps1` 完成双语文档站点构建。
 - GitHub 发布工作流改为运行实际存在的 `MiniApi/tests/ApiTest/ApiTest.csproj`；原 `tests/UnitTest/UnitTest.csproj` 路径不存在。
-- 发布流程：待合并至 `nuget` 并推送后确认 GitHub Actions / NuGet 发布状态。
+- 发布完成：`nuget` 分支已推送；GitHub Actions 构建和 NuGet push 全部成功，NuGet 已列出 `Perigon.templates` 1.3.16。
 
 ## 兼容性与迁移
 

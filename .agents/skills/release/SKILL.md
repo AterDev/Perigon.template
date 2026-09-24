@@ -44,6 +44,5 @@ Prepare and validate a release of `Perigon.templates`, then merge the completed 
 3. Resolve conflicts from the actual source content and rerun affected checks. Never discard unrelated work to make the merge succeed.
 4. Verify that the resulting `nuget` tip contains the intended version, release notes, and release commits.
 5. Push `nuget` only when the user requested publication or otherwise explicitly authorized the push. In this repository that push triggers `.github/workflows/build.yml` and publishes to NuGet.
-6. If pushed, monitor the workflow through completion and report the published version or the failure. Do not create or push a tag unless requested or required by the confirmed release process.
 
 Finish with the version, release-note summary, package/check results, documentation changes, merge commit, and whether publication was triggered and completed.

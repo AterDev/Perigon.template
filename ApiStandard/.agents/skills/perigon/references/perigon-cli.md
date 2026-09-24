@@ -11,6 +11,7 @@ Perigon 用于创建、安装和生成，不代替 `dotnet build/test`、前端�
 | 任务 | 命令 |
 |---|---|
 | 创建解决方案 | `perigon new <name>` |
+| 对比并升级项目基础架构 | `perigon update` |
 | 添加模块/服务 | `perigon add module <name>` / `perigon add service <name>` |
 | 输出实体建模规则 | `perigon generate entity`；只输出规则，不创建文件 |
 | Standard 生成 DTO/Manager/Controller | `perigon generate dto|manager|controller ...` |
@@ -21,6 +22,12 @@ Perigon 用于创建、安装和生成，不代替 `dotnet build/test`、前端�
 | 启动 Studio 与 HTTP MCP | `perigon studio` |
 
 仅当当前帮助确认支持时才使用其他命令或选项。`-f/--force` 会覆盖生成文件，执行前必须确认目标和 diff。
+
+## 升级现有项目
+
+在解决方案根目录的交互式终端运行 `perigon update`。它会更新本机的 `Perigon.templates`、按当前模板类型和前端模式生成临时项目，然后只对比受管基础架构：`src/Perigon`、`Definition/ServiceDefault(s)`、`Definition/Share`、`Definition/EntityFramework`、`scripts/*.ps1` 与 `.agent/.agents`。
+
+左栏按文件名列出差异；方向键移动，空格选择，右栏查看完整路径和内容差异，Enter 应用，Esc 取消。更新不会删除仅存在于当前项目的文件，并排除 EF migrations、模板规定的 DbContext 以及 `Perigon.AspNetCore/Constants/WebConst.cs`。应用后 CLI 自动运行 `dotnet build`；构建失败时根据输出修复，不能把文件复制完成视为升级成功。
 
 ## 内置生成器边界
 
@@ -48,18 +55,12 @@ DTO、Manager、Controller 内置生成器适用于 Standard；`.config/perigon.
 
 - `perigon agent init` 可初始化 MCP 或 Skills；MCP 配置通常写入 `.vscode/mcp.json`。
 - `perigon agent mcp` 是面向 IDE/代码 Agent 的 stdio Server，通过 roots 定位项目。stdout 只能承载 MCP 协议，普通日志不能写入 stdout。
-- Studio 管理 HTTP MCP；必须先启动 `perigon studio`，其配置和地址以当前 Studio/项目配置为准。
 - 新增自定义 MCP 工具后重启客户端中的 MCP Server，才能重新发现工具。
-- MCP 会直接修改生成任务、模块或代码文件；调用前确认目标路径，调用后检查 `git diff`。
+- MCP 会直接修改模块或代码文件；调用前确认目标路径，调用后检查 `git diff`。
 
-## 自定义生成任务
+## Skills 与自定义生成
 
-需要可重复的项目专用生成时，使用根目录 `templates/*.razor`、`.github/prompts/*.prompt.md` 和 Perigon 自定义任务，而不是复制粘贴代码：
-
-- 一个工具由 Prompt 与一个或多个模板步骤组成；工具名使用稳定、清晰的 MCP 名称。
-- 每步明确上下文（Entity、DTO、OpenAPI 或自定义变量）、模板和输出路径。
-- 输出路径可使用当前版本支持的模型名变量；先从实时工具/配置确认变量名。
-- Razor 模板经小样例验证后再批量运行，生成后仍执行常规代码审查和构建。
+Studio 不再提供提示词、Razor 模板、自定义生成任务或 MCP 工具配置页面。需要项目专用生成时，通过当前 `perigon` skill 向 AI 描述目标，并优先调用现有 CLI/MCP；没有内置生成器的场景由 AI 按项目架构直接创建代码。保留可复用的约束、命令和审查规则在 skill/reference 中，生成后仍执行常规代码审查、测试和构建。
 
 ## 生成后检查
 

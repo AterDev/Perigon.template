@@ -23,6 +23,12 @@ ApiStandard 始终采用租户感知模型。普通业务请求由 Token Claims 
 
 后台任务没有 HTTP 上下文：先通过受控的全局目录上下文取得 Tenant，再为每个租户创建独立短生命周期上下文；使用独立连接前确保租户配置已进入缓存。禁止跨租户复用同一个 DbContext。
 
+## 数据迁移
+
+- 使用`dotnet ef migrations add`生成迁移内容，生成到`src/Definition/EntityFramework/Migrations`目录下。
+- 不同 DbContext 的迁移应分别生成，避免混淆。
+- 只能使用工具生成，并绝不能手动修改迁移文件，避免引入不一致或错误。
+
 ## DTO
 
 模块 DTO 放在 `Models/{Entity}Dtos`，一个类型一个文件，使用 `{Entity}AddDto`、`UpdateDto`、`FilterDto`、`DetailDto`、`ItemDto`。数据传输类型都以 `Dto` 结尾，不用 Input/Request/Response 代替 DTO；嵌套成员也使用 DTO，不能泄漏实体。
@@ -39,16 +45,19 @@ ApiStandard 始终采用租户感知模型。普通业务请求由 Token Claims 
 - 业务流程、DbContext 和缓存访问放在 Manager；Controller/Endpoint 不直接操作 DbContext。
 - 有实体 CRUD 时继承合适的 `ManagerBase<TDbContext,TEntity>`；无特定实体时继承非泛型 ManagerBase。继承后由源生成器注册，不要重复注入。
 - Manager 返回实体或 DTO，不返回 `ActionResult`，不依赖 `HttpContext`，也不互相引用形成循环。
-- `Queryable` 默认无跟踪；优先复用基类的分页、CRUD、批量和事务能力。基类写方法通常已经执行数据库操作，不要无依据再调用 SaveChanges。
+- 仅查询时，优先使用`Queryable` 默认无跟踪；优先复用基类的分页、CRUD、批量和事务能力。
+- 查询字段空值判断，组合条件时，可使用`WhereNotNull`扩展方法，而不是手动拼接条件。
 - 业务校验失败抛 `BusinessException` 并使用可本地化消息。
-- Manager 过大时：第三方/中间件调用拆到可注入 Service，纯算法拆到可单测类，数据转换留在模型或 Helper。
+- Manager 代码太多时：第三方/中间件调用拆到可注入 Service，纯算法拆到可单测类，数据转换留在模型或 Helper。
 - Helper 通常是无 DI 的静态能力；Service 是需要 DI 或外部依赖的实现。不要为每个 Manager 机械创建接口。
 
 ## Controller 与 Minimal API
 
 ApiStandard Controller 只负责路由、模型验证、授权、调用 Manager、状态码和响应塑形：
 
-- 使用标准 HTTP 谓词和状态码；成功直接返回模型或 `ActionResult<T>`。
+- 使用标准 HTTP 谓词和状态码；
+- 简单查询直接返回模型，避免额外包装。
+- 有多个返回值时，使用 `ActionResult<T>` ，而不是`IActionResult`。
 - 不使用统一 `ApiResponse<T>` 包装，不让所有错误返回 200。
 - 错误使用 `Problem()`，不存在使用 `NotFound()`；业务异常留给全局中间件。
 - 公开接口保持唯一、稳定的 OperationId/动作名，便于客户端生成。

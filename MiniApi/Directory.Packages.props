@@ -38,6 +38,7 @@
       minimum supported SDK is raised for every template consumer.
     -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Perigon.AspNetCore.SourceGeneration" Version="1.1.1" />
     <!-- OpenTelemetry Packages -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
@@ -53,8 +54,5 @@
     <PackageVersion Include="MiniExcel" Version="2.0.0-preview.2" />
     <PackageVersion Include="Npgsql" Version="10.0.0" />
     <PackageVersion Include="Perigon.PostgreSQL" Version="0.1.2" />
-    <PackageVersion Include="SixLabors.Fonts" Version="2.1.3" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
-    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
   </ItemGroup>
 </Project>

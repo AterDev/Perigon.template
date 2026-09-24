@@ -28,7 +28,7 @@ MiniApi 不等同于 ApiStandard：不要假设存在 `AdminService`、Controlle
 - 共享定义：`src/Definition/Share`
 - 服务扩展：`src/Definition/ServiceDefaults`
 - AppHost：`src/AppHost`
-- 文档：
+- 文档：`docs`
   - 总览：`docs/UserStory/Demand.md`、`docs/UserStory/Design.md`
   - 功能设计：`docs/UserStory/Iter<number>-<Name>/PD<4-digit>-<Module>.md`
   - 计划记录：`docs/Development/Iter<number>-<Name>/PT<4-digit>-<Module>.md`
@@ -50,7 +50,7 @@ MiniApi 不等同于 ApiStandard：不要假设存在 `AdminService`、Controlle
 - Perigon 架构、CLI、生成、Endpoint/Manager/模型和模板约定：`perigon`。
 - Native AOT、Trim、RDG、JSON、反射、依赖和发布兼容：`native-aot`。
 - AppHost、资源、启停、状态、日志或部署：使用环境中可用的 Aspire skill；普通构建/测试直接使用 `dotnet`。
-- 需求、设计、迭代 PD/PT、实现记录：`docs`。
+- 需求、设计、迭代 PD/PT、实现记录：使用模板项目内的 `docs`。
 - AI coding 后同步、计划执行、完成审计和收敛：`delivery-loop`。
 - TUnit、Aspire API 集成测试和 AOT 测试证据：`test`。
 - 差异审查和质量门：`code-review`。

@@ -37,9 +37,9 @@ jobs:
         working-directory: ApiStandard
         run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
 
-      - name: Run MiniApi unit tests
+      - name: Run MiniApi integration tests
         working-directory: MiniApi
-        run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
+        run: dotnet test --project tests/ApiTest/ApiTest.csproj --configuration Release --no-restore --no-build
 
       - name: Pack NuGet package
         run: dotnet pack Pack.csproj -c Release --output ./artifacts --no-restore

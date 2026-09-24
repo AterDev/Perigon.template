@@ -9,7 +9,7 @@ description: 为 MiniApi 规划、编写、运行和诊断 TUnit 单元测试、
 
 ## 分层
 
-- `tests/UnitTest`：纯验证、转换、计算和不需要分布式资源的行为。
+- 可选的 `tests/UnitTest`：若项目新增纯验证、转换或计算逻辑，可按需创建该项目；当前模板不包含独立单元测试项目。
 - `tests/ApiTest`：Minimal API 路由/绑定、JSON、OpenAPI、鉴权授权、Manager/EF、真实 AppHost 资源和服务集成。
 - Native AOT：AOT-sensitive 变化使用 `native-aot` 执行 Release publish；必要时运行二进制或容器验证健康端点和真实 API 契约。
 - 静态结构检查：文档链接、包内容、模板文件或规则不变式；不因为名称是“测试”就启动 Aspire。
@@ -36,7 +36,6 @@ AppHost 是测试数据库名的事实源：Testing 环境使用 `MyProjectName_
 在 `MiniApi` 根目录：
 
 ```powershell
-dotnet test --project tests/UnitTest/UnitTest.csproj
 dotnet test --project tests/ApiTest/ApiTest.csproj --list-tests
 dotnet test --project tests/ApiTest/ApiTest.csproj
 ```

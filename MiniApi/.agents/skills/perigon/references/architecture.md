@@ -14,7 +14,7 @@ MiniApi 面向轻量 Minimal API 和 Native AOT：优先静态可分析、显式
 - `Definition/EntityFramework`：PostgreSQL DbContext、映射和 schema 模型。
 - `Definition/Share`：跨层共享的常量、模型、基类和服务。
 - `Definition/ServiceDefaults`：Aspire、框架服务和 Web middleware 注册。
-- `src/Perigon/Perigon.AspNetCore.SourceGeneration`：编译期生成 Manager、module compatibility hook 和 Endpoint group 注册。
+- `Perigon.AspNetCore.SourceGeneration` NuGet 包：编译期生成 Manager、module compatibility hook 和 Endpoint group 注册。
 - `AppHost`：PostgreSQL、可选 Redis 与 ApiService 编排，不承载业务逻辑。
 
 依赖由定义流向实现再流向服务。不要把 `HttpContext` 或宿主实现泄漏到 Manager 和可复用服务。

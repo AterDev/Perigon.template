@@ -190,6 +190,7 @@ public class ManagerSourceGen : IIncrementalGenerator
                     );
                 }
 
+                // 生成 Minimal API endpoint group 扩展
                 var endpointSource = GenerateEndpointGroupExtensions(assemblyName, allEndpointGroups);
                 if (!string.IsNullOrWhiteSpace(endpointSource))
                 {
@@ -370,6 +371,11 @@ public class ManagerSourceGen : IIncrementalGenerator
         ImmutableArray<EndpointGroupInfo> endpointGroups
     )
     {
+        if (endpointGroups.Length == 0)
+        {
+            return null;
+        }
+
         var sb = new StringBuilder();
         foreach (var endpointGroup in endpointGroups)
         {

@@ -8,21 +8,22 @@
 - CurrentIteration: `Iter0-Initial`
 - CurrentPD: `PD0001-Initial`
 - CurrentPT: `PT0001-Initial`
-- CurrentTask:
-- Status: `planned`
-- Progress: `0/0`
-- LastUpdated:
+- CurrentTask: 已完成 SixLabors 与图形验证码实现移除
+- Status: `complete`
+- Progress: `3/3`
+- LastUpdated: `2026-09-03`
 
 ## 迭代进度
 
 | Iteration | Product designs | Plan tasks | Status | Progress | Blocker | Next action |
 |---|---|---|---|---|---|---|
-| `Iter0-Initial` | [PD0001-Initial](../UserStory/Iter0-Initial/PD0001-Initial.md) | [PT0001-Initial](./Iter0-Initial/PT0001-Initial.md) | planned | 0/0 | none | 确认初始需求与任务 |
+| `Iter0-Initial` | [PD0001-Initial](../UserStory/Iter0-Initial/PD0001-Initial.md) | [PT0001-Initial](./Iter0-Initial/PT0001-Initial.md) | complete | 3/3 | none | 无 |
 
 ## 最近实现记录
 
 | Date | Iteration / PT | Task | Result | Verification | Remaining |
 |---|---|---|---|---|---|
+| 2026-09-03 | Iter0-Initial / PT0001-Initial | TASK-001～003 | 已完成两个模板的图形验证码依赖、实现、测试和文档清理 | 两套 solution build、ApiStandard UnitTest 20/20、文档校验/构建通过 | 外部调用方需迁移已删除公开 helper |
 
 ## 阻塞与决定
 

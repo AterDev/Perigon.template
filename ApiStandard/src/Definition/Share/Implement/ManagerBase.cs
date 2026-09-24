@@ -218,7 +218,8 @@ public abstract class ManagerBase<TDbContext, TEntity>
         CancellationToken cancellationToken = default
     )
     {
-        foreach (TEntity entity in entities)
+        var entityList = entities.ToList();
+        foreach (TEntity entity in entityList)
         {
             if (IsTenantScoped)
             {
@@ -227,7 +228,7 @@ public abstract class ManagerBase<TDbContext, TEntity>
 
             entity.UpdatedTime = DateTime.UtcNow;
         }
-        await _dbContext.BulkInsertAsync(entities, cancellationToken: cancellationToken);
+        await _dbContext.BulkInsertAsync(entityList, cancellationToken: cancellationToken);
     }
 
     /// <summary>

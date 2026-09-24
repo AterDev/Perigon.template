@@ -45,6 +45,7 @@
     <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Perigon.AspNetCore.SourceGeneration" Version="1.1.1" />
     <!-- OpenTelemetry Packages -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
@@ -58,8 +59,5 @@
     <PackageVersion Include="MailKit" Version="4.17.0" />
     <PackageVersion Include="Mapster" Version="10.0.10" />
     <PackageVersion Include="MiniExcel" Version="2.0.0-preview.4" />
-    <PackageVersion Include="SixLabors.Fonts" Version="2.1.3" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
-    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
   </ItemGroup>
 </Project>

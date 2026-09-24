@@ -31,7 +31,8 @@
         "**/*.user",
         "**/*.lock.json",
         ".git/**",
-        "src/ClientApp/WebApp/**"
+        "src/ClientApp/WebApp/**",
+        "src/Perigon/Perigon.AspNetCore.SourceGeneration/**"
       ]
     },
     {

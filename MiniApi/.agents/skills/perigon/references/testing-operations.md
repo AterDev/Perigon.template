@@ -4,12 +4,11 @@
 
 ```powershell
 dotnet build MyProjectName.slnx -c Release
-dotnet test --project tests/UnitTest/UnitTest.csproj
 dotnet test --project tests/ApiTest/ApiTest.csproj --list-tests
 dotnet test --project tests/ApiTest/ApiTest.csproj
 ```
 
-单元测试不启动 Aspire；只有真实数据库、缓存、AppHost 或 HTTP 契约需要时才运行集成测试。集成测试使用 `[Category("Integration")]`，每个测试会话复用一次 AppHost。
+当前模板没有独立单元测试项目；只有真实数据库、缓存、AppHost 或 HTTP 契约需要时才运行集成测试。集成测试使用 `[Category("Integration")]`，每个测试会话复用一次 AppHost。
 
 测试数据库由 AppHost Testing 环境的 `MyProjectName_test` 决定。清理必须从实际连接字符串读取目标、精确断言测试库名、安全引用标识符，并与 `appsettings.Test.json` 一致。
 
@@ -17,7 +16,7 @@ dotnet test --project tests/ApiTest/ApiTest.csproj
 
 | 变化 | 最小验证 |
 |---|---|
-| 纯业务逻辑 | Release build + 相关 UnitTest |
+| 纯业务逻辑 | Release build + 相关测试或人工验收 |
 | 实体/DbContext | build + 单测 + schema/migration diff；必要时集成测试 + AOT publish |
 | Endpoint/请求响应模型 | build + OpenAPI/真实 HTTP JSON + API 集成测试 + AOT publish |
 | JSON、反射、依赖、DI、EF 模型 | `native-aot` 完整 publish；必要时运行产物 |

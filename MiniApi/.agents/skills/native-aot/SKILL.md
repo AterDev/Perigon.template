@@ -34,7 +34,6 @@ MiniApi 的 `ApiService.csproj` 默认启用 `IsAotCompatible`、`EnableRequestD
 
 ```powershell
 dotnet build MyProjectName.slnx -c Release
-dotnet test --project tests/UnitTest/UnitTest.csproj
 dotnet test --project tests/ApiTest/ApiTest.csproj
 dotnet publish src/Services/ApiService/ApiService.csproj -c Release -r linux-musl-x64 --self-contained true -p:PublishAot=true -p:PublishTrimmed=true
 ```

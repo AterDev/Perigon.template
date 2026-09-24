@@ -131,7 +131,7 @@ public static class Extensions
 
             ConstantExpression minExpr = Expression.Constant(minValObj, propertyType);
             ConstantExpression maxExpr = Expression.Constant(maxValObj, propertyType);
-            MemberExpression propertyAccess = Expression.MakeMemberAccess(parameter, memberExpression.Member);
+            MemberExpression propertyAccess = memberExpression;
             BinaryExpression leftExpr = Expression.GreaterThanOrEqual(propertyAccess, minExpr);
             BinaryExpression rightExpr = Expression.LessThanOrEqual(propertyAccess, maxExpr);
             BinaryExpression andExpr = Expression.AndAlso(leftExpr, rightExpr);

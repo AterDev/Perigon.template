@@ -43,6 +43,14 @@ public static class Extensions
 
             foreach (var dtoProp in typeof(TUpdateDto).GetProperties())
             {
+                // Ownership and identity are never part of a partial business update.
+                if (dtoProp.Name is nameof(IEntityBase.Id)
+                    or nameof(ITenantEntityBase.TenantId)
+                    or nameof(IEntityBase.CreatedTime))
+                {
+                    continue;
+                }
+
                 var value = dtoProp.GetValue(dto);
                 if (value is null)
                 {

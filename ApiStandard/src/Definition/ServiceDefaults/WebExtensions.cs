@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Perigon.AspNetCore.Convention;
 using Perigon.AspNetCore.Converters;
 using ServiceDefaults;
 using ServiceDefaults.Middleware;
@@ -27,6 +28,13 @@ public static class WebExtensions
         builder.Services.ConfigureWebMiddleware(builder.Configuration);
         builder
             .Services.AddControllers()
+            .ConfigureApiBehaviorOptions(o =>
+            {
+                o.InvalidModelStateResponseFactory = context =>
+                {
+                    return new CustomBadRequest(context, null);
+                };
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

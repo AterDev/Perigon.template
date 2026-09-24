@@ -19,6 +19,7 @@
 |---|---|---|---|
 | `Iter0-Initial` | [PD0001-Initial](./Iter0-Initial/PD0001-Initial.md) | 源代码生成器统一使用 NuGet 包并合并能力 | complete |
 | `Iter1-DataAccess` | [PD0002-ApiStandardDataAccess](./Iter1-DataAccess/PD0002-ApiStandardDataAccess.md) | 数据访问评估；先修复受保护字段更新、批量枚举与嵌套范围查询 | in-progress |
+| `Iter2-ApiBehavior` | [PD0003-ApiBehavior](./Iter2-ApiBehavior/PD0003-ApiBehavior.md) | 暴露 role_id Claims，并统一 ApiStandard 自动模型验证错误响应结构 | complete |
 
 ## 全局设计决策
 

@@ -7,9 +7,9 @@
 - CurrentIteration: `Iter3-DependencyRefresh`
 - CurrentPD: `PD0004-DependencyRefresh`
 - CurrentPT: `PT0005-DependencyRefresh`
-- CurrentTask: ApiStandard 依赖升级与模板包 1.3.17 发布
-- Status: `in-progress`
-- Progress: `3/4`
+- CurrentTask: ApiStandard 依赖升级与模板包 1.3.17 已发布
+- Status: `complete`
+- Progress: `4/4`
 - LastUpdated: `2026-10-08`
 
 ## 迭代进度
@@ -19,14 +19,14 @@
 | `Iter0-Initial` | [PD0001-Initial](../UserStory/Iter0-Initial/PD0001-Initial.md) | [PT0001-Initial](./Iter0-Initial/PT0001-Initial.md); [PT0002-SourceGeneratorPackage](./Iter0-Initial/PT0002-SourceGeneratorPackage.md) | complete | 3/3 | none | 无 |
 | `Iter1-DataAccess` | [PD0002](../UserStory/Iter1-DataAccess/PD0002-ApiStandardDataAccess.md) | [PT0003](./Iter1-DataAccess/PT0003-DataAccess.md) | in-progress | 首批 6/6 | none | 优先处理 DA-01，剩余问题按 PD 分批实施 |
 | `Iter2-ApiBehavior` | [PD0003](../UserStory/Iter2-ApiBehavior/PD0003-ApiBehavior.md) | [PT0004](./Iter2-ApiBehavior/PT0004-ApiBehavior.md) | complete | 2/2 | none | 无 |
-| `Iter3-DependencyRefresh` | [PD0004](../UserStory/Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | [PT0005](./Iter3-DependencyRefresh/PT0005-DependencyRefresh.md) | in-progress | 3/4 | none | 将 release commit 合并至 nuget，确认 CI 与 NuGet 页面 |
+| `Iter3-DependencyRefresh` | [PD0004](../UserStory/Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | [PT0005](./Iter3-DependencyRefresh/PT0005-DependencyRefresh.md) | complete | 4/4 | none | 无 |
 
 ## 最近实现记录
 
 | Date | Plan task | Result | Verification | Remaining |
 |---|---|---|---|---|
 | 2026-09-24 | PT0004-ApiBehavior | 在两套模板增加 `IUserContext.RoleIds`，为 ApiStandard 自动模型验证错误增加结构化 HTTP 400 响应，并发布模板包 1.3.16 | 两套 Release build；ApiStandard 22/22；MiniApi Aspire smoke test 1/1；包内容核验通过；双语文档校验 191 篇并构建通过；GitHub Actions 发布成功且 NuGet 版本页已列出 1.3.16 | 无 |
-| 2026-10-08 | PT0005-DependencyRefresh | ApiStandard 升级 Aspire 13.6.1 和 .NET 10 依赖，EF Core Design 设为私有传递依赖；准备发布模板包 1.3.17 | 两套 Release build（0 警告/错误）；ApiStandard 22/22、MiniApi 1/1；包内容 1.3.17 校验通过；双语文档校验 199 篇并构建通过 | 等待 nuget CI 和 NuGet 版本确认 |
+| 2026-10-08 | PT0005-DependencyRefresh | ApiStandard 升级 Aspire 13.6.1 和 .NET 10 依赖，EF Core Design 设为私有传递依赖；发布模板包 1.3.17 | 两套 Release build（0 警告/错误）；ApiStandard 22/22、MiniApi 1/1；包内容 1.3.17 校验通过；双语文档校验 199 篇并构建通过；GitHub Actions #37720390207 发布成功，NuGet 页面已列出 1.3.17 | 无 |
 | 2026-09-22 | PT0003-DataAccess | 整理数据访问改进说明，修复局部更新受保护字段、批量重复枚举和嵌套范围查询 | ApiStandard 22/22；两套 solution build；本地 pack/内容检查；双语文档校验/构建通过 | DA-01 等后续项仍未修复；未运行正式数据库批量集成测试 |
 | 2026-09-03 | PT0001-Initial | 移除模板图形验证码实现及 SixLabors 依赖 | 两套 solution build、ApiStandard 20/20 测试、Perigon.docs 校验/构建通过 | 外部调用方需迁移已删除公开 helper |
 | 2026-09-14 | PT0002-SourceGeneratorPackage | 两套模板和 CLI 切换到 `Perigon.AspNetCore.SourceGeneration` 1.1.1，并合并 Manager、Module、Localizer 与 Minimal API endpoint group 生成能力 | 两套 solution build、CLI 155/155 测试、MiniApi Native AOT 运行验证、包构建和文档校验通过；1.1.1 已发布 | 无 |

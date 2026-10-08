@@ -2,6 +2,14 @@
 
 > 只记录 Perigon.template 仓库已交付的用户可见行为、公开契约、配置或运维变化。
 
+## 1.3.17 - 2026-10-08
+
+### Changed
+
+- ApiStandard 的 Aspire AppHost 和 hosting 依赖升级至 13.6.1，并更新 .NET 10、EF Core、认证、OpenTelemetry、测试及第三方依赖。
+- ApiStandard 的 EF Core Design 保留迁移工具所需能力，但不再作为传递依赖暴露给下游项目。
+- 明确 Aspire 版本基线：ApiStandard 为 13.6.1，MiniApi 保持 13.5.0。
+
 ## 1.3.16 - 2026-09-24
 
 ### Changed

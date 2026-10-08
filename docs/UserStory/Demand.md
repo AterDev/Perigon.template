@@ -30,6 +30,7 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 | `Iter0-Initial` | [PD0001-Initial](./Iter0-Initial/PD0001-Initial.md) | TemplateAndCli | complete | 统一源代码生成器 NuGet 消费方式并合并两套模板的生成能力 |
 | `Iter1-DataAccess` | [PD0002-ApiStandardDataAccess](./Iter1-DataAccess/PD0002-ApiStandardDataAccess.md) | DataAccess | in-progress | 评估多租户和 EF 数据访问，分批修复兼容性影响较小的问题 |
 | `Iter2-ApiBehavior` | [PD0003-ApiBehavior](./Iter2-ApiBehavior/PD0003-ApiBehavior.md) | ApiBehavior | complete | 为用户角色 ID 和 ApiStandard 自动验证错误定义一致的响应契约 |
+| `Iter3-DependencyRefresh` | [PD0004-DependencyRefresh](./Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | DependencyManagement | in-progress | 更新 ApiStandard 的 Aspire 与运行时依赖，明确 MiniApi 兼容基线 |
 
 ## 编号规则
 

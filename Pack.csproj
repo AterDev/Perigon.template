@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.3.16</Version>
+        <Version>1.3.17</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,12 +21,10 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. Unify ApiStandard and MiniApi source generation, including automatic Minimal API endpoint group registration; update MiniApi JSON and Native AOT wiring.
-2. Improve data access safety and correctness for partial updates, bulk inserts, and nested Between queries.
-3. Expose valid role_id claims through IUserContext.RoleIds and standardize ApiStandard invalid-model-state responses as HTTP 400 with title, detail, status, and trace ID.
-4. Remove the built-in image captcha helper and ImageSharp dependency. Existing callers of ImageHelper.GenerateImageCaptcha must migrate.
-5. Improve GenSwagger.ps1 by restoring its local tool manifest and explicitly building before Swagger generation.
-        </PackageReleaseNotes>
+        <PackageReleaseNotes>1. Upgrade ApiStandard to Aspire 13.6.1 and refresh its .NET 10, EF Core, authentication, OpenTelemetry, and supporting package dependencies.
+2. Upgrade ApiStandard test tooling to TUnit 1.72.16.
+3. Keep EF Core design-time tooling private to generated ApiStandard projects to prevent transitive dependency leakage.
+4. MiniApi package dependencies remain on their existing baseline.</PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
     </PropertyGroup>

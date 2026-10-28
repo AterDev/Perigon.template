@@ -7,7 +7,7 @@
 ## 要求
 
 - .NET 10.0 SDK（建议 10.0.103 或兼容的 .NET 10 SDK）
-- 与模板 SDK 匹配的 Aspire CLI：ApiStandard 使用 13.6.1，MiniApi 使用 13.5.0
+- 与模板 SDK 匹配的 Aspire CLI：两套模板均使用 13.6.4
 
 ## 文档
 

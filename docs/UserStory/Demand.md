@@ -32,6 +32,8 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 | `Iter2-ApiBehavior` | [PD0003-ApiBehavior](./Iter2-ApiBehavior/PD0003-ApiBehavior.md) | ApiBehavior | complete | 为用户角色 ID 和 ApiStandard 自动验证错误定义一致的响应契约 |
 | `Iter3-DependencyRefresh` | [PD0004-DependencyRefresh](./Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | DependencyManagement | complete | 更新 ApiStandard 的 Aspire 与运行时依赖，明确 MiniApi 兼容基线 |
 
+| `Iter3-DependencyRefresh` | [PD0005-AspirePostgreSQL](./Iter3-DependencyRefresh/PD0005-AspirePostgreSQL.md) | DependencyManagement | in-progress | 升级 Aspire 和 MiniApi PostgreSQL |
+
 ## 编号规则
 
 - 迭代目录：`Iter<number>-<IterationName>`。

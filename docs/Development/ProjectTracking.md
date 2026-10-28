@@ -5,12 +5,12 @@
 ## 当前状态
 
 - CurrentIteration: `Iter3-DependencyRefresh`
-- CurrentPD: `PD0004-DependencyRefresh`
-- CurrentPT: `PT0005-DependencyRefresh`
-- CurrentTask: ApiStandard 依赖升级与模板包 1.3.17 已发布
-- Status: `complete`
-- Progress: `4/4`
-- LastUpdated: `2026-10-08`
+- CurrentPD: `PD0005-AspirePostgreSQL`
+- CurrentPT: `PT0006-AspirePostgreSQL`
+- CurrentTask: Aspire 与 MiniApi PostgreSQL 升级；等待 Docker 可用后重跑集成测试
+- Status: `in-progress`
+- Progress: `3/4`
+- LastUpdated: `2026-10-28`
 
 ## 迭代进度
 

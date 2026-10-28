@@ -21,10 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>1. Upgrade ApiStandard to Aspire 13.6.1 and refresh its .NET 10, EF Core, authentication, OpenTelemetry, and supporting package dependencies.
-2. Upgrade ApiStandard test tooling to TUnit 1.72.16.
-3. Keep EF Core design-time tooling private to generated ApiStandard projects to prevent transitive dependency leakage.
-4. MiniApi package dependencies remain on their existing baseline.</PackageReleaseNotes>
+        <PackageReleaseNotes>Upgrade both templates to Aspire 13.6.4 and MiniApi to Perigon.PostgreSQL and Perigon.PostgreSQL.Tools 0.1.8.</PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
     </PropertyGroup>

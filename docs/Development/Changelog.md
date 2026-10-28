@@ -2,6 +2,12 @@
 
 > 只记录 Perigon.template 仓库已交付的用户可见行为、公开契约、配置或运维变化。
 
+## Unreleased
+
+### Changed
+
+- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.1.8。
+
 ## 1.3.17 - 2026-10-08
 
 ### Changed

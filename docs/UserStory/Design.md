@@ -22,6 +22,8 @@
 | `Iter2-ApiBehavior` | [PD0003-ApiBehavior](./Iter2-ApiBehavior/PD0003-ApiBehavior.md) | 暴露 role_id Claims，并统一 ApiStandard 自动模型验证错误响应结构 | complete |
 | `Iter3-DependencyRefresh` | [PD0004-DependencyRefresh](./Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | ApiStandard 升级 Aspire 和依赖；MiniApi 保持现有基线 | complete |
 
+| `Iter3-DependencyRefresh` | [PD0005-AspirePostgreSQL](./Iter3-DependencyRefresh/PD0005-AspirePostgreSQL.md) | 升级 Aspire 和 MiniApi PostgreSQL | in-progress |
+
 ## 全局设计决策
 
 | ID | Decision | Rationale | Alternatives | Related PD |

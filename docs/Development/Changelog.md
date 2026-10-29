@@ -6,11 +6,15 @@
 
 ### Changed
 
+- 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
+
 - 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.1.8。
 
 ## 1.3.17 - 2026-10-08
 
 ### Changed
+
+- 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
 - ApiStandard 的 Aspire AppHost 和 hosting 依赖升级至 13.6.1，并更新 .NET 10、EF Core、认证、OpenTelemetry、测试及第三方依赖。
 - ApiStandard 的 EF Core Design 保留迁移工具所需能力，但不再作为传递依赖暴露给下游项目。
@@ -19,6 +23,8 @@
 ## 1.3.16 - 2026-09-24
 
 ### Changed
+
+- 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
 - ApiStandard、MiniApi 和 Perigon CLI 新服务改为通过 `Perigon.AspNetCore.SourceGeneration` 1.1.1 NuGet 包加载统一源生成器；不再复制或显式构建源生成器项目，并支持 Minimal API endpoint group 自动注册。
 - ApiStandard 和 MiniApi 的 `IUserContext` 新增 `RoleIds`，读取并去重有效的 `role_id` GUID claims。

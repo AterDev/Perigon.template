@@ -42,4 +42,4 @@ description: Perigon 项目模板开发入口。用于选择并使用 Perigon CL
 3. 按架构边界补齐业务代码，并审查所有生成内容。
 4. 若实体变化，仅使用`dotnet ef`生成新的迁移内容;若接口更新，并且需要同步前端功能，则尝试使用`perigon generate`生成新的前端客户端请求代码(要检查输出目录的正确性)。
 5. 运行最小充分验证，并报告未执行的基础设施或发布验证。
-6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前迭代 PT 的实现结果/验证证据、`ProjectTracking.md` 总进度和受影响 PD；文档未同步不属于完成。
+6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前迭代 PT 的实现结果/验证证据、当前个人月度进度和受影响 PD；文档未同步不属于完成。

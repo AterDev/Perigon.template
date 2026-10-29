@@ -43,4 +43,4 @@ description: MiniApi 项目开发入口。用于 Perigon CLI/MCP、Minimal API E
 3. 按 Minimal API 架构边界补齐业务代码，并审查静态绑定、公开契约和所有生成内容。
 4. 若实体或公开接口变化，依次处理迁移/OpenAPI/客户端，不跳过契约同步。
 5. 运行最小充分验证；AOT-sensitive 变更必须包含 Native AOT publish 和必要的运行验证，报告任何未执行项。
-6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前 PT 的实现结果、验证/AOT 证据、`ProjectTracking.md` 总进度和受影响 PD；文档未同步不属于完成。
+6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前 PT 的实现结果、验证/AOT 证据、当前个人月度进度和受影响 PD；文档未同步不属于完成。

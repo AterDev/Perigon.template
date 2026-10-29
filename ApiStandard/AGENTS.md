@@ -4,7 +4,7 @@
 
 - 以仓库代码、配置、工具帮助和实际验证为事实依据；不确定内容显式调查或标记待确认。
 - 代码和文档以可读、可维护为先，使用清晰命名、小而单一的职责和必要注释控制复杂度。
-- 纯调研或只读审查不额外生成文档。任何 AI coding 都必须在结束前同步对应迭代 PT、`ProjectTracking.md` 和受影响 PD，记录实现结果和验证证据。
+- 纯调研或只读审查不额外生成文档。任何 AI coding 都必须在结束前同步对应迭代 PT、当前 Git 用户的月度进度文件 和受影响 PD，记录实现结果和验证证据。
 - 优先使用操作系统、IDE 和项目现有工具，例如 `pwsh`、`dotnet`、`pnpm`、Perigon 和 Aspire。
 - 代码修改后执行与影响面匹配的最小充分验证。没有实现证据和通过的必需验证，不宣称任务完成。
 
@@ -29,7 +29,7 @@
   - 产品需求/设计索引：`docs/UserStory/Demand.md`、`docs/UserStory/Design.md`
   - 迭代功能设计：`docs/UserStory/Iter<number>-<Name>/PD<4-digit>-<Module>.md`
   - 迭代计划与实现记录：`docs/Development/Iter<number>-<Name>/PT<4-digit>-<Module>.md`
-  - 总进度：`docs/Development/ProjectTracking.md`
+  - 个人月度进度：`docs/Developoment/<username>/ProjectTracking-<YYYY-MM>.md`（用户名取 `git config user.name`，月份取本地当前年月；读取和创建规则见 `delivery-loop`）
 - 脚本：`scripts`
 - 测试：`tests`
 - Razor 模板：`templates`
@@ -64,7 +64,7 @@
 3. 实现前检查需求覆盖、产物矛盾、无来源任务、依赖和验证空缺；阻断问题未解决时不开始。
 4. 按依赖执行最小 ready task，每项实现后立即验证。只在完成条件满足且验证通过后勾选任务。
 5. 实现后对照意图检查 Completeness、Correctness、Coherence。缺口以新任务追加，不改写已完成记录。
-6. 每次代码修改后立即更新 PT 的 checkbox、进度、实现结果和验证证据，同步 `ProjectTracking.md` 及受影响 PD，直到完成或明确阻塞。
+6. 每次代码修改后立即更新 PT 的 checkbox、进度、实现结果和验证证据，同步 当前 Git 用户的月度进度文件 及受影响 PD，直到完成或明确阻塞。
 
 ## 完成定义
 

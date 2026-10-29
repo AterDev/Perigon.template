@@ -65,13 +65,13 @@ public static class FrameworkExtensions
         /// <returns></returns>
         public IHostApplicationBuilder AddDbContext()
         {
-            builder.Services.AddDbContext<DefaultDbContext>((serviceProvider, options) =>
+            builder.Services.AddScoped<DefaultDbContext>(serviceProvider =>
             {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var connectionString = configuration.GetConnectionString(AppConst.Default)
                     ?? configuration.GetConnectionString("Postgres")
                     ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
-                options.UseNpgsql(connectionString);
+                return new DefaultDbContext(connectionString);
             });
             return builder;
         }

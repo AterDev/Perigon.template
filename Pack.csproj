@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Upgrade both templates to Aspire 13.6.4 and MiniApi to Perigon.PostgreSQL and Perigon.PostgreSQL.Tools 0.1.8.</PackageReleaseNotes>
+        <PackageReleaseNotes>Upgrade both templates to Aspire 13.6.4 and MiniApi to Perigon.PostgreSQL 0.2.0 and Perigon.PostgreSQL.Tools 0.1.8; consolidate the MiniApi database context.</PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
     </PropertyGroup>

@@ -4,7 +4,7 @@ global using System.Text.Json.Serialization;
 global using Perigon.AspNetCore.Constants;
 global using Perigon.AspNetCore.Options;
 global using Perigon.AspNetCore.Utils;
-global using Data;
+global using EntityFramework.AppDbContext;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;

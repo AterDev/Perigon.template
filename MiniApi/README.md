@@ -56,7 +56,7 @@ aspire start --non-interactive
 - Endpoint 目录中定义 endpoint group，继承 `RestEndpointBase` 并实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
 - 业务代码优先按 `Endpoints/Managers/Models/Services` 分层，而不是先拆独立模块程序集。
 - OpenAPI 文档地址为 `/openapi/v1.json`，服务项目与共享模型项目默认生成 XML 文档，XML 注释会由 `Microsoft.AspNetCore.OpenApi` 源生成器写入 OpenAPI 文档。Endpoint handler 应使用 public static typed Minimal API 方法，避免 `RequestDelegate` 风格导致 OpenAPI 无法描述接口。
-- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用 `DbContextOptions<TContext>` 和 `options.UseNpgsql(connectionString)` 的注册方式。新增实体后，在 `src/Definition/EntityFramework/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
+- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用连接字符串注册为 scoped 服务。新增实体后，在 `src/Definition/EntityFramework/AppDbContext/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
 - `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
 
 当前模板没有独立单元测试项目。需要 Docker/Podman 和真实服务时，运行 `tests/ApiTest` 中标记为 `Integration` 的测试。

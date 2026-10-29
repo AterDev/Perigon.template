@@ -8,7 +8,8 @@
 
 - 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
-- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.1.8。
+- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 升级至 0.2.0，本地工具保持 0.1.8。
+- MiniApi 统一使用 `EntityFramework.AppDbContext.DefaultDbContext`，删除重复上下文并调整依赖注入。
 
 ## 1.3.17 - 2026-10-08
 

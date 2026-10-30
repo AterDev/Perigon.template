@@ -460,7 +460,6 @@ public sealed class TenantFrameworkTests
             )
             .Build();
         var factory = new AppDbFactory(
-            Options.Create(new ComponentOption { Database = DatabaseType.PostgreSql }),
             configuration,
             tenantProvider.GetRequiredService<IServiceScopeFactory>()
         );
@@ -712,7 +711,6 @@ public sealed class TenantFrameworkTests
             .Build();
 
         return new AppDbFactory(
-            Options.Create(new ComponentOption { Database = DatabaseType.PostgreSql }),
             configuration,
             EmptyTenantScopeFactory
         );

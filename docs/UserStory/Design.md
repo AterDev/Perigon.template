@@ -24,6 +24,8 @@
 
 | `Iter3-DependencyRefresh` | [PD0005-AspirePostgreSQL](./Iter3-DependencyRefresh/PD0005-AspirePostgreSQL.md) | 升级 Aspire 和 MiniApi PostgreSQL | in-progress |
 
+| `Iter3-DependencyRefresh` | [PD0006-PostgreSQLOnly](./Iter3-DependencyRefresh/PD0006-PostgreSQLOnly.md) | 移除 SQL Server 配置及兼容逻辑 | complete |
+
 ## 全局设计决策
 
 | ID | Decision | Rationale | Alternatives | Related PD |

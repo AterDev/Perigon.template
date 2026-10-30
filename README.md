@@ -69,7 +69,7 @@ dotnet new perigon-webapi -n <projectname>
 
 ## 数据库
 
-- `ApiStandard` 支持在 AppHost 的 `Components:Database` 中选择 `PostgreSQL` 或 `SqlServer`。
+- `ApiStandard` 固定使用 PostgreSQL，通过 EF Core 访问数据。
 - `MiniApi` 固定使用 PostgreSQL，数据访问通过 `Perigon.PostgreSQL` 提供。
 
 ## 数据迁移

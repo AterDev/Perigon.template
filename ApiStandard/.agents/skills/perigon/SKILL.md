@@ -17,7 +17,7 @@ description: Perigon 项目模板开发入口。用于选择并使用 Perigon CL
 
 ## 模板边界
 
-- `ApiStandard`：Controller 架构，含 `AdminService`、`ApiService`、模块层、多数据库选择以及 AppHost EF 迁移资源；适合完整后台和复杂业务。
+- `ApiStandard`：Controller 架构，含 `AdminService`、`ApiService`、模块层、PostgreSQL 数据访问以及 AppHost EF 迁移资源；适合完整后台和复杂业务。
 - `MiniApi`：Minimal API + NativeAOT，业务默认位于 `ApiService` 的 `Endpoints/Managers/Models/Services`，固定 PostgreSQL，不含内置迁移资源；新增能力必须检查 AOT、Trim、反射和序列化兼容性。
 - 不要把一个模板的命令、目录或迁移方式直接套到另一个模板。
 

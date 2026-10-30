@@ -6,6 +6,8 @@
 
 ### Changed
 
+- ApiStandard 固定使用 PostgreSQL，移除 SQL Server 支持、`Components:Database` 配置及迁移脚本的 `DatabaseType` 参数。已有 SQL Server 项目需自行迁移数据和 EF 迁移。
+
 - 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
 - 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 升级至 0.2.0，本地工具保持 0.1.8。

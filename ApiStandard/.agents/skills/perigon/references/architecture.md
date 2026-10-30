@@ -16,7 +16,7 @@ Perigon 以结果和实用为导向：
 | API 风格 | MVC Controller | Minimal API |
 | 业务位置 | `src/Modules/{Name}Mod` | `ApiService/Endpoints/Managers/Models/Services` |
 | 服务 | AdminService + ApiService | ApiService |
-| 数据库 | PostgreSQL / SQL Server | PostgreSQL |
+| 数据库 | PostgreSQL | PostgreSQL |
 | 迁移 | AppHost `AddEFMigrations` 资源 | 无内置迁移资源 |
 | 发布 | framework-dependent，不默认 Trim/AOT | NativeAOT + Trim |
 | OpenAPI | Swashbuckle，通常 `/swagger/v1/swagger.json` | ASP.NET Core OpenAPI，通常 `/openapi/v1.json` |

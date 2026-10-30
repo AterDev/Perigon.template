@@ -9,7 +9,7 @@ namespace EntityFramework.AppDbFactory;
 /// <param name="configuration"></param>
 public class UniversalDbFactory(IConfiguration configuration)
 {
-    public TContext CreateDbContext<TContext>(DatabaseType databaseType = DatabaseType.PostgreSql)
+    public TContext CreateDbContext<TContext>()
         where TContext : DbContext
     {
         var contextName = typeof(TContext).Name;
@@ -24,19 +24,7 @@ public class UniversalDbFactory(IConfiguration configuration)
         }
         var builder = new DbContextOptionsBuilder<TContext>();
 
-        switch (databaseType)
-        {
-            case DatabaseType.SqlServer:
-                builder.UseSqlServer(connectionStrings);
-                break;
-            case DatabaseType.PostgreSql:
-                builder.UseNpgsql(connectionStrings);
-                break;
-            default:
-                throw new NotSupportedException(
-                    $"Database provider {databaseType} is not supported."
-                );
-        }
+        builder.UseNpgsql(connectionStrings);
 
         try
         {

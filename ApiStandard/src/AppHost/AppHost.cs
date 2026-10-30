@@ -27,21 +27,11 @@ var devPassword = builder.AddParameter(
 );
 
 var infrastructureGroup = builder.AddGroup("Infrastructure", "Cloud");
-_ = aspireSetting.DatabaseType?.ToLowerInvariant() switch
-{
-    "postgresql" => database = builder
-        .AddPostgres(name: "Database", password: devPassword, port: aspireSetting.DbPort)
-        .WithImageTag("18.1-alpine")
-        .WithDataVolume()
-        .AddDatabase(AppConst.Default, databaseName: defaultName),
-    "sqlserver" => database = builder
-        .AddSqlServer(name: "Database", password: devPassword, port: aspireSetting.DbPort)
-        .WithImageTag("2025-latest")
-        .WithDataVolume()
-        .AddDatabase(AppConst.Default, databaseName: defaultName),
-    _ => null,
-
-};
+database = builder
+    .AddPostgres(name: "Database", password: devPassword, port: aspireSetting.DbPort)
+    .WithImageTag("18.1-alpine")
+    .WithDataVolume()
+    .AddDatabase(AppConst.Default, databaseName: defaultName);
 if (aspireSetting.UsesRedis)
 {
     cache = builder
@@ -63,14 +53,12 @@ database?.WithResetSchemaCommand();
 var serviceGroup = builder.AddGroup("Services", "Globe");
 var adminService = builder.AddProject<Projects.AdminService>("AdminService")
     .WithEnvironment("Components__Cache", aspireSetting.CacheType)
-    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithParentRelationship(serviceGroup);
 
 var apiService = builder.AddProject<Projects.ApiService>("ApiService")
     .WithReference(adminService)
     .WithEnvironment("Components__Cache", aspireSetting.CacheType)
-    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithParentRelationship(serviceGroup);
 
@@ -94,7 +82,6 @@ if (cache != null)
 
 var adminMigrations = adminService
     .AddEFMigrations("AdminService-Migrations", "EntityFramework.AppDbContext.DefaultDbContext")
-    .WithEnvironment("Components__Database", aspireSetting.DatabaseType)
     .WithEnvironment("Components__IsMultiTenant", isMultiTenant)
     .WithMigrationsProject("..\\Definition\\EntityFramework\\EntityFramework.csproj")
     .RunDatabaseUpdateOnStart()

@@ -240,7 +240,6 @@ public static class WebExtensions
                     },
                     OnTokenValidated = context =>
                     {
-                        Console.WriteLine("Token validated for user: {0}", context.Principal?.Identity?.Name);
                         return Task.CompletedTask;
                     },
                 };

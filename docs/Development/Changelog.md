@@ -6,6 +6,8 @@
 
 ### Changed
 
+- MiniApi 将 `UserManager` 和默认演示用户初始化放在 `CommonMod`，通过源生成器自动注册业务模块和 Manager，避免共享基础层依赖业务逻辑。
+
 - ApiStandard 固定使用 PostgreSQL，移除 SQL Server 支持、`Components:Database` 配置及迁移脚本的 `DatabaseType` 参数。已有 SQL Server 项目需自行迁移数据和 EF 迁移。
 
 - 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。

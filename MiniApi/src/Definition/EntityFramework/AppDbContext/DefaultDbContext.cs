@@ -1,3 +1,4 @@
+using Entity;
 using Perigon.PostgreSQL;
 using System.Diagnostics.CodeAnalysis;
 
@@ -12,5 +13,17 @@ public partial class DefaultDbContext(string connectionString)
         return base.Set<TEntity>();
     }
 
-    // Add DbSet<TEntity> properties here as entities are added.
-}
+    public DbSet<User> Users => Set<User>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.Property(user => user.UserName).IsRequired();
+                entity.HasIndex(user => user.UserName)
+                    .HasDatabaseName("uq_users_user_name")
+                    .IsUnique();
+            });
+        }
+    }

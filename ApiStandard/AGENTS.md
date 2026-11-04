@@ -2,10 +2,12 @@
 
 ## 总体原则
 
-- 以仓库代码、配置、工具帮助和实际验证为事实依据；不确定内容显式调查或标记待确认。
-- 代码和文档以可读、可维护为先，使用清晰命名、小而单一的职责和必要注释控制复杂度。
-- 纯调研或只读审查不额外生成文档。任何 AI coding 都必须在结束前同步对应迭代 PT、当前 Git 用户的月度进度文件 和受影响 PD，记录实现结果和验证证据。
-- 优先使用操作系统、IDE 和项目现有工具，例如 `pwsh`、`dotnet`、`pnpm`、Perigon 和 Aspire。
+编写结构清晰，可读性高，简洁的代码和文档，专注于程序的稳定性，高性能和安全性，遵循以下原则：
+
+- 以官方文档、仓库代码、配置、工具帮助和实际验证为事实依据，不做猜测，不使用不成熟或非官方的方案；
+- 遵循项目层级结构和分层边界，非必要不进行抽象，不使用接口；
+- 代码和注释保持良好格式，使用官方推荐写法，命名清晰、注释简洁，避免非必要的重复验证和处理;
+- 纯调研或只读审查不额外生成文档。所有修改都必须在结束前同步对应迭代 PT、当前 Git 用户的月度进度文件 和受影响 PD，记录实现结果和验证证据。
 - 代码修改后执行与影响面匹配的最小充分验证。没有实现证据和通过的必需验证，不宣称任务完成。
 
 ## 技术栈
@@ -20,8 +22,9 @@
   - 共享能力：`src/ClientApp/WebApp/src/app/modules/share`
   - 业务模块：`src/ClientApp/WebApp/src/app/modules/{module}`
 - 后端接口服务：`src/Services`
-- 实体定义：`src/Definition/Entity`
 - 业务逻辑：`src/Modules`，按模块划分
+- 实体定义：`src/Definition/Entity`
+- EF Core：`src/Definition/EntityFramework`
 - 共享定义：`src/Definition/Share`
 - 服务扩展：`src/Definition/ServiceDefaults`
 - AppHost：`src/AppHost`

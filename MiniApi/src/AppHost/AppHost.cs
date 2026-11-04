@@ -6,11 +6,8 @@ var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
 
 IResourceBuilder<IResourceWithConnectionString>? cache = null;
-
 // if you have exist resource, you can set connection string here, without create container
-// database = builder.AddConnectionString(AppConst.Default);
-// nats = builder.AddConnectionString("mq");
-// qdrant = builder.AddConnectionString("qdrant");
+//var database = builder.AddConnectionString(AppConst.Default);
 
 #region infrastructure
 var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
@@ -21,11 +18,14 @@ var devPassword = builder.AddParameter(
 );
 
 var infrastructureGroup = builder.AddGroup("Infrastructure", "Cloud");
+
+// use local container
 var database = builder
     .AddPostgres(name: "Database", password: devPassword, port: aspireSetting.DbPort)
     .WithImageTag("18.1-alpine")
     .WithDataVolume()
     .AddDatabase(AppConst.Default, databaseName: defaultName);
+    
 if (aspireSetting.UsesRedis)
 {
     cache = builder

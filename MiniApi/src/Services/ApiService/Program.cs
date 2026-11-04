@@ -26,7 +26,7 @@ builder.Services.AddAuthorizationBuilder()
 // Managers, auto register by source generator
 builder.Services.AddManagers();
 
-// Optional module extensions, kept as a compatibility hook
+// Modules, auto register by source generator
 builder.AddModules();
 
 WebApplication app = builder.Build();

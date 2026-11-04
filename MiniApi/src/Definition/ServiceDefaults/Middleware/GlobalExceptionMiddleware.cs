@@ -18,7 +18,7 @@ public class GlobalExceptionMiddleware(RequestDelegate next, Localizer localizer
             ctx.Response.StatusCode = StatusCodes.Status409Conflict;
 
             await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(localizer.Get(Localizer.ConflictResource), ctx.TraceIdentifier)
+                new ErrorResult(localizer.Get(Localizer.ConflictResource), ctx.TraceIdentifier, status: StatusCodes.Status409Conflict)
             );
         }
         catch (PostgresException ex)
@@ -31,9 +31,16 @@ public class GlobalExceptionMiddleware(RequestDelegate next, Localizer localizer
         }
         catch (BusinessException ex)
         {
-            ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            ctx.Response.StatusCode = ex.StatusCodes;
             await ctx.Response.WriteAsJsonAsync(
                 new ErrorResult(localizer.Get(ex.LanguageKey), ctx.TraceIdentifier, status: ex.StatusCodes)
+            );
+        }
+        catch (BadHttpRequestException ex)
+        {
+            ctx.Response.StatusCode = ex.StatusCode;
+            await ctx.Response.WriteAsJsonAsync(
+                new ErrorResult(ex.Message, ctx.TraceIdentifier, status: ex.StatusCode)
             );
         }
         catch (Exception ex)

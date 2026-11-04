@@ -20,7 +20,12 @@ public static class FrameworkExtensions
     {
         public IHostApplicationBuilder AddFrameworkServices()
         {
-            TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
+            // Mapster's runtime adapter compilation is unavailable under Native AOT.
+            // AOT callers should use explicit, statically compiled mappings.
+            if (System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported)
+            {
+                TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
+            }
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContext, UserContext>();
@@ -117,7 +122,7 @@ public static class FrameworkExtensions
                         cacheOption?.LocalCacheExpiration ?? 10
                     ),
                 };
-            });
+            }).AddSerializer(new GeneratedCacheJsonSerializer<string[]>(CacheJsonContext.Default.StringArray));
 
             builder.Services.AddSingleton<CacheService>();
             return builder;

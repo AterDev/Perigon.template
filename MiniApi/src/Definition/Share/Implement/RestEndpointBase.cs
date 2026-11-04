@@ -52,6 +52,7 @@ public abstract class RestEndpointBase
         params object[] arguments)
     {
         var result = CreateResult(localizer, httpContext, "Problem", detail, errorCode, arguments);
+        result.Status = StatusCodes.Status500InternalServerError;
         Activity.Current?.SetTag("http.request.body", detail);
         Activity.Current?.SetTag("http.response.body", detail);
         return Results.Json(result, statusCode: StatusCodes.Status500InternalServerError);
@@ -70,6 +71,7 @@ public abstract class RestEndpointBase
             error,
             0,
             arguments);
+        result.Status = StatusCodes.Status400BadRequest;
         return Results.BadRequest(result);
     }
 

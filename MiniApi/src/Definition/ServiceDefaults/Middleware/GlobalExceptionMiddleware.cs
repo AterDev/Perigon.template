@@ -1,10 +1,14 @@
 using Npgsql;
-using Perigon.AspNetCore.Models;
+using Microsoft.Extensions.Logging;
 using Share.Exceptions;
 
 namespace ServiceDefaults.Middleware;
 
-public class GlobalExceptionMiddleware(RequestDelegate next, Localizer localizer)
+public class GlobalExceptionMiddleware(
+    RequestDelegate next,
+    Localizer localizer,
+    ILogger<GlobalExceptionMiddleware> logger,
+    IHostEnvironment environment)
 {
     public async Task InvokeAsync(HttpContext ctx)
     {
@@ -12,42 +16,37 @@ public class GlobalExceptionMiddleware(RequestDelegate next, Localizer localizer
         {
             await next(ctx);
         }
+        catch (Exception ex) when (ctx.Response.HasStarted ||
+            (ex is OperationCanceledException && ctx.RequestAborted.IsCancellationRequested))
+        {
+            throw;
+        }
         catch (PostgresException ex) when (PostgreSqlErrorHelper.IsUniqueConstraintViolation(ex))
         {
             // 唯一约束冲突提示
-            ctx.Response.StatusCode = StatusCodes.Status409Conflict;
-
-            await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(localizer.Get(Localizer.ConflictResource), ctx.TraceIdentifier, status: StatusCodes.Status409Conflict)
-            );
+            await TypedResults.Problem(detail: localizer.Get(Localizer.ConflictResource),
+                statusCode: StatusCodes.Status409Conflict).ExecuteAsync(ctx);
         }
         catch (PostgresException ex)
         {
-            // 其他数据库错误
-            ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(ex.Message, ctx.TraceIdentifier, "database error!")
-            );
+            logger.LogError(ex, "Database request failed. RequestId: {RequestId}", ctx.TraceIdentifier);
+            await TypedResults.Problem(detail: environment.IsDevelopment() ? ex.Message : localizer.Get(Localizer.InternalServerError),
+                statusCode: StatusCodes.Status500InternalServerError).ExecuteAsync(ctx);
         }
         catch (BusinessException ex)
         {
-            ctx.Response.StatusCode = ex.StatusCodes;
-            await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(localizer.Get(ex.LanguageKey), ctx.TraceIdentifier, status: ex.StatusCodes)
-            );
+            await TypedResults.Problem(detail: localizer.Get(ex.LanguageKey),
+                statusCode: ex.StatusCodes).ExecuteAsync(ctx);
         }
         catch (BadHttpRequestException ex)
         {
-            ctx.Response.StatusCode = ex.StatusCode;
-            await ctx.Response.WriteAsJsonAsync(
-                new ErrorResult(ex.Message, ctx.TraceIdentifier, status: ex.StatusCode)
-            );
+            await TypedResults.Problem(detail: ex.Message, statusCode: ex.StatusCode).ExecuteAsync(ctx);
         }
         catch (Exception ex)
         {
-            // 非数据库类异常
-            ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await ctx.Response.WriteAsJsonAsync(new ErrorResult(ex.Message, ctx.TraceIdentifier));
+            logger.LogError(ex, "Unhandled request failure. RequestId: {RequestId}", ctx.TraceIdentifier);
+            await TypedResults.Problem(detail: environment.IsDevelopment() ? ex.Message : localizer.Get(Localizer.InternalServerError),
+                statusCode: StatusCodes.Status500InternalServerError).ExecuteAsync(ctx);
         }
     }
 }

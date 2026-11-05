@@ -6,13 +6,26 @@
 
 ### Changed
 
+- MiniApi 非生产环境提供 Swagger UI（`/swagger`），读取现有的 `/openapi/v1.json`。
+- MiniApi AppHost 仅在 Angular 项目存在时启动前端资源，支持 `frontType=None` 和 `frontType=Angular`。
+
+- MiniApi 使用 Perigon.PostgreSQL 的 `AddDbContextPool`、实体索引特性和内置 OpenTelemetry 注册；连接池开启，连接超时 15 秒、命令超时 30 秒。登录 DTO 移入 CommonMod 的 `Models/UserDtos`，OpenAPI 中的类型 schema 名称随之变化，JSON 字段保持不变。
+- 登录接口按实体使用 `UserEndpoints`、`User` OpenAPI tag 和 `/api/users/login` 路由，并提供请求、响应元数据；调用方需将 `/api/auth/login` 更新为新地址。
+- MiniApi 增加 `ApiResult<T>`，接口仅需声明成功 DTO 即可返回 Minimal API 结果，并自动描述 200 和 400 响应；其他状态需按需声明元数据。
+- MiniApi 错误响应统一为继承标准 `HttpValidationProblemDetails` 的 `ErrorResult`：Content-Type 为 `application/problem+json`，traceId 由框架生成，`errors` 在字段验证失败时包含详情；客户端需适配此契约变化。
+- MiniApi 启用跨程序集自动模型验证，登录用户名和密码采用必填及长度约束，验证失败在进入 handler 前返回 400。
+- MiniApi 的 Problem Details writer 对不接受 JSON 的请求也保持统一错误结构；生产环境隐藏未处理异常和数据库错误详情并记录日志，已开始的响应与取消请求不再重写。
+- MiniApi 恢复 `BadRequest`、`NotFound`、`Forbid`、`Conflict` 等本地化错误 helper；仅传资源键，统一 writer 根据请求语言生成详情。
+- 模板包包含 MiniApi 的 CommonMod 项目，确保生成项目能解析模块引用和接口 DTO。
+- MiniApi 解决方案移除指向不存在的 AotSmoke 项目的引用，并包含 CommonMod 项目。
+
 - MiniApi 将 `UserManager` 和默认演示用户初始化放在 `CommonMod`，通过源生成器自动注册业务模块和 Manager，避免共享基础层依赖业务逻辑。
 
 - ApiStandard 固定使用 PostgreSQL，移除 SQL Server 支持、`Components:Database` 配置及迁移脚本的 `DatabaseType` 参数。已有 SQL Server 项目需自行迁移数据和 EF 迁移。
 
 - 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
-- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 升级至 0.2.0，本地工具保持 0.1.8。
+- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.3.0。
 - MiniApi 统一使用 `EntityFramework.AppDbContext.DefaultDbContext`，删除重复上下文并调整依赖注入。
 
 ## 1.3.17 - 2026-10-08

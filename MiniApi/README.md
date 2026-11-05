@@ -34,29 +34,26 @@ MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量�
 * `src/Definition/EntityFramework`: 实体与数据库定义，基于 Perigon.PostgreSQL
 * `src/Services/ApiService`: 接口服务项目，基于 ASP.NET Core Minimal API
 	* `src/Services/ApiService/Endpoints`: Minimal API endpoint group 定义目录
-	* `src/Services/ApiService/Managers`: 业务逻辑目录
-	* `src/Services/ApiService/Models`: DTO、筛选对象和请求响应模型目录
-	* `src/Services/ApiService/Services`: Service 内部辅助服务目录
+* `src/Modules/CommonMod`: 用户业务 Manager、DTO 和初始化服务
 
 
 ## 项目运行
 
-项目基于 `Aspire`，使用 Aspire CLI 启动 AppHost 即可启动 PostgreSQL、按配置选择的 Redis 和 `ApiService`。使用 `dotnet tool restore` 恢复本地固定的 `Perigon.PostgreSQL.Tools` 0.1.8 工具。
+项目基于 `Aspire`，使用 Aspire CLI 启动 AppHost 即可启动 PostgreSQL、按配置选择的 Redis 和 `ApiService`。使用 `dotnet tool restore` 恢复本地固定的 `Perigon.PostgreSQL.Tools` 0.3.0 工具。
 
 ```pwsh
 aspire start --non-interactive
 ```
 
-默认不包含数据库迁移服务，也不启动 Angular 前端。OpenAPI JSON 默认位于 `/openapi/v1.json`。
+默认不包含数据库迁移服务；生成项目时选择 `--frontType Angular` 可包含并通过 AppHost 启动 Angular 前端，`--frontType None` 不创建前端资源。非生产环境的 OpenAPI JSON 位于 `/openapi/v1.json`，Swagger UI 位于 `/swagger`。
 
 ## AOT 与数据访问
 
 - 本模板不使用 MVC Controller、EF Core、EF migration 和多租户。
-- MiniApi 默认不走完整的 `Module` 开发模式，大部分后端代码直接写在 `ApiService` 项目中。
+- MiniApi 的业务逻辑和 DTO 放在 `src/Modules` 下，接口放在 `ApiService`。
 - Endpoint 目录中定义 endpoint group，继承 `RestEndpointBase` 并实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
-- 业务代码优先按 `Endpoints/Managers/Models/Services` 分层，而不是先拆独立模块程序集。
 - OpenAPI 文档地址为 `/openapi/v1.json`，服务项目与共享模型项目默认生成 XML 文档，XML 注释会由 `Microsoft.AspNetCore.OpenApi` 源生成器写入 OpenAPI 文档。Endpoint handler 应使用 public static typed Minimal API 方法，避免 `RequestDelegate` 风格导致 OpenAPI 无法描述接口。
-- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 使用连接字符串注册为 scoped 服务。新增实体后，在 `src/Definition/EntityFramework/AppDbContext/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
+- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 通过 `AddDbContextPool` 注册并启用 OpenTelemetry；新增实体后，在 `src/Definition/EntityFramework/AppDbContext/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
 - `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
 
 当前模板没有独立单元测试项目。需要 Docker/Podman 和真实服务时，运行 `tests/ApiTest` 中标记为 `Integration` 的测试。

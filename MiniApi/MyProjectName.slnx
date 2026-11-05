@@ -26,11 +26,13 @@
     <Project Path="src/Definition/Share/Share.csproj" />
   </Folder>
   
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/CommonMod/CommonMod.csproj" />
+  </Folder>
   <Folder Name="/src/Services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
     <Project Path="src/Services/ApiService/ApiService.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/ApiTest/ApiTest.csproj" Id="76a6ee38-e083-4d7a-a1f4-5f490942d94b" />
-    <Project Path="tests/AotSmoke/AotSmoke.csproj" />
   </Folder>
 </Solution>

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
+
 namespace Perigon.AspNetCore.Models;
 
-public class ErrorResult(string detail, string traceId, string title = "error", int status = 500)
+/// <summary>Standard problem details with field-level errors when validation fails.</summary>
+public sealed class ErrorResult : HttpValidationProblemDetails
 {
-    public string Title { get; set; } = title;
-    public string? Detail { get; set; } = detail;
-    public int Status { get; set; } = status;
-    public string TraceId { get; set; } = traceId;
+    [JsonPropertyName("traceId")]
+    public string? TraceId { get; set; }
 }

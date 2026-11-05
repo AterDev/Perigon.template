@@ -1,99 +1,88 @@
-using System.Diagnostics;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Routing;
 
 namespace Share.Implement;
 
-/// <summary>
-/// Base type for classes in Endpoints folders that map Minimal API endpoint groups.
-/// </summary>
+/// <summary>Base type for classes that map Minimal API endpoint groups.</summary>
 public abstract class RestEndpointBase
 {
+    /// <summary>Internal extension used to pass localization format arguments to the writer.</summary>
+    public const string LocalizationArgumentsExtensionName = "perigon.localizationArguments";
+
+    /// <summary>A JSON success value or a Minimal API result.</summary>
+    public sealed class ApiResult<T> : IResult, IEndpointMetadataProvider
+    {
+        private readonly IResult _result;
+        private ApiResult(IResult result) => _result = result;
+
+        public static implicit operator ApiResult<T>(T value) => new(TypedResults.Ok(value));
+        public static implicit operator ApiResult<T>(Ok<T> result) => new(result);
+        public static implicit operator ApiResult<T>(Created<T> result) => new(result);
+        public static implicit operator ApiResult<T>(Accepted<T> result) => new(result);
+        public static implicit operator ApiResult<T>(Ok result) => new(result);
+        public static implicit operator ApiResult<T>(Created result) => new(result);
+        public static implicit operator ApiResult<T>(Accepted result) => new(result);
+        public static implicit operator ApiResult<T>(NoContent result) => new(result);
+        public static implicit operator ApiResult<T>(BadRequest result) => new(result);
+        public static implicit operator ApiResult<T>(NotFound result) => new(result);
+        public static implicit operator ApiResult<T>(Conflict result) => new(result);
+        public static implicit operator ApiResult<T>(UnauthorizedHttpResult result) => new(result);
+        public static implicit operator ApiResult<T>(ForbidHttpResult result) => new(result);
+        public static implicit operator ApiResult<T>(ProblemHttpResult result) => new(result);
+
+        /// <summary>Wrap any other result; declare its response metadata on the endpoint.</summary>
+        public static ApiResult<T> FromResult(IResult result) => new(result ?? throw new ArgumentNullException(nameof(result)));
+
+        public Task ExecuteAsync(HttpContext httpContext) => _result.ExecuteAsync(httpContext);
+
+        static void IEndpointMetadataProvider.PopulateMetadata(MethodInfo method, EndpointBuilder builder)
+        {
+            PopulateMetadata<Ok<T>>(method, builder);
+            builder.Metadata.Add(new ProducesResponseTypeMetadata(
+                StatusCodes.Status400BadRequest, typeof(ErrorResult), ["application/problem+json"]));
+        }
+
+        private static void PopulateMetadata<TResult>(MethodInfo method, EndpointBuilder builder)
+            where TResult : IEndpointMetadataProvider => TResult.PopulateMetadata(method, builder);
+    }
+
     protected static RouteGroupBuilder MapGroup(
         IEndpointRouteBuilder endpoints,
         string pattern,
         string tag,
         string? authorizationPolicy = null)
     {
-        var group = endpoints.MapGroup(pattern)
-            .WithTags(tag);
-
+        var group = endpoints.MapGroup(pattern).WithTags(tag);
         return string.IsNullOrWhiteSpace(authorizationPolicy)
             ? group
             : group.RequireAuthorization(authorizationPolicy);
     }
 
-    protected static IResult Forbid(Localizer localizer, HttpContext httpContext, string? value)
-    {
-        var result = CreateResult(localizer, httpContext, "Forbidden", value, 403);
-        Activity.Current?.SetTag("http.response.body", value);
-        return Results.Json(result, statusCode: StatusCodes.Status403Forbidden);
-    }
+    protected static ProblemHttpResult BadRequest(string? detail = null, params object[] arguments) =>
+        Problem(detail, StatusCodes.Status400BadRequest, arguments);
 
-    protected static IResult NotFound(Localizer localizer, HttpContext httpContext, string? value)
-    {
-        var result = CreateResult(localizer, httpContext, "NotFound", value, 404);
-        return Results.NotFound(result);
-    }
+    protected static ProblemHttpResult NotFound(string? detail = null, params object[] arguments) =>
+        Problem(detail, StatusCodes.Status404NotFound, arguments);
 
-    protected static IResult Conflict(Localizer localizer, HttpContext httpContext, string? detail)
-    {
-        var result = CreateResult(localizer, httpContext, "Conflict", detail, 409);
-        Activity.Current?.SetTag("http.response.body", detail);
-        return Results.Conflict(result);
-    }
+    protected static ProblemHttpResult Forbid(string? detail = null, params object[] arguments) =>
+        Problem(detail, StatusCodes.Status403Forbidden, arguments);
 
-    protected static IResult Problem(
-        Localizer localizer,
-        HttpContext httpContext,
+    protected static ProblemHttpResult Conflict(string? detail = null, params object[] arguments) =>
+        Problem(detail, StatusCodes.Status409Conflict, arguments);
+
+    protected static ProblemHttpResult Problem(
         string? detail = null,
-        int errorCode = 0,
+        int statusCode = StatusCodes.Status500InternalServerError,
         params object[] arguments)
     {
-        var result = CreateResult(localizer, httpContext, "Problem", detail, errorCode, arguments);
-        result.Status = StatusCodes.Status500InternalServerError;
-        Activity.Current?.SetTag("http.request.body", detail);
-        Activity.Current?.SetTag("http.response.body", detail);
-        return Results.Json(result, statusCode: StatusCodes.Status500InternalServerError);
-    }
-
-    protected static IResult BadRequest(
-        Localizer localizer,
-        HttpContext httpContext,
-        string? error,
-        params object[] arguments)
-    {
-        var result = CreateResult(
-            localizer,
-            httpContext,
-            localizer.Get(Localizer.BadRequest),
-            error,
-            0,
-            arguments);
-        result.Status = StatusCodes.Status400BadRequest;
-        return Results.BadRequest(result);
-    }
-
-    private static ErrorResult CreateResult(
-        Localizer localizer,
-        HttpContext httpContext,
-        string title,
-        string? detail = null,
-        int errorCode = 0,
-        params object[] arguments)
-    {
-        var error = detail ?? string.Empty;
-
-        if (detail != null)
+        var extensions = arguments.Length == 0 ? null : new Dictionary<string, object?>
         {
-            error = localizer.Get(detail, arguments) ?? detail;
-        }
-        else if (errorCode != 0)
-        {
-            error = localizer.Get(errorCode.ToString()) ?? error;
-        }
-
-        return new ErrorResult(error, httpContext.TraceIdentifier, title, errorCode);
+            [LocalizationArgumentsExtensionName] = arguments,
+        };
+        return TypedResults.Problem(detail: detail, statusCode: statusCode, extensions: extensions);
     }
 }

@@ -63,6 +63,8 @@ public static class WebExtensions
 
         services.AddEndpointsApiExplorer();
         services.AddLocalizer();
+        services.AddSingleton<IProblemDetailsWriter, ErrorResultProblemDetailsWriter>();
+        services.AddProblemDetails();
         return services;
     }
 
@@ -80,12 +82,15 @@ public static class WebExtensions
         app.UseRequestLocalization();
         app.UseRouting();
         app.UseCors(app.Environment.IsProduction() ? WebConst.Limited : WebConst.Default);
+        app.UseStatusCodePages();
         app.UseRateLimiter();
         app.UseOutputCache();
 
         if (!app.Environment.IsProduction())
         {
             app.MapOpenApi().CacheOutput("openapi");
+            app.UseSwaggerUI(options =>
+                options.SwaggerEndpoint("../openapi/v1.json", "API v1"));
         }
 
         //app.UseMiddleware<JwtMiddleware>();

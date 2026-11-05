@@ -4,3 +4,14 @@
 
 - 2026-10-29：MiniApi 升级 Perigon.PostgreSQL 至 0.2.0，统一数据库上下文；验证情况见 PT0005。
 - 2026-11-04：调整 MiniApi 用户业务逻辑至 `CommonMod`，通过源生成器自动注册模块与 Manager，修复启动失败；排除旧生成文件造成的误判，验证情况见 PT0005。
+- 2026-11-05：MiniApi 改用 Perigon.PostgreSQL 的上下文选项注入与实体索引特性，整理模块 DTO 和 Perigon skill；验证见 PT0005。
+- 2026-11-05：MiniApi 按实体命名 UserEndpoints，并启用 Perigon.PostgreSQL 上下文池、连接池与 OpenTelemetry；验证见 PT0005。
+- 2026-11-05：登录接口组改为 User，路由调整为 `/api/users/login` 并补充 OpenAPI 元数据；验证见 PT0005。
+- 2026-11-05：MiniApi 新增非生产环境 Swagger UI，修复本地 Angular 依赖安装并兼容无前端模板；验证见 PT0005。
+- 2026-11-05：登录接口使用强类型 Minimal API 返回值，去除可自动推断的 OpenAPI 元数据配置；验证见 PT0005。
+- 2026-11-05：MiniApi 增加 `ApiResult<T>`，简化成功与统一错误结果并集中提供 OpenAPI 元数据；验证见 PT0005。
+- 2026-11-05：MiniApi 错误 helper 延迟获取请求标识，移除登录 Endpoint 对 `HttpContext` 的依赖；验证见 PT0005。
+- 2026-11-05：MiniApi 移除自定义错误类型并改用 ASP.NET Core Problem Details；验证见 PT0005。
+- 2026-11-05：MiniApi 启用跨程序集自动验证，并以基于 Problem Details 的 `ErrorResult` 统一错误响应；验证见 PT0005。
+- 2026-11-05：审核 MiniApi 异常与错误响应，修复内容协商回退及异常处理中断场景，评估 AOT JSON 源生成方案；验证见 PT0005。
+- 2026-11-05：MiniApi 错误 helper 改为传入资源键，由统一 writer 解析本地化详情；验证见 PT0005。

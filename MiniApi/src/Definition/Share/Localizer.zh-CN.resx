@@ -221,4 +221,7 @@
   <data name="TenantNotExist" xml:space="preserve">
     <value>租户不存在</value>
   </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>服务器处理请求时发生错误，请稍后重试。</value>
+  </data>
 </root>

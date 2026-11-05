@@ -221,4 +221,7 @@
   <data name="TenantNotExist" xml:space="preserve">
     <value>The tenant does not exist</value>
   </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>An error occurred while processing the request. Please try again later.</value>
+  </data>
 </root>

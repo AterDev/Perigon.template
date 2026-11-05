@@ -18,6 +18,7 @@ public static class ModuleExtensions
     // The module services registration
     private static IHostApplicationBuilder AddModServices(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddValidation();
         builder.Services.AddHostedService<DatabaseInitService>();
         return builder;
     }

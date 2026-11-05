@@ -17,9 +17,9 @@ description: MiniApi 项目开发入口。用于 Perigon CLI/MCP、Minimal API E
 
 ## 模板边界
 
-- 业务默认位于 `ApiService` 的 `Endpoints/Managers/Models/Services`，使用一个 ApiService、PostgreSQL，且不含内置 EF migration 资源。
+- 业务逻辑和 DTO 位于 `src/Modules/<Module>`；ApiService 的 `Endpoints` 负责 HTTP 接口。模板使用 PostgreSQL，且不含内置 EF migration 资源。
 - Endpoint group 继承 `RestEndpointBase` 并声明静态 `MapEndpoints`；Manager 和 Endpoint 注册由源码生成器完成。
-- 不要假设存在 `AdminService`、Controller、`src/Modules`、Standard 生成器或多数据库切换。
+- 不要假设存在 `AdminService`、Controller、Standard 生成器或多数据库切换。
 - 新增能力必须检查 Request Delegate Generator、AOT、Trim、反射、依赖和序列化兼容性。
 
 ## Reference routing

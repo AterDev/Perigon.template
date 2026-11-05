@@ -1,11 +1,12 @@
 using Entity;
 using Perigon.PostgreSQL;
+using Perigon.PostgreSQL.Options;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EntityFramework.AppDbContext;
 
-public partial class DefaultDbContext(string connectionString)
-    : DbContext(builder => builder.UsePostgres(connectionString))
+public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
+    : DbContext(options)
 {
     public new DbSet<TEntity> Set<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TEntity>()
         where TEntity : class
@@ -14,16 +15,4 @@ public partial class DefaultDbContext(string connectionString)
     }
 
     public DbSet<User> Users => Set<User>();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("users");
-                entity.Property(user => user.UserName).IsRequired();
-                entity.HasIndex(user => user.UserName)
-                    .HasDatabaseName("uq_users_user_name")
-                    .IsUnique();
-            });
-        }
-    }
+}

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Perigon.AspNetCore.Services;
-using Perigon.AspNetCore.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
@@ -91,9 +90,8 @@ public class JwtMiddleware(RequestDelegate next, CacheService cache, ILogger<Jwt
         string? msg = "无效的凭证"
     )
     {
-        context.Response.StatusCode = statusCode;
-        await context.Response.WriteAsJsonAsync(
-            new ErrorResult(msg ?? string.Empty, context.TraceIdentifier, msg ?? string.Empty, statusCode));
+        await TypedResults.Problem(detail: msg ?? string.Empty, title: msg ?? string.Empty,
+            statusCode: statusCode).ExecuteAsync(context);
         await context.Response.CompleteAsync();
     }
 }

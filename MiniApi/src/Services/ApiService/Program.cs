@@ -13,6 +13,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, ApiService.ApiJsonSerializerContext.Default);
 });
 builder.Services.AddOpenApi();
+builder.Services.AddValidation();
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(

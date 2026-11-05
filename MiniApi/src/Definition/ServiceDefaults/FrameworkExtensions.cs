@@ -70,14 +70,15 @@ public static class FrameworkExtensions
         /// <returns></returns>
         public IHostApplicationBuilder AddDbContext()
         {
-            builder.Services.AddScoped<DefaultDbContext>(serviceProvider =>
-            {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString(AppConst.Default)
-                    ?? configuration.GetConnectionString("Postgres")
-                    ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
-                return new DefaultDbContext(connectionString);
-            });
+            var connectionString = builder.Configuration.GetConnectionString(AppConst.Default)
+                ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
+            builder.Services.AddDbContextPool<DefaultDbContext>(
+                options => options
+                    .UseNpgsql(connectionString)
+                    .EnableConnectionPooling()
+                    .UseConnectionTimeout(TimeSpan.FromSeconds(15))
+                    .UseCommandTimeout(TimeSpan.FromSeconds(30)),
+                registration => registration.EnableOpenTelemetry = true);
             return builder;
         }
 

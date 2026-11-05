@@ -2,14 +2,14 @@
 
 ## 架构取向
 
-MiniApi 面向轻量 Minimal API 和 Native AOT：优先静态可分析、显式、低开销的实现，减少层级与运行时发现。不要把 ApiStandard 的 Controller、AdminService、`src/Modules`、多数据库或 EF migration resource 套入本模板。
+MiniApi 面向轻量 Minimal API 和 Native AOT：优先静态可分析、显式、低开销的实现，减少层级与运行时发现。不要把 ApiStandard 的 Controller、AdminService、多数据库或 EF migration resource 套入本模板。
 
 ## 分层职责
 
 - `src/Services/ApiService/Endpoints`：HTTP 路由、绑定、授权、验证和响应。
-- `ApiService/Managers`：业务流程与数据访问；可由源码生成器自动注册。
-- `ApiService/Models`：请求、响应、筛选和功能契约。
-- `ApiService/Services`：第三方、基础设施或需要 DI 的服务实现。
+- `src/Modules/<Module>/Managers`：业务流程与数据访问；由源码生成器自动注册。
+- `src/Modules/<Module>/Models/<Entity>Dtos`：对应实体的接口 DTO。
+- `src/Modules/<Module>/Services`：模块内需要 DI 的服务实现。
 - `Definition/Entity`：核心实体。
 - `Definition/EntityFramework`：PostgreSQL DbContext、映射和 schema 模型。
 - `Definition/Share`：跨层共享的常量、模型、基类和服务。

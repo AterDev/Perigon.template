@@ -1,13 +1,13 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Perigon.AspNetCore.Models;
-using ApiService.Endpoints;
+using CommonMod.Models.UserDtos;
 
 namespace ApiService;
 
-[JsonSerializable(typeof(SampleUpsertRequest))]
-[JsonSerializable(typeof(SampleResponse))]
-[JsonSerializable(typeof(LoginRequest))]
-[JsonSerializable(typeof(LoginResponse))]
+[JsonSerializable(typeof(UserLoginDto))]
+[JsonSerializable(typeof(UserInfoDto))]
+[JsonSerializable(typeof(ProblemDetails))]
 [JsonSerializable(typeof(ErrorResult))]
 [JsonSerializable(typeof(bool))]
 [JsonSerializable(typeof(bool?))]

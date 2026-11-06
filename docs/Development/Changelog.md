@@ -6,6 +6,8 @@
 
 ### Changed
 
+- MiniApi 源生成器恢复使用已发布 NuGet 包，默认 Native AOT 发布 RID 改为 `linux-x64`，Docker 发布使用兼容 glibc 的运行镜像。
+- MiniApi 的 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；修改 Endpoint、模块模型或服务结构后需要重新运行。该 CLI 命令处于开发阶段，尚未确认随已发布 Perigon.CLI 提供。
 - MiniApi 非生产环境提供 Swagger UI（`/swagger`），读取现有的 `/openapi/v1.json`。
 - MiniApi AppHost 仅在 Angular 项目存在时启动前端资源，支持 `frontType=None` 和 `frontType=Angular`。
 
@@ -27,6 +29,11 @@
 
 - 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.3.0。
 - MiniApi 统一使用 `EntityFramework.AppDbContext.DefaultDbContext`，删除重复上下文并调整依赖注入。
+
+### Experimental / In Progress
+
+- 已弃用编译前 JSON 元数据扫描实验：该方案曾使用本地 `Perigon.AspNetCore.SourceGeneration` 项目引用扫描模块和 Endpoint，但不再作为实现路径。MiniApi 的其他源生成能力已恢复使用已发布的 NuGet 包。
+- 当前改为由 Perigon CLI 的 `aot jsonContext` 显式生成 `ApiJsonSerializerContext`；已完成本地验证，命令尚未发布。动态、反射、非泛型 `IResult`、运行时多态和无法推断的类型仍需手动注册。
 
 ## 1.3.17 - 2026-10-08
 

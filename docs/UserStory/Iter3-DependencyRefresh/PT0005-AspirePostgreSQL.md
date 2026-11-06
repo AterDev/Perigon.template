@@ -1,5 +1,10 @@
 # PT0005：依赖与上下文调整
 
+- 2026-11-06：MiniApi 源生成器切回已发布的 NuGet 包，Release 和 Docker 发布改用 `linux-x64`。
+- 隔离副本 Debug 构建通过；Linux Noble SDK 下 `linux-x64` Native AOT 发布成功，Noble runtime-deps 镜像构建并启动后 OpenAPI 返回 200。发布仍有既有裁剪警告。
+- 无额外字体的 AOT 镜像 `docker image inspect .Size` 为 81,517,682 字节（约 77.74 MiB）；Docker Desktop 镜像列表显示约 331 MB，二者口径不同。独立容器在 Development 模式响应 OpenAPI 请求后，`docker stats` 一次采样为 34.13 MiB；该值不包含数据库和 Redis，测试未连接数据库。
+- 同配置比较 framework-dependent 非 AOT（ASP.NET Core Noble 镜像）和 AOT（runtime-deps Noble 镜像），各启动三次：OpenAPI 首次返回 200 的时间中位数分别为 1204.5 ms、562.8 ms，`docker stats` 内存中位数为 42.03 MiB、35.34 MiB。镜像列表分别显示 371 MB、331 MB；AOT 镜像保留约 76.75 MiB 的 `.dbg` 符号文件。
+
 - [x] 升级 MiniApi 的 Perigon.PostgreSQL，保留工具已发布版本。
 - [x] 删除重复上下文并统一服务注册与文档。
 - [x] 对照 0.2.0 包检查模板使用的 API。
@@ -49,6 +54,9 @@
 - [x] 审核全局异常、验证、业务错误及状态码页面。使用统一 `IProblemDetailsWriter`，解决 `Accept: text/plain` 时框架回退绕过 `ErrorResult` 的问题；生产异常详情不再返回客户端，服务端记录异常，已开始响应和取消请求向上抛出。隔离项目测试 12/12，覆盖异常、验证、不同 Accept、401/403/429、已开始响应和取消；最终模板包内容已核对。
 - [x] win-x64 Native AOT 发布并实际验证成功登录、模型验证、业务错误和 404；即使 `Accept: text/plain`，错误仍是 `application/problem+json` 且包含 traceId。发布保留既有 IL 警告（`artifacts/error-audit-aot.log`），未验证 linux-musl-x64。中英文快速入门构建及文档校验通过。
 - [x] Aspire 开发进程需要重建 ApiService 才加载最新实现；使用资源重建后再次确认 `Accept: text/plain` 的 400 响应包含 traceId 和 errors，ApiService 已恢复健康。
-- 2026-11-05 核对 Request Delegate Generator 的实际生成结果及 Roslyn 生成器执行规则：RDG 从已注册的 JSON resolver 读取类型元数据，不能自动生成 DTO 的 `JsonSerializerContext`；一个普通源生成器生成的 `[JsonSerializable]` 代码不能作为同轮 System.Text.Json 生成器的输入。当前继续显式注册 JSON 根类型；可用编译前 MSBuild 生成步骤或独立 JSON 元数据生成器实现自动化，需单独评估设计、跨模块发现及发布。
+- 2026-11-05 核对 Request Delegate Generator 的实际生成结果及 Roslyn 生成器执行规则：RDG 从已注册的 JSON resolver 读取类型元数据，不能自动生成 DTO 的 `JsonSerializerContext`；一个普通源生成器生成的 `[JsonSerializable]` 代码不能作为同轮 System.Text.Json 生成器的输入。
+- 2026-11-06：此前的编译前 JSON 元数据扫描实验已弃用；该实验使用本地 `Perigon.AspNetCore.SourceGeneration` 项目引用，曾验证模块、Endpoint 泛型和 Native AOT，但不再作为实现路径。其他源生成能力已切回已发布的 NuGet 包。
+- 当前 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；隔离 MiniApi 副本验证了 CLI 生成、编译及 win-x64 Native AOT 的 HTTP 400 和 OpenAPI，CLI 发布版本尚未确认。修改 Endpoint、模块模型或服务结构后需要重新运行；动态、反射、非泛型 `IResult`、运行时多态及无法确定的类型仍手动注册。
+- 在隔离 MiniApi 副本新增跨模块 DTO 和 Endpoint，用本地打包安装的 `perigon aot jsonContext` 验证生成的 using 与短类型名、手写声明保留、重复运行内容和修改时间不变；实际 HTTP 和 OpenAPI 均正常。同名模型通过 using 别名区分，并有回归测试覆盖。
 - [x] 恢复基类 `BadRequest`、`NotFound`、`Forbid`、`Conflict` 等 helper：资源键直接写入 ProblemDetails 的 detail，统一 writer 通过构造函数注入 Localizer，并按请求语言翻译；找不到资源时保留原文。格式参数仅用于本地化，不出现在响应中；登录接口不再注入 Localizer，保留用户不存在 404、密码错误 403，补充 OpenAPI schema。
 - [x] 隔离生成项目测试通过 15/15，覆盖中英文、格式参数、未知资源、原始 Problem detail、同一结果的多语言执行以及 400/403/404/409/500。win-x64 Native AOT 发布与实际请求通过：中文 403、英文 404、自动验证 400 和 OpenAPI 403/404 schema 均正确；发布仍有原有 IL 警告（`artifacts/localized-detail-aot.log`），未验证 linux-musl-x64。Aspire ApiService 已重建并验证，双语文档校验和构建通过。

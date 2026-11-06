@@ -1,5 +1,7 @@
 # 项目跟踪
 
+- 2026-11-06：MiniApi 源生成器切回包引用，Native AOT 和 Docker 发布默认改用 `linux-x64`。
+- 2026-11-06：撤销 MiniApi 编译前 JSON 自动扫描实验，改由 Perigon CLI 的 `aot jsonContext` 命令显式生成 `ApiJsonSerializerContext`；CLI 命令仍处于开发阶段，验证和发布版本待完成。
 - 2026-10-30：两套模板统一内置 PostgreSQL；ApiStandard 移除 SQL Server 支持，验证见 PT0006。
 
 - 2026-10-29：MiniApi 升级 Perigon.PostgreSQL 至 0.2.0，统一数据库上下文；验证情况见 PT0005。
@@ -15,3 +17,4 @@
 - 2026-11-05：MiniApi 启用跨程序集自动验证，并以基于 Problem Details 的 `ErrorResult` 统一错误响应；验证见 PT0005。
 - 2026-11-05：审核 MiniApi 异常与错误响应，修复内容协商回退及异常处理中断场景，评估 AOT JSON 源生成方案；验证见 PT0005。
 - 2026-11-05：MiniApi 错误 helper 改为传入资源键，由统一 writer 解析本地化详情；验证见 PT0005。
+- 2026-11-06：此前的 MiniApi 编译前 JSON 自动扫描实验标记为已弃用；MiniApi 的其他源生成能力已恢复使用已发布的 NuGet 包。JSON context 改由 Perigon CLI 的 `aot jsonContext` 显式生成，CLI 尚未完成验证和发布。

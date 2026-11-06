@@ -23,7 +23,7 @@ pwsh ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myprojectname-ap
 ```
 
 - ApiStandard：framework-dependent，明确关闭 Trim/AOT。
-- MiniApi：`linux-musl-x64` self-contained NativeAOT，开启 Trim/AOT。
+- MiniApi：`linux-x64` self-contained NativeAOT，开启 Trim/AOT；Dockerfile 基于 Ubuntu 24.04 Noble 的 `mcr.microsoft.com/dotnet/runtime-deps:10.0-noble`。仅在需要服务端字体渲染时使用 `-InstallFonts`，它通过 Ubuntu `apt` 安装基础字体依赖和可选 CJK 字体包（默认 `fonts-wqy-zenhei`，也可用 `fonts-noto-cjk`）。
 - `-NoRestore` 只在目标 RID 已完成 restore 时使用。
 - 只有确需服务端图片或文字渲染（如报表、PDF 等）时才安装字体。
 - 发布前先 Release build；之后检查镜像大小、启动日志、健康端点和运行架构。

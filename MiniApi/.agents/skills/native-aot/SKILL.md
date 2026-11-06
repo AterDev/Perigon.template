@@ -5,7 +5,7 @@ description: 评估和验证 MiniApi 的 Native AOT、Trim、Request Delegate Ge
 
 # MiniApi Native AOT
 
-MiniApi 的 `ApiService.csproj` 默认启用 `IsAotCompatible`、`EnableRequestDelegateGenerator`、`PublishAot`，目标为 `linux-musl-x64` 自包含发布。不能用普通 Debug build 代替 AOT 兼容证据。
+MiniApi 的 `ApiService.csproj` 默认启用 `IsAotCompatible`、`EnableRequestDelegateGenerator`、`PublishAot`，目标为 `linux-x64` 自包含发布。不能用普通 Debug build 代替 AOT 兼容证据。
 
 ## 先判断影响
 
@@ -35,7 +35,7 @@ MiniApi 的 `ApiService.csproj` 默认启用 `IsAotCompatible`、`EnableRequestD
 ```powershell
 dotnet build MyProjectName.slnx -c Release
 dotnet test --project tests/ApiTest/ApiTest.csproj
-dotnet publish src/Services/ApiService/ApiService.csproj -c Release -r linux-musl-x64 --self-contained true -p:PublishAot=true -p:PublishTrimmed=true
+dotnet publish src/Services/ApiService/ApiService.csproj -c Release -r linux-x64 --self-contained true -p:PublishAot=true -p:PublishTrimmed=true
 ```
 
 - 审查完整输出中的 linker/AOT/RDG warning，尤其是包含 `IL2`、`IL3` 或 endpoint source-generation 诊断的警告；不只看退出码。

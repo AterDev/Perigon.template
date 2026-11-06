@@ -1,15 +1,17 @@
-FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-noble
 
 ARG PUBLISH_DIR=artifacts/publish/ApiService
 ARG INSTALL_FONTS=false
-ARG CJK_FONT_PACKAGE=font-wqy-zenhei
+ARG CJK_FONT_PACKAGE=fonts-wqy-zenhei
 
 RUN if [ "$INSTALL_FONTS" = "true" ]; then \
-        apk add --no-cache \
+        apt-get update && apt-get install --yes --no-install-recommends \
             fontconfig \
-            font-dejavu \
-            font-noto-emoji \
-            ${CJK_FONT_PACKAGE} && fc-cache -f; \
+            fonts-dejavu-core \
+            fonts-noto-color-emoji \
+            ${CJK_FONT_PACKAGE} && \
+        rm -rf /var/lib/apt/lists/* && \
+        fc-cache -f; \
     fi
 
 ENV ASPNETCORE_URLS=http://+:8080 \
@@ -21,4 +23,4 @@ COPY ${PUBLISH_DIR}/ ./
 
 EXPOSE 8080
 USER $APP_UID
-ENTRYPOINT ["./ApiService"] 
+ENTRYPOINT ["./ApiService"]

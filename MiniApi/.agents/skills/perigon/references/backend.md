@@ -17,7 +17,7 @@
 - 列表/详情避免泄漏导航、无界集合、长文本、二进制或敏感字段。
 - Filter 只暴露有明确语义和可控成本的筛选；所有列表必须有边界或分页。
 - 新增或改变 JSON 契约时检查 AOT/Trim 与真实 HTTP 序列化。需要 converter、多态或运行时类型时使用可静态生成的 System.Text.Json 元数据策略。
-- 为新增的 JSON 请求或响应根类型在已注册的 `JsonSerializerContext` 中添加 `[JsonSerializable]`；可由已注册根类型静态发现的嵌套类型无需逐个添加。Request Delegate Generator 不会自动生成 JSON 元数据，跨模块 DTO 同样需要注册并验证 Native AOT。
+- 开发版通过 `perigon aot jsonContext` 显式更新各服务的 `ApiJsonSerializerContext`；接口和模块模型变化后重新运行，并检查生成结果与 Native AOT 序列化。保留手写声明，运行时多态和无法静态推断的类型仍需手工添加。Request Delegate Generator 不生成 JSON 元数据；CLI 命令尚待发布。
 
 ## Manager 与 Service
 

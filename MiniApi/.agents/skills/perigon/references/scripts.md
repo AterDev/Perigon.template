@@ -8,7 +8,7 @@
 
 ## `scripts/PublishDocker.ps1`
 
-用于单个 ApiService 的 `linux-musl-x64` 自包含 Native AOT 发布和 Docker 镜像构建：
+用于单个 ApiService 的 `linux-x64` 自包含 Native AOT 发布和 Docker 镜像构建。Dockerfile 基于 Ubuntu 24.04 Noble 的 `mcr.microsoft.com/dotnet/runtime-deps:10.0-noble`，与 glibc `linux-x64` 运行时匹配：
 
 ```powershell
 ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myprojectname-api-service
@@ -16,7 +16,7 @@
 
 - 运行前检查 Docker/Podman、目标 RID、项目 restore、Dockerfile 和输出目录。
 - `-NoRestore` 只在目标 RID 已恢复时使用。
-- 只有确需服务端字体渲染时才使用 `-InstallFonts`。
+- 只有确需服务端字体渲染时才使用 `-InstallFonts`；该选项通过 Ubuntu `apt` 安装 `fontconfig`、`fonts-dejavu-core`、`fonts-noto-color-emoji` 以及一个 CJK 字体包。默认包为 `fonts-wqy-zenhei`，也可选择 `fonts-noto-cjk`。
 - 成功构建后必须启动镜像并检查 `/health`、`/alive` 和受影响 endpoint；镜像存在不代表运行正确。
 - 脚本会删除临时 publish 目录，执行时不要把用户文件放入该目录。
 

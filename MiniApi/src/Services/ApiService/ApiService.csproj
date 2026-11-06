@@ -13,7 +13,7 @@
 			<!-- AOT/容器发布配置仅在 Release 生效，本地 Debug 调试使用当前平台输出 -->
 			<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 				<PublishAot>true</PublishAot>
-				<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">linux-musl-x64</RuntimeIdentifier>
+				<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">linux-x64</RuntimeIdentifier>
 				<SelfContained>true</SelfContained>
 				<StripSymbols>true</StripSymbols>
 			</PropertyGroup>

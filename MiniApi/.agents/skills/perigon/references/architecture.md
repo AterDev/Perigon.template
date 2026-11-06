@@ -27,7 +27,7 @@ MiniApi 面向轻量 Minimal API 和 Native AOT：优先静态可分析、显式
 
 ## Native AOT 边界
 
-`ApiService.csproj` 默认启用 `IsAotCompatible`、`PublishAot`、自包含 `linux-musl-x64` 和符号裁剪。新增 endpoint/DTO、JSON converter、多态、反射、表达式、DI 扫描、EF 模型或第三方包时使用 `native-aot`，不能只验证 JIT build。
+`ApiService.csproj` 默认启用 `IsAotCompatible`、`PublishAot`、自包含 `linux-x64` 和符号裁剪。新增 endpoint/DTO、JSON converter、多态、反射、表达式、DI 扫描、EF 模型或第三方包时使用 `native-aot`，不能只验证 JIT build。
 
 ## ServiceDefaults
 

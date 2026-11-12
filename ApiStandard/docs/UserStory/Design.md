@@ -17,6 +17,7 @@
 | Iteration | Product Design | Key decisions | Status |
 |---|---|---|---|
 | `Iter0-Initial` | [PD0001-Initial](./Iter0-Initial/PD0001-Initial.md) | 待记录 | draft |
+| `Iter0-Initial` | [PD0002-MailKit5Compatibility](./Iter0-Initial/PD0002-MailKit5Compatibility.md) | 使用 MailKit 5 的 `MailKit` 扩展命名空间发送 MimeMessage | done |
 
 ## 全局设计决策
 

@@ -19,6 +19,7 @@
 | Iteration | Product Design | Module | Status | Summary |
 |---|---|---|---|---|
 | `Iter0-Initial` | [PD0001-Initial](./Iter0-Initial/PD0001-Initial.md) | Initial | draft | 初始产品设计模板 |
+| `Iter0-Initial` | [PD0002-MailKit5Compatibility](./Iter0-Initial/PD0002-MailKit5Compatibility.md) | MailKit5Compatibility | done | 保持 API Standard 在 MailKit 5 下可构建 |
 
 ## 编号规则
 

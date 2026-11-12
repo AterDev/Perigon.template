@@ -6,6 +6,8 @@
 
 ### Changed
 
+- MiniApi 升级到 .NET 11、Aspire 13.6.5 和最新依赖；邮件发送适配 MailKit 5。ApiStandard 保持原有目标框架。
+
 - MiniApi 源生成器恢复使用已发布 NuGet 包，默认 Native AOT 发布 RID 改为 `linux-x64`，Docker 发布使用兼容 glibc 的运行镜像。
 - MiniApi 的 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；修改 Endpoint、模块模型或服务结构后需要重新运行。该 CLI 命令处于开发阶段，尚未确认随已发布 Perigon.CLI 提供。
 - MiniApi 非生产环境提供 Swagger UI（`/swagger`），读取现有的 `/openapi/v1.json`。

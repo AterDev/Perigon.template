@@ -17,7 +17,7 @@ interface SystemLoginDto {
 
 @Component({
   selector: 'app-login',
-  imports: [CommonFormModules, MatCardModule],
+  imports: [...CommonFormModules, MatCardModule],
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./login.scss']

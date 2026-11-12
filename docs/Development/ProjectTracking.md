@@ -1,5 +1,6 @@
 # 项目跟踪
 
+- 2026-11-12：MiniApi 升级 .NET 11 和依赖，验证记录见 PT0007。
 - 2026-11-06：MiniApi 源生成器切回包引用，Native AOT 和 Docker 发布默认改用 `linux-x64`。
 - 2026-11-06：撤销 MiniApi 编译前 JSON 自动扫描实验，改由 Perigon CLI 的 `aot jsonContext` 命令显式生成 `ApiJsonSerializerContext`；CLI 命令仍处于开发阶段，验证和发布版本待完成。
 - 2026-10-30：两套模板统一内置 PostgreSQL；ApiStandard 移除 SQL Server 支持，验证见 PT0006。

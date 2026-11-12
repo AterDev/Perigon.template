@@ -1,10 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/modules/share/i18n-keys';
 
 @Component({
   selector: 'app-index',
-  imports: [TranslateModule],
+  imports: [TranslatePipe],
   templateUrl: './index.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './index.scss'

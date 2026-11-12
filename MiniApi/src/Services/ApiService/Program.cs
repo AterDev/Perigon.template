@@ -1,3 +1,6 @@
+using ApiService.Worker;
+using CommonMod.Services;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // 共享基础服务:health check, service discovery, opentelemetry, http retry etc.
@@ -12,23 +15,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, ApiService.ApiJsonSerializerContext.Default);
 });
-builder.Services.AddOpenApi();
-builder.Services.AddValidation();
-
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(
-        WebConst.User,
-        policy =>
-        {
-            policy.RequireRole(WebConst.User);
-        }
-    );
 
 // Managers, auto register by source generator
 builder.Services.AddManagers();
 
 // Modules, auto register by source generator
 builder.AddModules();
+
+
+builder.Services.AddHostedService<DatabaseInitService>();
+
 
 WebApplication app = builder.Build();
 

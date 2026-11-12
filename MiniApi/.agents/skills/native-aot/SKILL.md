@@ -25,6 +25,7 @@ MiniApi 的 `ApiService.csproj` 默认启用 `IsAotCompatible`、`EnableRequestD
 - handler 优先具名 `public static` typed method；参数绑定来源和返回契约保持静态可分析。不要用反射扫描路由或运行时生成 handler。
 - 业务和数据访问放 Manager/Service，endpoint 只处理 HTTP 边界、授权、验证和结果塑形。
 - 使用稳定、明确的请求/响应类型。需要定制或多态 JSON 时提供可静态生成的 `JsonSerializerContext`/resolver，并在发布产物中验证真实序列化。
+- DTO 与实体的转换遵循 `perigon` backend reference：由 AI 在对应 DTO/实体类型中编写显式方法；不引入对象映射包、映射代码生成器/工具或独立映射扩展。
 - 引入反射或动态 API 前先检查对应 API 和依赖的 AOT/Trim 标注。优先源生成、显式注册和静态映射；不要靠随意添加 linker descriptor、`DynamicDependency` 或 warning suppression 掩盖未知可达性。
 - 对确有依据的保留或抑制，记录目标成员、原因、可达性假设和回归验证。
 

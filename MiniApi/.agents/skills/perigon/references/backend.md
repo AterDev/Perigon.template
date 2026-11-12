@@ -13,6 +13,7 @@
 ## 请求/响应模型
 
 - Endpoint 所用请求和响应 DTO 按对应实体放在所属业务模块的 `Models/<Entity>Dtos` 目录，每个类型单独一个文件；不要在 Endpoint 类中定义 DTO，也不要使用 `Request` 或 `Response` 作为类名后缀。不要把数据库实体直接作为 HTTP 契约。
+- DTO 与实体的转换使用显式 C# 方法，写在对应的 DTO/实体类型中；不使用 Mapster、AutoMapper 等映射包、映射代码生成器或独立映射扩展。DTO 可提供 `FromEntity`、`ToEntity` 或 `ApplyTo`，逐项处理属性；实体侧只承载自身的创建和领域更新逻辑。遵守依赖方向：`Definition/Entity` 不得引用 `Modules` 中的 DTO；在 DTO 中调用实体方法时，保留实体不变量并明确允许写入的字段。
 - Add/Update 排除 Id、系统时间、软删除和不可赋值字段；Update 可空性准确表达更新语义。
 - 列表/详情避免泄漏导航、无界集合、长文本、二进制或敏感字段。
 - Filter 只暴露有明确语义和可控成本的筛选；所有列表必须有边界或分页。

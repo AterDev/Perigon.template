@@ -36,10 +36,13 @@ MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量�
 	* `src/Services/ApiService/Endpoints`: Minimal API endpoint group 定义目录
 * `src/Modules/CommonMod`: 用户业务 Manager、DTO 和初始化服务
 
-
 ## 项目运行
 
-项目基于 `Aspire`，使用 Aspire CLI 启动 AppHost 即可启动 PostgreSQL、按配置选择的 Redis 和 `ApiService`。使用 `dotnet tool restore` 恢复本地固定的 `Perigon.PostgreSQL.Tools` 0.3.0 工具。
+项目基于 `Aspire`，需要安装`wslc`或`docker`容器支持本地环境。
+
+`.NET 11 SDK`是前置安装项，然后安装`aspire cli`.
+
+启动项目：
 
 ```pwsh
 aspire start --non-interactive

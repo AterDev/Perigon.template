@@ -36,6 +36,8 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 
 | `Iter3-DependencyRefresh` | [PD0006-PostgreSQLOnly](./Iter3-DependencyRefresh/PD0006-PostgreSQLOnly.md) | DataAccess | complete | 两套模板统一使用 PostgreSQL |
 
+| `Iter4-Net11` | [PD0007-MiniApiNet11](./Iter4-Net11/PD0007-MiniApiNet11.md) | Compatibility | complete | MiniApi 升级至 .NET 11 |
+
 ## 编号规则
 
 - 迭代目录：`Iter<number>-<IterationName>`。

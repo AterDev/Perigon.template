@@ -63,6 +63,9 @@ public static class WebExtensions
 
         services.AddEndpointsApiExplorer();
         services.AddLocalizer();
+        services.AddOpenApi();
+
+        services.AddValidation();
         services.AddSingleton<IProblemDetailsWriter, ErrorResultProblemDetailsWriter>();
         services.AddProblemDetails();
         return services;

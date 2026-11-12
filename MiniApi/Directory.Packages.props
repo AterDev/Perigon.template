@@ -17,18 +17,18 @@
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.6.4" />
     <PackageVersion Include="TUnit" Version="1.73.19" />
     <!-- Microsoft ASP.NET Core Packages -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="11.0.0" />
     <!-- Microsoft Extensions Packages -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.10.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />
-    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.10.0" />
     <!--
       Source generator compatibility baseline: keep Microsoft.CodeAnalysis.CSharp at Roslyn 5.0.0.
@@ -50,10 +50,9 @@
     <!-- Third-party Packages -->
     <PackageVersion Include="AWSSDK.S3" Version="4.0.104.2" />
     <PackageVersion Include="MailKit" Version="4.18.1" />
-    <PackageVersion Include="Mapster" Version="10.0.13" />
     <PackageVersion Include="MiniExcel" Version="2.0.0-preview.5" />
     <PackageVersion Include="Npgsql" Version="10.0.3" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.3.0" />
-    <PackageVersion Include="Perigon.PostgreSQL" Version="0.3.0" />
+    <PackageVersion Include="Perigon.PostgreSQL" Version="0.3.1" />
   </ItemGroup>
 </Project>

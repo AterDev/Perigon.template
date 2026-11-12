@@ -1,4 +1,3 @@
-using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -20,13 +19,6 @@ public static class FrameworkExtensions
     {
         public IHostApplicationBuilder AddFrameworkServices()
         {
-            // Mapster's runtime adapter compilation is unavailable under Native AOT.
-            // AOT callers should use explicit, statically compiled mappings.
-            if (System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported)
-            {
-                TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
-            }
-
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContext, UserContext>();
             builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
@@ -36,9 +28,8 @@ public static class FrameworkExtensions
             builder.AddOptions();
             builder.AddCache(components);
             builder.AddDbContext();
-
             builder.Services.AddScoped<JwtService>();
-            builder.Services.AddScoped<SmtpService>();
+            // builder.Services.AddScoped<SmtpService>();
             return builder;
         }
 

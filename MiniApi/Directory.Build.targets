@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0' and '$(UseRuntimeAsync)' != 'false'">
+    <!-- Runtime Async is a .NET 11 preview feature; set UseRuntimeAsync=false to opt out per project. -->
+    <Features>$(Features);runtime-async=on</Features>
+  </PropertyGroup>
+</Project>

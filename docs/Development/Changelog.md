@@ -6,6 +6,14 @@
 
 ### Changed
 
+- MiniApi 将 `Perigon.PostgreSQL` 升级至 0.3.1，以测试目标数据库缺失时的自动创建；数据库角色需要 `CREATEDB` 权限。`Perigon.PostgreSQL.Tools` 保持 0.3.0。
+
+- MiniApi 移除 Mapster 包、运行时映射扩展和全局映射配置；实体与 DTO 转换改由对应类型中的显式代码实现，并在项目 backend skill 中规定。
+
+- MiniApi 的 net11.0 项目默认启用 .NET 11 Runtime Async 预览功能；可设置 `UseRuntimeAsync=false` 关闭。
+
+- MiniApi 目标框架升级至 `net11.0`，要求 .NET 11 SDK，ASP.NET Core 包升级至 11.0.0，Native AOT 容器基础镜像升级至 `11.0-resolute`；ApiStandard 仍使用 .NET 10。
+
 - MiniApi 源生成器恢复使用已发布 NuGet 包，默认 Native AOT 发布 RID 改为 `linux-x64`，Docker 发布使用兼容 glibc 的运行镜像。
 - MiniApi 的 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；修改 Endpoint、模块模型或服务结构后需要重新运行。该 CLI 命令处于开发阶段，尚未确认随已发布 Perigon.CLI 提供。
 - MiniApi 非生产环境提供 Swagger UI（`/swagger`），读取现有的 `/openapi/v1.json`。

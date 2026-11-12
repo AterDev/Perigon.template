@@ -26,6 +26,8 @@
 
 | `Iter3-DependencyRefresh` | [PD0006-PostgreSQLOnly](./Iter3-DependencyRefresh/PD0006-PostgreSQLOnly.md) | 移除 SQL Server 配置及兼容逻辑 | complete |
 
+| `Iter4-Net11` | [PD0007-MiniApiNet11](./Iter4-Net11/PD0007-MiniApiNet11.md) | MiniApi 使用 .NET 11；ApiStandard 保持 .NET 10 | complete |
+
 ## 全局设计决策
 
 | ID | Decision | Rationale | Alternatives | Related PD |

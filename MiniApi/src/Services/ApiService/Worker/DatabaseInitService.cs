@@ -23,7 +23,9 @@ public sealed class DatabaseInitService(
             var dbContext = scope.ServiceProvider.GetRequiredService<DefaultDbContext>();
             await dbContext.EnsureCreatedAsync(stoppingToken);
 
-            var user = dbContext.Users.FirstOrDefault(x => x.UserName == "user");
+            var user = await dbContext.Users
+                .Where(x => x.UserName == "user")
+                .FirstOrDefaultAsync(stoppingToken);
             if (user is null)
             {
                 await dbContext.Users.InsertAsync(

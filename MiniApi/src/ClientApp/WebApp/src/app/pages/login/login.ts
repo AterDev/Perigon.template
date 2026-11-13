@@ -1,15 +1,15 @@
-import { Component, Inject, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { CommonFormModules } from 'src/app/modules/share/shared-modules';
-import { AccessTokenDto, AuthService, UserInfoDto } from 'src/app/services/auth.service';
+import { AuthService, UserInfoDto } from 'src/app/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { I18N_KEYS } from 'src/app/modules/share/i18n-keys';
 import { initStarfield } from './starfield';
 
-interface SystemLoginDto {
+interface UserLoginDto {
   userName: string;
   password: string;
 }
@@ -30,8 +30,7 @@ export class Login implements OnInit, AfterViewInit {
     private authService: AuthService,
     private router: Router,
     private http: HttpClient,
-    private translate: TranslateService,
-    @Inject('ADMIN_BASE_URL') private adminBaseUrl: string
+    private translate: TranslateService
   ) {
     if (authService.isLogin) {
       this.router.navigate(['/index']);
@@ -92,27 +91,12 @@ export class Login implements OnInit, AfterViewInit {
 
     this.isLoading.set(true);
     const formValue = this.loginForm.getRawValue();
-    const loginData = {
+    const loginData: UserLoginDto = {
       userName: formValue.userName,
       password: formValue.password
     };
 
-    this.http.post<AccessTokenDto>(`${this.adminBaseUrl}/api/systemUser/authorize`, loginData)
-      .subscribe({
-        next: (res) => {
-          this.authService.saveToken(res);
-          this.getUserInfo();
-        },
-        error: (error: any) => {
-          this.isLoading.set(false);
-          console.error('Login failed:', error);
-          // 这里可以添加错误提示处理
-        }
-      });
-  }
-
-  getUserInfo(): void {
-    this.http.get<UserInfoDto>(`${this.adminBaseUrl}/api/systemUser/userinfo`)
+    this.http.post<UserInfoDto>('/api/users/login', loginData)
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);
@@ -121,7 +105,8 @@ export class Login implements OnInit, AfterViewInit {
         },
         error: (error: any) => {
           this.isLoading.set(false);
-          console.error('Get user info failed:', error);
+          console.error('Login failed:', error);
+          // 这里可以添加错误提示处理
         }
       });
   }

@@ -6,6 +6,10 @@
 
 ### Changed
 
+- MiniApi 数据库初始化使用异步用户查询，兼容 `Perigon.PostgreSQL` 的异步查询执行模型。
+
+- MiniApi Angular 开发服务器将 `/api` 请求代理到 `ApiService`，登录页改用 `/api/users/login` 并适配其 `UserInfoDto` 响应；不再依赖旧 Admin 登录路由和 access token 契约。
+
 - MiniApi 将 `Perigon.PostgreSQL` 升级至 0.3.1，以测试目标数据库缺失时的自动创建；数据库角色需要 `CREATEDB` 权限。`Perigon.PostgreSQL.Tools` 保持 0.3.0。
 
 - MiniApi 移除 Mapster 包、运行时映射扩展和全局映射配置；实体与 DTO 转换改由对应类型中的显式代码实现，并在项目 backend skill 中规定。

@@ -1,5 +1,7 @@
 # 项目跟踪
 
+- 2026-11-13：MiniApi 数据库初始化改用 `FirstOrDefaultAsync`，修复 async-only PostgreSQL 查询提供程序拒绝同步执行的问题；验证见 PT0011。
+- 2026-11-13：修复 MiniApi Angular 登录仍调用旧 Admin API 的问题，启用开发服务器代理转发到 ApiService；验证见 PT0010。
 - 2026-11-12：MiniApi 升级至 .NET 11、Aspire 13.6.5 和最新依赖，MailKit 5 兼容性已适配；验证见 PT0007、PT0008。
 - 2026-11-12：ApiStandard 与 MiniApi 的邮件发送服务适配 MailKit 5；两套解决方案构建验证见 PT0009。
 - 2026-11-11：MiniApi 显式启用 .NET 11 Runtime Async，WSL Containers 运行验证见 PT0008。

@@ -29,6 +29,8 @@
 
 | `Iter4-Net11` | [PD0008-MiniApiNet11Aot](./Iter4-Net11/PD0008-MiniApiNet11Aot.md) | 完善 MiniApi .NET 11 AOT 与运行行为；ApiStandard 保持 .NET 10 | complete |
 | `Iter5-MailKit5` | [PD0009-MailKit5Compatibility](./Iter5-MailKit5/PD0009-MailKit5Compatibility.md) | 两套模板使用 MailKit 5；ApiStandard 导入发送扩展，MiniApi 使用 `SendRequest` | complete |
+| `Iter6-MiniApiFrontend` | [PD0010-MiniApiFrontend](./Iter6-MiniApiFrontend/PD0010-MiniApiFrontend.md) | MiniApi Angular 前端通过本地代理调用 MiniApi 登录 Endpoint，并基于实际用户响应维护界面登录状态 | complete |
+| `Iter7-MiniApiDatabaseInitialization` | [PD0011-MiniApiDatabaseInitialization](./Iter7-MiniApiDatabaseInitialization/PD0011-MiniApiDatabaseInitialization.md) | MiniApi 数据库初始化通过异步查询检查演示用户，避免调用 Perigon.PostgreSQL 不支持的同步查询 | complete |
 
 ## 全局设计决策
 

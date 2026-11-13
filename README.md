@@ -6,8 +6,8 @@
 
 ## 要求
 
-- ApiStandard：.NET 10 SDK（10.0.103 或兼容版本）；MiniApi：.NET 11 SDK（11.0.100 或兼容版本）
-- 与模板 SDK 匹配的 Aspire CLI：两套模板均使用 13.6.4
+- ApiStandard 需要 .NET 10 SDK（10.0.103 或兼容版本）；MiniApi 需要 .NET 11 SDK（11.0.100 或兼容版本）。
+- 与所选模板 AppHost SDK 版本匹配的 Aspire CLI；当前两套模板均使用 13.6.5。
 
 ## 文档
 

@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { CustomerHttpInterceptor } from './customer-http.interceptor';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
 import { MaterialMicaGlowService } from './services/material-mica-glow.service';
@@ -20,10 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideTranslateService({
       fallbackLang: 'en-US',
-      lang: 'zh-CN',
-      defaultLanguage: 'zh-CN',
-      extend: true,
-      useDefaultLang: true,
     }),
     provideTranslateHttpLoader({
       prefix: './assets/i18n/',
@@ -32,6 +28,7 @@ export const appConfig: ApplicationConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: CustomerHttpInterceptor, multi: true },
     { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
     { provide: 'ADMIN_BASE_URL', useValue: environment.admin_daemon, deps: [] },
+    provideAppInitializer(() => inject(TranslateService).use('zh-CN')),
     provideAppInitializer(() => inject(MaterialMicaGlowService).init()),
   ],
 };

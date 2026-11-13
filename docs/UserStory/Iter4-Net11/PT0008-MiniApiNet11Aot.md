@@ -1,4 +1,4 @@
-# PT0007：MiniApi 升级 .NET 11
+# PT0008：MiniApi .NET 11 AOT 与运行行为完善
 
 - [x] 安装并验证本机 .NET SDK 11.0.100 与 .NET 11 运行时。
 - [x] MiniApi 更新目标框架、SDK、框架包、容器基础镜像与 CI；ApiStandard 保持 .NET 10。

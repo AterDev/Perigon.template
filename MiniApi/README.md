@@ -4,6 +4,8 @@
 
 ## MiniApi 模板的作用
 
+此模板需要 .NET 11 SDK（11.0.100 或兼容版本）及与 Aspire 13.6.5 匹配的 Aspire CLI。
+
 MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量后端工程，强调：
 
 - 更小的启动开销与更低的运行资源占用。

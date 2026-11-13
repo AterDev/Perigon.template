@@ -25,8 +25,10 @@
 | `Iter3-DependencyRefresh` | [PD0005-AspirePostgreSQL](./Iter3-DependencyRefresh/PD0005-AspirePostgreSQL.md) | 升级 Aspire 和 MiniApi PostgreSQL | in-progress |
 
 | `Iter3-DependencyRefresh` | [PD0006-PostgreSQLOnly](./Iter3-DependencyRefresh/PD0006-PostgreSQLOnly.md) | 移除 SQL Server 配置及兼容逻辑 | complete |
+| `Iter3-DependencyRefresh` | [PD0007-MiniApiNet11](./Iter3-DependencyRefresh/PD0007-MiniApiNet11.md) | MiniApi 采用 .NET 11、更新依赖及构建环境 | in-progress |
 
-| `Iter4-Net11` | [PD0007-MiniApiNet11](./Iter4-Net11/PD0007-MiniApiNet11.md) | MiniApi 使用 .NET 11；ApiStandard 保持 .NET 10 | complete |
+| `Iter4-Net11` | [PD0008-MiniApiNet11Aot](./Iter4-Net11/PD0008-MiniApiNet11Aot.md) | 完善 MiniApi .NET 11 AOT 与运行行为；ApiStandard 保持 .NET 10 | complete |
+| `Iter5-MailKit5` | [PD0009-MailKit5Compatibility](./Iter5-MailKit5/PD0009-MailKit5Compatibility.md) | 两套模板使用 MailKit 5；ApiStandard 导入发送扩展，MiniApi 使用 `SendRequest` | complete |
 
 ## 全局设计决策
 

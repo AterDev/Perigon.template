@@ -1,6 +1,6 @@
-# PD0007：MiniApi 升级 .NET 11
+# PD0008：MiniApi .NET 11 AOT 与运行行为完善
 
-- MiniApi 的运行、AppHost 和测试项目目标框架统一改为 `net11.0`，SDK 基线为 11.0.100；ApiStandard 保持 .NET 10。
+- 在 MiniApi 完成 .NET 11 与依赖基线升级后，继续完善 AOT 和运行行为；目标框架为 `net11.0`，SDK 基线为 11.0.100，ApiStandard 保持 .NET 10。
 - Microsoft ASP.NET Core 和同版本框架扩展包使用 11.0.0，保留独立版本的其他依赖及已发布的源生成器包；生成器维护项目保持 `netstandard2.0`。
 - Native AOT Linux 镜像使用 `mcr.microsoft.com/dotnet/runtime-deps:11.0-resolute`。继续使用现有验证行为，不在本次升级中新增验证消息本地化。
 - CI 同时安装 .NET 10 和 11；包生成项目和用户文档分别说明两个模板的 SDK 要求。

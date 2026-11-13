@@ -14,6 +14,8 @@
 
 - MiniApi 目标框架升级至 `net11.0`，要求 .NET 11 SDK，ASP.NET Core 包升级至 11.0.0，Native AOT 容器基础镜像升级至 `11.0-resolute`；ApiStandard 仍使用 .NET 10。
 
+- 两套模板的 Aspire AppHost SDK 和主要稳定 hosting 包升级至 13.6.5，ApiStandard 保留现有预览版依赖；MiniApi 同步升级 .NET 11 扩展、Roslyn、OpenTelemetry、AWS SDK、Swagger UI 和测试依赖，邮件发送适配 MailKit 5。MiniApi 的 Mapster 条目继续移除。
+
 - MiniApi 源生成器恢复使用已发布 NuGet 包，默认 Native AOT 发布 RID 改为 `linux-x64`，Docker 发布使用兼容 glibc 的运行镜像。
 - MiniApi 的 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；修改 Endpoint、模块模型或服务结构后需要重新运行。该 CLI 命令处于开发阶段，尚未确认随已发布 Perigon.CLI 提供。
 - MiniApi 非生产环境提供 Swagger UI（`/swagger`），读取现有的 `/openapi/v1.json`。
@@ -35,7 +37,7 @@
 
 - 两套模板的开发进度按 Git 用户名和月份分别记录，旧共享进度文件保留为只读历史。
 
-- 两套模板 Aspire 升级至 13.6.4；MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.3.0。
+- MiniApi 的 Perigon.PostgreSQL 和本地工具升级至 0.3.0。
 - MiniApi 统一使用 `EntityFramework.AppDbContext.DefaultDbContext`，删除重复上下文并调整依赖注入。
 
 ### Experimental / In Progress

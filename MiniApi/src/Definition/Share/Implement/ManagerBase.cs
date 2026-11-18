@@ -74,16 +74,14 @@ public abstract class ManagerBase<TDbContext, TEntity>(TDbContext dbContext, ILo
         where TFilter : FilterBase
         where TItem : class, new()
     {
-        Queryable = filter.OrderBy is { Count: > 0 }
-            ? Queryable.OrderBy(filter.OrderBy)
-            : Queryable is IOrderedQueryable<TEntity>
-                ? Queryable
-                : Queryable.OrderByDescending(t => t.CreatedTime);
+        Queryable = Queryable is IOrderedQueryable<TEntity>
+            ? Queryable
+            : Queryable.OrderByDescending(t => t.CreatedTime);
 
         var count = await Queryable.CountAsync(cancellationToken);
         var data = await Queryable
-            .Skip((filter.PageIndex - 1) * filter.PageSize)
-            .Take(filter.PageSize)
+            .Skip((filter.PageIndex.GetValueOrDefault(1) - 1) * filter.PageSize.GetValueOrDefault(20))
+            .Take(filter.PageSize.GetValueOrDefault(20))
             .Select(selector)
             .ToListAsync(cancellationToken);
 
@@ -92,7 +90,7 @@ public abstract class ManagerBase<TDbContext, TEntity>(TDbContext dbContext, ILo
         {
             Count = count,
             Data = data,
-            PageIndex = filter.PageIndex,
+            PageIndex = filter.PageIndex.GetValueOrDefault(1),
         };
     }
 

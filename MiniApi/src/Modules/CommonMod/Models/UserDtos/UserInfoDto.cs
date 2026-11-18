@@ -1,3 +1,5 @@
+using Perigon.AspNetCore.Models;
+
 namespace CommonMod.Models.UserDtos;
 
 public sealed class UserInfoDto
@@ -11,4 +13,5 @@ public sealed class UserInfoDto
     /// 昵称
     /// </summary>
     public string? NickName { get; set; }
+    public GenderType Gender { get; set; } = GenderType.Else;
 }

@@ -5,12 +5,14 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // 共享基础服务:health check, service discovery, opentelemetry, http retry etc.
 builder.AddServiceDefaults();
+builder.Services.AddSingleton<Share.Serialization.IAppJsonSerializer, ApiService.Serialization.AppJsonSerializer>();
 
 // 框架依赖服务:options, cache, dbContext
 builder.AddFrameworkServices();
 
 // Web中间件服务:route, openapi, jwt, cors, auth, rateLimiter etc.
 builder.AddMiddlewareServices();
+builder.Services.AddOpenApi(options => options.AddSchemaTransformer<ApiService.OpenApi.EnumSchemaTransformer>());
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, ApiService.ApiJsonSerializerContext.Default);

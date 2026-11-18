@@ -95,6 +95,10 @@ public static class FrameworkExtensions
             var cacheOption = builder
                 .Configuration.GetSection(CacheOption.ConfigPath)
                 .Get<CacheOption>();
+            // Register a factory before AddHybridCache so its TryAdd does not install
+            // the reflection-based JSON fallback. string and byte[] remain built-in;
+            // all other application types must register an AOT-safe serializer.
+            builder.Services.AddSingleton<IHybridCacheSerializerFactory, RejectUnknownCacheSerializerFactory>();
             builder.Services.AddHybridCache(options =>
             {
                 HybridCacheEntryFlags? flags = components.Cache switch
@@ -114,7 +118,7 @@ public static class FrameworkExtensions
                         cacheOption?.LocalCacheExpiration ?? 10
                     ),
                 };
-            }).AddSerializer(new GeneratedCacheJsonSerializer<string[]>(CacheJsonContext.Default.StringArray));
+            }).AddSerializer(new BinaryStringArrayCacheSerializer());
 
             builder.Services.AddSingleton<CacheService>();
             return builder;

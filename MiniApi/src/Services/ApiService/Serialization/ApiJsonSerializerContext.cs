@@ -11,6 +11,7 @@ namespace ApiService;
 // <perigon-aot-json:generated>
 [JsonSerializable(typeof(UserInfoDto))]
 [JsonSerializable(typeof(UserLoginDto))]
+[JsonSerializable(typeof(GenderType))]
 // </perigon-aot-json:generated>
 [JsonSerializable(typeof(ProblemDetails))]
 [JsonSerializable(typeof(ErrorResult))]

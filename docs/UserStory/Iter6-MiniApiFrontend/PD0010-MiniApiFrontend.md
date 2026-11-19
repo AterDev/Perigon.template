@@ -10,6 +10,8 @@ MiniApi 的 Angular 登录页仍使用 ApiStandard 管理后台的 `/api/systemU
 - 登录页调用 `/api/users/login` 并处理 MiniApi 返回的用户信息。
 - 前端登录状态恢复、路由保护和退出登录与当前登录响应保持一致。
 - 保持 ApiStandard 管理前端的现有认证行为。
+- MiniApi 模板前端升级并固定到 Angular 22.3.0、Angular CLI/Build/Material 22.3.0、TypeScript 6.0.3，声明受支持的 Node.js 与 pnpm 版本。
+- 模板内 Perigon Angular reference 同步 Angular 22、Angular Agent Skills 使用建议和按业务边界拆分前端模块的约定。
 
 ## 验收标准
 
@@ -17,3 +19,4 @@ MiniApi 的 Angular 登录页仍使用 ApiStandard 管理后台的 `/api/systemU
 - Angular `serve` 使用代理配置将 API 请求转发到 MiniApi 本地开发端口。
 - 登录成功后使用返回的 `UserInfoDto` 进入首页；刷新后保持前端状态，退出后受保护页面回到登录页。
 - MiniApi 前端构建通过，模板包不包含根目录维护文档。
+- MiniApi 模板的冻结锁文件安装和生产构建在 Angular 22.3.0 下通过，README 与 skill 中不再保留旧 Angular 版本说明。

@@ -1,5 +1,9 @@
 # 项目跟踪
 
+- 2026-11-19：MiniApi 模板 Angular 前端升级至 22.3.0，锁定 CLI/Build/Material/CDK/Compiler CLI、TypeScript 6.0.3 及 Node/pnpm engines；同步 Angular reference 的 Agent Skills、业务模块拆分和入口路由约定，验证冻结安装与 `pnpm build`，详见 PT0010。
+
+- 2026-11-19：MiniApi 改用 Native AOT 兼容的 `DbSet` 自动属性，方案与验证见 PT0012。
+
 - 2026-11-13：MiniApi 数据库初始化改用 `FirstOrDefaultAsync`，修复 async-only PostgreSQL 查询提供程序拒绝同步执行的问题；验证见 PT0011。
 - 2026-11-13：修复 MiniApi Angular 登录仍调用旧 Admin API 的问题，启用开发服务器代理转发到 ApiService；验证见 PT0010。
 - 2026-11-12：MiniApi 升级至 .NET 11、Aspire 13.6.5 和最新依赖，MailKit 5 兼容性已适配；验证见 PT0007、PT0008。
@@ -26,3 +30,4 @@
 - 2026-11-05：审核 MiniApi 异常与错误响应，修复内容协商回退及异常处理中断场景，评估 AOT JSON 源生成方案；验证见 PT0005。
 - 2026-11-05：MiniApi 错误 helper 改为传入资源键，由统一 writer 解析本地化详情；验证见 PT0005。
 - 2026-11-06：此前的 MiniApi 编译前 JSON 自动扫描实验标记为已弃用；MiniApi 的其他源生成能力已恢复使用已发布的 NuGet 包。JSON context 改由 Perigon CLI 的 `aot jsonContext` 显式生成，CLI 尚未完成验证和发布。
+- 2026-11-19：MiniApi 补齐 CMSMod、ResourceMod 依赖的数据库工厂和授权策略，限制 PostgreSQL 实体生成器作用范围。使用本地模板包和 CLI 在全新项目中安装两模块，通过 Windows x64 Native AOT 发布、原生启动、OpenAPI 和 PostgreSQL 冒烟验证。

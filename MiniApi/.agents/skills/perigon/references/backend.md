@@ -7,7 +7,7 @@
 - 使用 Perigon.PostgreSQL 的注册选项 `EnableOpenTelemetry` 接入 Npgsql 追踪与指标，并按部署需要配置连接池及连接、命令超时；它不负责配置 OpenTelemetry 导出器。
 - 实体索引及其他可用映射优先使用 Perigon.PostgreSQL 特性；默认表名由约定生成，无需标记表名。仅在约定不满足需求时显式配置表名。
 - 不要在 `OnModelCreating` 重复配置实体特性或默认约定已经表达的表名、索引等内容；特殊映射才使用 Fluent 配置。
-- 新增实体后在相应 `DefaultDbContext` 添加显式 `DbSet<TEntity>`，保留 `DynamicallyAccessedMembers` 约束并执行 AOT publish 验证。
+- 新增实体后，在 `DefaultDbContext` 声明 `public DbSet<TEntity> Entities { get; set; }`。源生成器会初始化这些属性。泛型数据访问可直接调用 `Set<TEntity>()`，并按需传递其裁剪标注。
 - MiniApi 不内置 AppHost migration 资源。数据库 schema 的生成、部署顺序、失败恢复和回滚责任必须在计划与部署管线中明确。
 
 ## 请求/响应模型
@@ -56,3 +56,7 @@
 ## 数据库变更
 
 先修改实体、`DbSet` 和映射，再使用项目选定的迁移方式生成并审查 schema 变化。不要手写已生成迁移，也不要修改已进入生产的历史迁移。部署前明确迁移执行者、备份/恢复点、前后版本兼容窗口和 API 启动顺序。
+
+## 后台任务与初始化
+
+- 模块提供可调用的执行方法。实际发布的宿主实现并注册后台任务，负责调度、日志和取消。数据库种子数据统一在模块根目录 `InitModule.cs` 的 `InitModule` 静态类中定义，种子方法接收现有 DbContext 与 CancellationToken，宿主在数据库结构就绪后调用。

@@ -1,6 +1,8 @@
 using EntityFramework.AppDbContext;
+using EntityFramework.AppDbFactory;
 using Perigon.PostgreSQL;
 using Perigon.PostgreSQL.Update;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace Share.Implement;
@@ -23,13 +25,28 @@ public abstract class ManagerBase<TDbContext>(TDbContext dbContext, ILogger logg
 /// <summary>
 /// Generic manager base class for Perigon.PostgreSQL entity operations.
 /// </summary>
-public abstract class ManagerBase<TDbContext, TEntity>(TDbContext dbContext, ILogger logger)
-    : ManagerBase<TDbContext>(dbContext, logger)
+public abstract class ManagerBase<
+    TDbContext,
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TEntity>(
+        TDbContext dbContext, ILogger logger)
+    : ManagerBase<TDbContext>(dbContext, logger), IDisposable
     where TDbContext : DefaultDbContext
     where TEntity : class, IEntityBase, new()
 {
+    private readonly bool _ownsContext;
+    protected readonly IUserContext _userContext = default!;
     protected IQueryable<TEntity> Queryable { get; set; } = dbContext.Set<TEntity>().Where(e => !e.IsDeleted);
     protected readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
+
+    protected ManagerBase(AppDbFactory dbContextFactory, IUserContext userContext, ILogger logger)
+        : this(
+            dbContextFactory.CreateDbContext() as TDbContext
+                ?? throw new InvalidOperationException($"Unsupported context type {typeof(TDbContext).Name}."),
+            logger)
+    {
+        _userContext = userContext;
+        _ownsContext = true;
+    }
 
     public async Task<TEntity?> FindAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -90,6 +107,32 @@ public abstract class ManagerBase<TDbContext, TEntity>(TDbContext dbContext, ILo
         {
             Count = count,
             Data = data,
+            PageIndex = filter.PageIndex.GetValueOrDefault(1),
+        };
+    }
+
+    protected async Task<PageList<TItem>> PageListAsync<TFilter, TItem>(
+        TFilter filter,
+        Func<TEntity, TItem> selector,
+        CancellationToken cancellationToken = default)
+        where TFilter : FilterBase
+        where TItem : class
+    {
+        Queryable = Queryable is IOrderedQueryable<TEntity>
+            ? Queryable
+            : Queryable.OrderByDescending(entity => entity.CreatedTime);
+
+        var count = await Queryable.CountAsync(cancellationToken);
+        var entities = await Queryable
+            .Skip((filter.PageIndex.GetValueOrDefault(1) - 1) * filter.PageSize.GetValueOrDefault(20))
+            .Take(filter.PageSize.GetValueOrDefault(20))
+            .ToListAsync(cancellationToken);
+
+        ResetQuery();
+        return new PageList<TItem>
+        {
+            Count = count,
+            Data = entities.Select(selector).ToList(),
             PageIndex = filter.PageIndex.GetValueOrDefault(1),
         };
     }
@@ -188,6 +231,14 @@ public abstract class ManagerBase<TDbContext, TEntity>(TDbContext dbContext, ILo
     }
 
     public abstract Task<bool> HasPermissionAsync(Guid id);
+
+    public void Dispose()
+    {
+        if (_ownsContext)
+        {
+            _dbContext.Dispose();
+        }
+    }
 
     protected void ResetQuery()
     {

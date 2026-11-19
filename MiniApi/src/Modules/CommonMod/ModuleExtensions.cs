@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using CommonMod.Services;
 namespace CommonMod;
 
 [DisplayName("AuthorName::ModuleDisplayName")]
@@ -7,7 +6,7 @@ namespace CommonMod;
 public static class ModuleExtensions
 {
     /// <summary>
-    /// module services or init task
+    /// Registers module services.
     /// </summary>
     public static IHostApplicationBuilder AddCommonMod(this IHostApplicationBuilder builder)
     {

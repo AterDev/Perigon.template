@@ -58,7 +58,7 @@ aspire start --non-interactive
 - MiniApi 的业务逻辑和 DTO 放在 `src/Modules` 下，接口放在 `ApiService`。
 - Endpoint 目录中定义 endpoint group，继承 `RestEndpointBase` 并实现 `public static void MapEndpoints(IEndpointRouteBuilder endpoints)`。
 - OpenAPI 文档地址为 `/openapi/v1.json`，服务项目与共享模型项目默认生成 XML 文档，XML 注释会由 `Microsoft.AspNetCore.OpenApi` 源生成器写入 OpenAPI 文档。Endpoint handler 应使用 public static typed Minimal API 方法，避免 `RequestDelegate` 风格导致 OpenAPI 无法描述接口。
-- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 通过 `AddDbContextPool` 注册并启用 OpenTelemetry；新增实体后，在 `src/Definition/EntityFramework/AppDbContext/DefaultDbContext.cs` 中添加 `DbSet<TEntity>` 属性，以便源生成器生成 AOT 友好的元数据。
+- 数据访问只使用 `Perigon.PostgreSQL`。`DefaultDbContext` 通过 `AddDbContextPool` 注册并启用 OpenTelemetry。新增实体时，声明 `public DbSet<TEntity> Entities { get; set; }`，源生成器负责初始化该属性并生成 Native AOT 所需的模型元数据。
 - `ApiService` 默认按 NativeAOT 方式发布，可直接执行 `dotnet publish src/Services/ApiService/ApiService.csproj -c Release`。
 
 当前模板没有独立单元测试项目。需要 Docker/Podman 和真实服务时，运行 `tests/ApiTest` 中标记为 `Integration` 的测试。
@@ -71,3 +71,7 @@ aspire start --non-interactive
 
 
 完整文档请阅读[Perigon官方文档](https://dusi.dev/docs/Perigon.html)。
+
+## 后台任务与初始化
+
+- 模块提供可调用的执行方法。实际发布的宿主实现并注册后台任务，负责调度、日志和取消。数据库种子数据由模块静态方法接收现有 DbContext 与 CancellationToken，宿主在数据库结构就绪后调用。

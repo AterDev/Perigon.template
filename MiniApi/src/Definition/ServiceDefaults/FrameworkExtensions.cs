@@ -6,6 +6,7 @@ using Perigon.PostgreSQL;
 using Perigon.AspNetCore.Abstraction;
 using Perigon.AspNetCore.Services;
 using Perigon.AspNetCore.Toolkit.Services;
+using EntityFramework.AppDbFactory;
 using Share.Implement;
 
 namespace ServiceDefaults;
@@ -28,6 +29,7 @@ public static class FrameworkExtensions
             builder.AddOptions();
             builder.AddCache(components);
             builder.AddDbContext();
+            builder.Services.AddSingleton<AppDbFactory>();
             builder.Services.AddScoped<JwtService>();
             // builder.Services.AddScoped<SmtpService>();
             return builder;

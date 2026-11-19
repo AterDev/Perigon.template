@@ -6,6 +6,10 @@
 
 ### Changed
 
+- MiniApi 模板 Angular 前端升级至 22.3.0，Angular CLI/Build/Material/CDK/Compiler CLI 同步至 22.3.0，TypeScript 固定为 6.0.3，并声明 Node.js `^22.22.3 || ^24.15.0 || ^26.0.0` 与 pnpm 10.33.2；模板 Angular reference 同步 Angular Agent Skills、业务模块拆分和 `app.routes.ts` 入口懒加载约定。
+
+- MiniApi 将 `Perigon.PostgreSQL` 升级至 0.3.4，使用源生成初始化 `DbSet` 自动属性，并直接使用公开的 `Set<TEntity>()`。模板继续使用 snake_case 数据库命名。
+
 - MiniApi 数据库初始化使用异步用户查询，兼容 `Perigon.PostgreSQL` 的异步查询执行模型。
 
 - MiniApi Angular 开发服务器将 `/api` 请求代理到 `ApiService`，登录页改用 `/api/users/login` 并适配其 `UserInfoDto` 响应；不再依赖旧 Admin 登录路由和 access token 契约。

@@ -44,3 +44,7 @@ description: MiniApi 项目开发入口。用于 Perigon CLI/MCP、Minimal API E
 4. 若实体或公开接口变化，依次处理迁移/OpenAPI/客户端，不跳过契约同步。
 5. 运行最小充分验证；AOT-sensitive 变更必须包含 Native AOT publish 和必要的运行验证，报告任何未执行项。
 6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前 PT 的实现结果、验证/AOT 证据、当前个人月度进度和受影响 PD；文档未同步不属于完成。
+
+## 后台任务与初始化
+
+- 模块提供可调用的执行方法。实际发布的宿主实现并注册后台任务，负责调度、日志和取消。数据库种子数据统一在模块根目录 `InitModule.cs` 的 `InitModule` 静态类中定义，种子方法接收现有 DbContext 与 CancellationToken，宿主在数据库结构就绪后调用。

@@ -354,6 +354,10 @@ public static class WebExtensions
             .AddPolicy(
                 WebConst.User,
                 policy => policy.RequireRole(WebConst.User, WebConst.AdminUser, WebConst.SuperAdmin)
+            )
+            .AddPolicy(
+                WebConst.AdminUser,
+                policy => policy.RequireRole(WebConst.AdminUser, WebConst.SuperAdmin)
             );
 
         return services;

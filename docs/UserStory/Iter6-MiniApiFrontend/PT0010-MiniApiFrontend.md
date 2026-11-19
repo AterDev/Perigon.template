@@ -6,3 +6,6 @@
 - [x] 使用本地缓存完成 `pnpm install --offline`；随后 Aspire 安装器显示 `Done`，frontend 资源运行于 `http://localhost:4200`。
 - [x] `pnpm build` production build 通过。
 - [x] `dotnet pack Pack.csproj --no-restore` 通过；模板包包含更新后的 Angular 配置和登录代码，不包含仓库根目录 `docs`。
+- [x] MiniApi Angular 依赖升级至 22.3.0，Angular CLI/Build/Material/CDK/Compiler CLI 同步至 22.3.0，TypeScript 固定为 6.0.3；Node.js 与 pnpm engines 对齐当前前端基线。
+- [x] 使用 `pnpm install --lockfile-only` 更新 `pnpm-lock.yaml`，再以冻结锁文件安装依赖；`pnpm exec ng version` 确认 Angular/CLI/Material 22.3.0。
+- [x] `pnpm build` 通过；同步模板 README 与 `MiniApi/.agents/skills/perigon/references/angular.md`，补充 Angular Agent Skills、业务模块拆分和入口路由懒加载约定。

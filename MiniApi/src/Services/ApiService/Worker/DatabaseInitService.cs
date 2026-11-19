@@ -1,9 +1,8 @@
-using Entity;
+using CommonMod;
 using EntityFramework.AppDbContext;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Perigon.PostgreSQL;
 
 namespace ApiService.Worker;
 
@@ -23,23 +22,17 @@ public sealed class DatabaseInitService(
             var dbContext = scope.ServiceProvider.GetRequiredService<DefaultDbContext>();
             await dbContext.EnsureCreatedAsync(stoppingToken);
 
-            var user = await dbContext.Users
-                .Where(x => x.UserName == "user")
-                .FirstOrDefaultAsync(stoppingToken);
-            if (user is null)
+            if (await InitModule.InitializeAsync(dbContext, stoppingToken))
             {
-                await dbContext.Users.InsertAsync(
-                    new User
-                    {
-                        UserName = "user",
-                        Password = "123456",
-                        NickName = "Demo User",
-                    },
-                    stoppingToken);
                 logger.LogInformation("Default user 'user' created.");
             }
+
+            foreach (var initialize in scope.ServiceProvider.GetServices<Func<DefaultDbContext, CancellationToken, Task>>())
+            {
+                await initialize(dbContext, stoppingToken);
+            }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
         {
             logger.LogError(ex, "Database initialization failed");
         }

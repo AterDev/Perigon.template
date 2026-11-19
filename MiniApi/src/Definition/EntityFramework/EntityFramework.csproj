@@ -6,9 +6,10 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Perigon.PostgreSQL" />
+    <PackageReference Include="Perigon.PostgreSQL" PrivateAssets="analyzers" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Entity\Entity.csproj" />
+    <ProjectReference Include="..\..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" />
   </ItemGroup>
 </Project>

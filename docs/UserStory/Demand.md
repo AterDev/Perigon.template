@@ -41,6 +41,7 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 | `Iter5-MailKit5` | [PD0009-MailKit5Compatibility](./Iter5-MailKit5/PD0009-MailKit5Compatibility.md) | DependencyManagement | complete | 两套模板升级到 MailKit 5 并保持 SMTP 服务可构建 |
 | `Iter6-MiniApiFrontend` | [PD0010-MiniApiFrontend](./Iter6-MiniApiFrontend/PD0010-MiniApiFrontend.md) | Frontend | complete | 修复 MiniApi Angular 前端的 Aspire API 代理与登录接口适配 |
 | `Iter7-MiniApiDatabaseInitialization` | [PD0011-MiniApiDatabaseInitialization](./Iter7-MiniApiDatabaseInitialization/PD0011-MiniApiDatabaseInitialization.md) | DataAccess | complete | 修复 MiniApi 数据库初始化对同步查询的调用 |
+| `Iter8-MiniApiDbSet` | [PD0012-MiniApiDbSet](./Iter8-MiniApiDbSet/PD0012-MiniApiDbSet.md) | DataAccess | in progress | 支持 Native AOT 下的 DbSet 自动属性 |
 
 ## 编号规则
 

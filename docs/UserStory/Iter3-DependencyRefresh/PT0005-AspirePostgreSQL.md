@@ -60,3 +60,6 @@
 - 在隔离 MiniApi 副本新增跨模块 DTO 和 Endpoint，用本地打包安装的 `perigon aot jsonContext` 验证生成的 using 与短类型名、手写声明保留、重复运行内容和修改时间不变；实际 HTTP 和 OpenAPI 均正常。同名模型通过 using 别名区分，并有回归测试覆盖。
 - [x] 恢复基类 `BadRequest`、`NotFound`、`Forbid`、`Conflict` 等 helper：资源键直接写入 ProblemDetails 的 detail，统一 writer 通过构造函数注入 Localizer，并按请求语言翻译；找不到资源时保留原文。格式参数仅用于本地化，不出现在响应中；登录接口不再注入 Localizer，保留用户不存在 404、密码错误 403，补充 OpenAPI schema。
 - [x] 隔离生成项目测试通过 15/15，覆盖中英文、格式参数、未知资源、原始 Problem detail、同一结果的多语言执行以及 400/403/404/409/500。win-x64 Native AOT 发布与实际请求通过：中文 403、英文 404、自动验证 400 和 OpenAPI 403/404 schema 均正确；发布仍有原有 IL 警告（`artifacts/localized-detail-aot.log`），未验证 linux-musl-x64。Aspire ApiService 已重建并验证，双语文档校验和构建通过。
+- MiniApi 的 CommonMod 提供接收 DefaultDbContext 的静态种子方法。ApiService 在 EnsureCreatedAsync 成功后调用。移除未注册的模块后台任务，两个模板的 Perigon skill 同步宿主生命周期规则。MiniApi ApiService 构建通过，保留既有 ASP0038。
+- 隔离 PostgreSQL 验证 MiniApi 模板首次和重复启动均只有一条演示用户记录。模板打包通过。
+- 统一种子数据入口为 CommonMod 根目录 InitModule.cs，MiniApi 构建和模板打包通过。

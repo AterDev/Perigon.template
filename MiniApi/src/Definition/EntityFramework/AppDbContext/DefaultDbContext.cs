@@ -1,18 +1,16 @@
 using Entity;
 using Perigon.PostgreSQL;
+using Perigon.PostgreSQL.Attributes;
 using Perigon.PostgreSQL.Options;
-using System.Diagnostics.CodeAnalysis;
+
+[assembly: UseSnakeCaseNaming]
 
 namespace EntityFramework.AppDbContext;
 
+#pragma warning disable CS8618 // Initialized by the DbSet source generator.
 public partial class DefaultDbContext(DbContextOptions<DefaultDbContext> options)
     : DbContext(options)
 {
-    public new DbSet<TEntity> Set<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TEntity>()
-        where TEntity : class
-    {
-        return base.Set<TEntity>();
-    }
-
-    public DbSet<User> Users => Set<User>();
+    public DbSet<User> Users { get; set; }
 }
+#pragma warning restore CS8618

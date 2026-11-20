@@ -50,8 +50,8 @@ jobs:
 
       - name: Restore template solutions
         run: |
-          dotnet restore ApiStandard/MyProjectName.slnx
-          dotnet restore MiniApi/MyProjectName.slnx
+          dotnet restore ApiStandard/MyProjectName.slnx -p:Configuration=Release
+          dotnet restore MiniApi/MyProjectName.slnx -p:Configuration=Release
           dotnet restore Pack.csproj
 
       - name: Build template solutions

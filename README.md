@@ -6,8 +6,8 @@
 
 ## 要求
 
-- .NET 10.0 SDK（建议 10.0.103 或兼容的 .NET 10 SDK）
-- 与模板 SDK 匹配的 Aspire CLI：ApiStandard 使用 13.6.1，MiniApi 使用 13.5.0
+- ApiStandard 需要 .NET 10 SDK（10.0.103 或兼容版本）；MiniApi 需要 .NET 11 SDK（11.0.100 或兼容版本）。
+- 与所选模板 AppHost SDK 版本匹配的 Aspire CLI；当前两套模板均使用 13.6.5。
 
 ## 文档
 
@@ -69,7 +69,7 @@ dotnet new perigon-webapi -n <projectname>
 
 ## 数据库
 
-- `ApiStandard` 支持在 AppHost 的 `Components:Database` 中选择 `PostgreSQL` 或 `SqlServer`。
+- `ApiStandard` 固定使用 PostgreSQL，通过 EF Core 访问数据。
 - `MiniApi` 固定使用 PostgreSQL，数据访问通过 `Perigon.PostgreSQL` 提供。
 
 ## 数据迁移

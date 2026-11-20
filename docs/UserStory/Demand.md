@@ -32,6 +32,17 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 | `Iter2-ApiBehavior` | [PD0003-ApiBehavior](./Iter2-ApiBehavior/PD0003-ApiBehavior.md) | ApiBehavior | complete | 为用户角色 ID 和 ApiStandard 自动验证错误定义一致的响应契约 |
 | `Iter3-DependencyRefresh` | [PD0004-DependencyRefresh](./Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | DependencyManagement | complete | 更新 ApiStandard 的 Aspire 与运行时依赖，明确 MiniApi 兼容基线 |
 
+| `Iter3-DependencyRefresh` | [PD0005-AspirePostgreSQL](./Iter3-DependencyRefresh/PD0005-AspirePostgreSQL.md) | DependencyManagement | in-progress | 升级 Aspire 和 MiniApi PostgreSQL |
+
+| `Iter3-DependencyRefresh` | [PD0006-PostgreSQLOnly](./Iter3-DependencyRefresh/PD0006-PostgreSQLOnly.md) | DataAccess | complete | 两套模板统一使用 PostgreSQL |
+| `Iter3-DependencyRefresh` | [PD0007-MiniApiNet11](./Iter3-DependencyRefresh/PD0007-MiniApiNet11.md) | DependencyManagement | in-progress | MiniApi 升级 .NET 11 和依赖 |
+
+| `Iter4-Net11` | [PD0008-MiniApiNet11Aot](./Iter4-Net11/PD0008-MiniApiNet11Aot.md) | Compatibility | complete | 完善 MiniApi .NET 11 AOT 与运行行为 |
+| `Iter5-MailKit5` | [PD0009-MailKit5Compatibility](./Iter5-MailKit5/PD0009-MailKit5Compatibility.md) | DependencyManagement | complete | 两套模板升级到 MailKit 5 并保持 SMTP 服务可构建 |
+| `Iter6-MiniApiFrontend` | [PD0010-MiniApiFrontend](./Iter6-MiniApiFrontend/PD0010-MiniApiFrontend.md) | Frontend | complete | 修复 MiniApi Angular 前端的 Aspire API 代理与登录接口适配 |
+| `Iter7-MiniApiDatabaseInitialization` | [PD0011-MiniApiDatabaseInitialization](./Iter7-MiniApiDatabaseInitialization/PD0011-MiniApiDatabaseInitialization.md) | DataAccess | complete | 修复 MiniApi 数据库初始化对同步查询的调用 |
+| `Iter8-MiniApiDbSet` | [PD0012-MiniApiDbSet](./Iter8-MiniApiDbSet/PD0012-MiniApiDbSet.md) | DataAccess | in progress | 支持 Native AOT 下的 DbSet 自动属性 |
+
 ## 编号规则
 
 - 迭代目录：`Iter<number>-<IterationName>`。

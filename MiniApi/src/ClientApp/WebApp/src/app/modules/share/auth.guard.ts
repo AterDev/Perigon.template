@@ -12,13 +12,8 @@ export class AuthGuard implements CanActivate {
   ) {
   }
   canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean | UrlTree {
-    const url = state.url;
-
-    if (url.startsWith('/index')) {
-      return true;
-    }
+    _route: ActivatedRouteSnapshot,
+    _state: RouterStateSnapshot): boolean | UrlTree {
     if (this.auth.isLogin) {
       return true;
     }

@@ -1,7 +1,6 @@
 using EntityFramework.AppDbContext;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Perigon.AspNetCore.Constants;
 
 namespace EntityFramework.AppDbFactory;
@@ -12,7 +11,6 @@ namespace EntityFramework.AppDbFactory;
 /// <param name="configuration"></param>
 /// <param name="tenantScopeFactory"></param>
 public class AppDbFactory(
-    IOptions<ComponentOption> options,
     IConfiguration configuration,
     IServiceScopeFactory tenantScopeFactory
 )
@@ -22,15 +20,7 @@ public class AppDbFactory(
         var (connectionString, _) = GetConnectionStrings(tenantId);
 
         var builder = new DbContextOptionsBuilder<DefaultDbContext>();
-        switch (options?.Value.Database)
-        {
-            case DatabaseType.PostgreSql:
-                builder.UseNpgsql(connectionString);
-                break;
-            case DatabaseType.SqlServer:
-                builder.UseSqlServer(connectionString);
-                break;
-        }
+        builder.UseNpgsql(connectionString);
         var context = new DefaultDbContext(builder.Options);
         context.SetTenantId(tenantId);
         return context;
@@ -45,15 +35,7 @@ public class AppDbFactory(
     {
         var (_, analysisConnectionString) = GetConnectionStrings(tenantId);
         var builder = new DbContextOptionsBuilder<AnalysisDbContext>();
-        switch (options?.Value.Database)
-        {
-            case DatabaseType.PostgreSql:
-                builder.UseNpgsql(analysisConnectionString);
-                break;
-            case DatabaseType.SqlServer:
-                builder.UseSqlServer(analysisConnectionString);
-                break;
-        }
+        builder.UseNpgsql(analysisConnectionString);
         var context = new AnalysisDbContext(builder.Options);
         context.SetTenantId(tenantId);
         return context;

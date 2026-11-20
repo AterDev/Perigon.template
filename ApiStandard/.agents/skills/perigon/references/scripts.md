@@ -23,7 +23,7 @@ pwsh ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myprojectname-ap
 ```
 
 - ApiStandard：framework-dependent，明确关闭 Trim/AOT。
-- MiniApi：`linux-musl-x64` self-contained NativeAOT，开启 Trim/AOT。
+- MiniApi：`linux-x64` self-contained NativeAOT，开启 Trim/AOT；Dockerfile 基于 Ubuntu 24.04 Noble 的 `mcr.microsoft.com/dotnet/runtime-deps:10.0-noble`。仅在需要服务端字体渲染时使用 `-InstallFonts`，它通过 Ubuntu `apt` 安装基础字体依赖和可选 CJK 字体包（默认 `fonts-wqy-zenhei`，也可用 `fonts-noto-cjk`）。
 - `-NoRestore` 只在目标 RID 已完成 restore 时使用。
 - 只有确需服务端图片或文字渲染（如报表、PDF 等）时才安装字体。
 - 发布前先 Release build；之后检查镜像大小、启动日志、健康端点和运行架构。
@@ -36,14 +36,14 @@ pwsh ./scripts/PublishDocker.ps1 -Service ApiService -ImageName myprojectname-ap
 
 ### `EFMigrations.ps1`
 
-读取 AppHost 的 Database / IsMultiTenant，恢复本地 dotnet tools，以 AdminService 为 startup project、EntityFramework 为 migrations project：
+读取 AppHost 的 IsMultiTenant，恢复本地 dotnet tools，以 AdminService 为 startup project、EntityFramework 为 migrations project：
 
 ```powershell
 pwsh ./scripts/EFMigrations.ps1 -Name AddOrderStatus
 pwsh ./scripts/EFMigrations.ps1 -Name Remove
 ```
 
-实体、映射、约定或 schema 变化后生成描述性迁移。运行前确认开发数据库类型和工作树；运行后审查迁移，不手写或修改已发布历史迁移。AppHost 迁移资源负责本地应用和发布产物中的一次性迁移流程。
+实体、映射、约定或 schema 变化后生成描述性迁移。运行前确认 PostgreSQL 开发数据库和工作树；运行后审查迁移，不手写或修改已发布历史迁移。AppHost 迁移资源负责本地应用和发布产物中的一次性迁移流程。
 
 ### `GenSwagger.ps1`
 

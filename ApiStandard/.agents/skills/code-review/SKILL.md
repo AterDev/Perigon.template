@@ -16,7 +16,7 @@ description: 对 ApiStandard 代码或变更执行基于证据的只读审查，
 
 ## 审查顺序
 
-1. **Completeness**：强制需求、验收场景和任务是否都有实现证据；PT 的 checkbox、进度、实现记录与 `ProjectTracking.md` 是否同步；是否存在未记录范围漂移。
+1. **Completeness**：强制需求、验收场景和任务是否都有实现证据；PT 的 checkbox、进度、实现记录与 当前个人月度进度文件 是否同步；是否存在未记录范围漂移。
 2. **Correctness**：正常、边界、失败、并发、幂等、兼容和回滚行为是否正确。
 3. **Security and data**：输入验证、鉴权/授权、租户隔离、敏感信息、审计、迁移与数据破坏风险。
 4. **Architecture and contracts**：Controller 不越界访问 DbContext，业务逻辑在 Manager/业务层，DTO、OpenAPI、客户端和数据所有权一致。

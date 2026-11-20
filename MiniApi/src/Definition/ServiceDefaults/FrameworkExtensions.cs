@@ -1,4 +1,3 @@
-using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -7,6 +6,7 @@ using Perigon.PostgreSQL;
 using Perigon.AspNetCore.Abstraction;
 using Perigon.AspNetCore.Services;
 using Perigon.AspNetCore.Toolkit.Services;
+using EntityFramework.AppDbFactory;
 using Share.Implement;
 
 namespace ServiceDefaults;
@@ -20,8 +20,6 @@ public static class FrameworkExtensions
     {
         public IHostApplicationBuilder AddFrameworkServices()
         {
-            TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
-
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserContext, UserContext>();
             builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
@@ -31,9 +29,9 @@ public static class FrameworkExtensions
             builder.AddOptions();
             builder.AddCache(components);
             builder.AddDbContext();
-
+            builder.Services.AddSingleton<AppDbFactory>();
             builder.Services.AddScoped<JwtService>();
-            builder.Services.AddScoped<SmtpService>();
+            // builder.Services.AddScoped<SmtpService>();
             return builder;
         }
 
@@ -65,14 +63,15 @@ public static class FrameworkExtensions
         /// <returns></returns>
         public IHostApplicationBuilder AddDbContext()
         {
-            builder.Services.AddDbContext<DefaultDbContext>((serviceProvider, options) =>
-            {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString(AppConst.Default)
-                    ?? configuration.GetConnectionString("Postgres")
-                    ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
-                options.UseNpgsql(connectionString);
-            });
+            var connectionString = builder.Configuration.GetConnectionString(AppConst.Default)
+                ?? throw new InvalidOperationException($"Connection string '{AppConst.Default}' was not configured.");
+            builder.Services.AddDbContextPool<DefaultDbContext>(
+                options => options
+                    .UseNpgsql(connectionString)
+                    .EnableConnectionPooling()
+                    .UseConnectionTimeout(TimeSpan.FromSeconds(15))
+                    .UseCommandTimeout(TimeSpan.FromSeconds(30)),
+                registration => registration.EnableOpenTelemetry = true);
             return builder;
         }
 
@@ -98,6 +97,10 @@ public static class FrameworkExtensions
             var cacheOption = builder
                 .Configuration.GetSection(CacheOption.ConfigPath)
                 .Get<CacheOption>();
+            // Register a factory before AddHybridCache so its TryAdd does not install
+            // the reflection-based JSON fallback. string and byte[] remain built-in;
+            // all other application types must register an AOT-safe serializer.
+            builder.Services.AddSingleton<IHybridCacheSerializerFactory, RejectUnknownCacheSerializerFactory>();
             builder.Services.AddHybridCache(options =>
             {
                 HybridCacheEntryFlags? flags = components.Cache switch
@@ -117,7 +120,7 @@ public static class FrameworkExtensions
                         cacheOption?.LocalCacheExpiration ?? 10
                     ),
                 };
-            });
+            }).AddSerializer(new BinaryStringArrayCacheSerializer());
 
             builder.Services.AddSingleton<CacheService>();
             return builder;

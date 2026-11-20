@@ -17,7 +17,7 @@ description: Perigon 项目模板开发入口。用于选择并使用 Perigon CL
 
 ## 模板边界
 
-- `ApiStandard`：Controller 架构，含 `AdminService`、`ApiService`、模块层、多数据库选择以及 AppHost EF 迁移资源；适合完整后台和复杂业务。
+- `ApiStandard`：Controller 架构，含 `AdminService`、`ApiService`、模块层、PostgreSQL 数据访问以及 AppHost EF 迁移资源；适合完整后台和复杂业务。
 - `MiniApi`：Minimal API + NativeAOT，业务默认位于 `ApiService` 的 `Endpoints/Managers/Models/Services`，固定 PostgreSQL，不含内置迁移资源；新增能力必须检查 AOT、Trim、反射和序列化兼容性。
 - 不要把一个模板的命令、目录或迁移方式直接套到另一个模板。
 
@@ -42,4 +42,8 @@ description: Perigon 项目模板开发入口。用于选择并使用 Perigon CL
 3. 按架构边界补齐业务代码，并审查所有生成内容。
 4. 若实体变化，仅使用`dotnet ef`生成新的迁移内容;若接口更新，并且需要同步前端功能，则尝试使用`perigon generate`生成新的前端客户端请求代码(要检查输出目录的正确性)。
 5. 运行最小充分验证，并报告未执行的基础设施或发布验证。
-6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前迭代 PT 的实现结果/验证证据、`ProjectTracking.md` 总进度和受影响 PD；文档未同步不属于完成。
+6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前迭代 PT 的实现结果/验证证据、当前个人月度进度和受影响 PD；文档未同步不属于完成。
+
+## 后台任务与初始化
+
+- 模块提供可调用的执行方法。实际发布的宿主实现并注册后台任务，负责调度、日志和取消。数据库种子数据统一在模块根目录 `InitModule.cs` 的 `InitModule` 静态类中定义，种子方法接收现有 DbContext 与 CancellationToken，宿主在数据库结构就绪后调用。

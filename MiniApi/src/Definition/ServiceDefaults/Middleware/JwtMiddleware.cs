@@ -52,9 +52,8 @@ public class JwtMiddleware(RequestDelegate next, CacheService cache, ILogger<Jwt
                 await _next(context);
                 return;
             }
-            var securityPolicy = JsonSerializer.Deserialize<LoginSecurityPolicyOption>(
-                securityPolicyStr!
-            );
+            var securityPolicy = JsonSerializer.Deserialize(
+                securityPolicyStr, MiddlewareJsonContext.Default.LoginSecurityPolicyOption);
 
             if (securityPolicy == null || !securityPolicy.IsEnable)
             {
@@ -82,6 +81,7 @@ public class JwtMiddleware(RequestDelegate next, CacheService cache, ILogger<Jwt
             await _next(context);
             return;
         }
+        await _next(context);
     }
 
     private static async Task SetResponseAndComplete(
@@ -90,20 +90,13 @@ public class JwtMiddleware(RequestDelegate next, CacheService cache, ILogger<Jwt
         string? msg = "无效的凭证"
     )
     {
-        var res = new
-        {
-            Title = msg,
-            Detail = msg,
-            Status = statusCode,
-            TraceId = context.TraceIdentifier,
-        };
-
-        var content = JsonSerializer.Serialize(res);
-        var byteArray = Encoding.UTF8.GetBytes(content);
-
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = statusCode;
-        await context.Response.Body.WriteAsync(byteArray);
+        await TypedResults.Problem(detail: msg ?? string.Empty, title: msg ?? string.Empty,
+            statusCode: statusCode).ExecuteAsync(context);
         await context.Response.CompleteAsync();
     }
+}
+
+[JsonSerializable(typeof(LoginSecurityPolicyOption))]
+internal partial class MiddlewareJsonContext : JsonSerializerContext
+{
 }

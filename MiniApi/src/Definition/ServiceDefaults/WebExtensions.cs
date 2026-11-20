@@ -63,6 +63,11 @@ public static class WebExtensions
 
         services.AddEndpointsApiExplorer();
         services.AddLocalizer();
+        services.AddOpenApi();
+
+        services.AddValidation();
+        services.AddSingleton<IProblemDetailsWriter, ErrorResultProblemDetailsWriter>();
+        services.AddProblemDetails();
         return services;
     }
 
@@ -80,12 +85,15 @@ public static class WebExtensions
         app.UseRequestLocalization();
         app.UseRouting();
         app.UseCors(app.Environment.IsProduction() ? WebConst.Limited : WebConst.Default);
+        app.UseStatusCodePages();
         app.UseRateLimiter();
         app.UseOutputCache();
 
         if (!app.Environment.IsProduction())
         {
             app.MapOpenApi().CacheOutput("openapi");
+            app.UseSwaggerUI(options =>
+                options.SwaggerEndpoint("../openapi/v1.json", "API v1"));
         }
 
         //app.UseMiddleware<JwtMiddleware>();
@@ -240,7 +248,6 @@ public static class WebExtensions
                     },
                     OnTokenValidated = context =>
                     {
-                        Console.WriteLine("Token validated for user: {0}", context.Principal?.Identity?.Name);
                         return Task.CompletedTask;
                     },
                 };
@@ -347,6 +354,10 @@ public static class WebExtensions
             .AddPolicy(
                 WebConst.User,
                 policy => policy.RequireRole(WebConst.User, WebConst.AdminUser, WebConst.SuperAdmin)
+            )
+            .AddPolicy(
+                WebConst.AdminUser,
+                policy => policy.RequireRole(WebConst.AdminUser, WebConst.SuperAdmin)
             );
 
         return services;

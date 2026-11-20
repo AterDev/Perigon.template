@@ -16,6 +16,7 @@
     <Project Path="src/AppHost/AppHost.csproj" />
   </Folder>
   <Folder Name="/src/Perigon/" Id="9048eb7f-3875-a59e-e36b-5bd4c6f2a282">
+    <Project Path="src/Perigon/Perigon.OpenApi.SourceGeneration/Perigon.OpenApi.SourceGeneration.csproj" />
     <Project Path="src/Perigon/Perigon.AspNetCore.Toolkit/Perigon.AspNetCore.Toolkit.csproj" />
     <Project Path="src/Perigon/Perigon.AspNetCore/Perigon.AspNetCore.csproj" Id="5cd13529-038d-44b2-a90d-d636396d01bb" />
   </Folder>
@@ -26,6 +27,9 @@
     <Project Path="src/Definition/Share/Share.csproj" />
   </Folder>
   
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/CommonMod/CommonMod.csproj" />
+  </Folder>
   <Folder Name="/src/Services/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
     <Project Path="src/Services/ApiService/ApiService.csproj" />
   </Folder>

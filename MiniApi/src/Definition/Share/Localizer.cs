@@ -11,7 +11,8 @@ public partial class Localizer(IStringLocalizer<Localizer> localizer)
     {
         try
         {
-            return localizer[key, arguments];
+            var localized = localizer[key, arguments];
+            return localized.ResourceNotFound ? key : localized.Value;
         }
         catch (Exception)
         {

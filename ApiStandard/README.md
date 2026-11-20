@@ -15,7 +15,7 @@
 * `src/Perigon/Perigon.AspNetCore`: 基础类库，提供基础帮助类。
 * `src/Definition/ServiceDefaults`: 是提供基础的服务注入的项目。
 * `src/Definition/Entity`: 包含所有的实体模型，按模块目录组织。
-* `src/Definition/EntityFramework`: 基于Entity Framework Core的数据库上下文
+* `src/Definition/EntityFramework`: 基于 Entity Framework Core 和 PostgreSQL 的数据库上下文
 * `src/Modules/`: 包含各个模块的程序集，主要用于业务逻辑实现
 	* `src/Modules/XXXMod/Managers`: 各模块下，实际实现业务逻辑的目录
 	* `src/Modules/XXXMod/Models`: 各模块下，Dto模型定义，按实体目录组织

@@ -75,8 +75,6 @@ internal sealed class TenantIndexConvention : IModelFinalizingConvention
 
                 if (filter is not null)
                 {
-                    // Keep the filter at data-annotation precedence because SQL Server's
-                    // provider convention can otherwise clear it later in model building.
                     indexBuilder.HasFilter(filter, fromDataAnnotation: true);
                 }
             }
@@ -88,7 +86,6 @@ internal sealed class TenantIndexConvention : IModelFinalizingConvention
         return _providerName switch
         {
             "Npgsql.EntityFrameworkCore.PostgreSQL" => "\"IsDeleted\" = false",
-            "Microsoft.EntityFrameworkCore.SqlServer" => "[IsDeleted] = 0",
             "Microsoft.EntityFrameworkCore.Sqlite" => "\"IsDeleted\" = 0",
             _ => null,
         };

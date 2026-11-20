@@ -29,7 +29,7 @@ Smoke test 只证明资源启动；业务测试必须断言状态、绑定、JSO
 
 ## AOT 与发布
 
-- 使用 `native-aot` 判断变化是否敏感并执行 `linux-musl-x64` 自包含 Native AOT publish。
+- 使用 `native-aot` 判断变化是否敏感并执行 `linux-x64` 自包含 Native AOT publish。
 - 审查 linker/AOT/RDG warning，不抑制未知警告来制造通过。
 - 单服务镜像使用 `scripts/PublishDocker.ps1`。脚本、Dockerfile 或测试脚本为空占位时不得当作证据。
 - MiniApi 没有内置迁移资源；部署管线在 API 启动前完成 schema 校验/变更，并准备备份、恢复和兼容策略。

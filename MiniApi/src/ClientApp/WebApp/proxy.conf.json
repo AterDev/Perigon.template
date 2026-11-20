@@ -1,8 +1,7 @@
 {
-  "/api/": {
-    "target": "https://localhost:17001",
-      "changeOrigin": true,
-        "secure": false
-  },
-  "logLevel": "debug"
+  "/api/**": {
+    "target": "https://localhost:17002",
+    "changeOrigin": true,
+    "secure": false
+  }
 }

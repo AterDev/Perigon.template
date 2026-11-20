@@ -1,0 +1,65 @@
+# PT0005：依赖与上下文调整
+
+- 2026-11-06：MiniApi 源生成器切回已发布的 NuGet 包，Release 和 Docker 发布改用 `linux-x64`。
+- 隔离副本 Debug 构建通过；Linux Noble SDK 下 `linux-x64` Native AOT 发布成功，Noble runtime-deps 镜像构建并启动后 OpenAPI 返回 200。发布仍有既有裁剪警告。
+- 无额外字体的 AOT 镜像 `docker image inspect .Size` 为 81,517,682 字节（约 77.74 MiB）；Docker Desktop 镜像列表显示约 331 MB，二者口径不同。独立容器在 Development 模式响应 OpenAPI 请求后，`docker stats` 一次采样为 34.13 MiB；该值不包含数据库和 Redis，测试未连接数据库。
+- 同配置比较 framework-dependent 非 AOT（ASP.NET Core Noble 镜像）和 AOT（runtime-deps Noble 镜像），各启动三次：OpenAPI 首次返回 200 的时间中位数分别为 1204.5 ms、562.8 ms，`docker stats` 内存中位数为 42.03 MiB、35.34 MiB。镜像列表分别显示 371 MB、331 MB；AOT 镜像保留约 76.75 MiB 的 `.dbg` 符号文件。
+
+- [x] 升级 MiniApi 的 Perigon.PostgreSQL，保留工具已发布版本。
+- [x] 删除重复上下文并统一服务注册与文档。
+- [x] 对照 0.2.0 包检查模板使用的 API。
+- [x] MiniApi 解决方案构建、模板打包及 win-x64 Native AOT 发布通过；AOT 发布存在裁剪和动态代码分析警告。
+- [x] 检查包中仅包含 AppDbContext 下的 MiniApi 上下文，根目录维护文档未打包。
+- 测试限制：解决方案测试发现零个测试并返回退出码 5；未验证实际 PostgreSQL 运行时操作。
+- [x] Aspire 实际启动发现 `DatabaseInitService` 无法解析 `UserManager` 并导致 ApiService 退出；将 Manager 和初始化服务移入 `CommonMod`，由模块和源生成器完成注册。
+- [x] 2026-11-04 模块边界调整后通过 Aspire 验证 ApiService 与 PostgreSQL 健康；当时调用旧路由 `/api/auth/login` 成功返回数据库中的演示用户。
+- 2026-11-04 修复时未修改外部文档：该修复恢复了快速入门中已有的 Aspire 启动步骤。
+- [x] 重新生成并检查 NuGet 1.1.1 的实际输出：`AddManagers()` 注册 `CommonMod.Managers.UserManager`，`AddModules()` 调用 `AddCommonMod()`；已移除手动注册绕过。
+- [x] 2026-11-04 移除手动注册后重新运行 Aspire：ApiService 健康，当时的 `/api/auth/login` 成功返回演示用户；验证后停止 AppHost。
+- 空生成文件的原因是误读 2026-09-14 的旧 `obj/generated` 文件；默认 `EmitCompilerGeneratedFiles=false`，构建不会更新磁盘上的旧文件。诊断时需使用 `dotnet build src/Services/ApiService/ApiService.csproj -t:Rebuild -p:EmitCompilerGeneratedFiles=true -p:CompilerGeneratedFilesOutputPath=obj/generated` 输出当前生成代码。本次构建 0 警告、0 错误。
+- [x] 切换到 Perigon.PostgreSQL 0.3.0 的 `AddDbContext`/`DbContextOptions<T>` 注册；用户唯一索引使用实体特性，移除重复表名与 Fluent 配置。
+- [x] 将登录 DTO 移至 CommonMod 的 `Models/UserDtos`，同步 JSON 元数据及项目内 Perigon skill；保留调用接口的 JSON 字段。
+- [x] 生成的 PostgreSQL 元数据显示默认表名为 `users`、`uq_users_user_name` 为唯一索引；Debug 构建 0 警告、0 错误。Aspire 与 win-x64 Native AOT 实际运行的登录请求均成功，AOT 健康端点返回 200。
+- AOT 发布成功但包含 IL2026、IL3050、IL2091 等裁剪和动态代码警告；Windows 环境未验证 linux-musl-x64 原生发布。详情见 `artifacts/miniapi-aot-validation.log`。
+- 中英文 MiniApi 快速入门已同步；Perigon.docs 文档校验和完整构建通过。项目内 Perigon skill 通过 quick_validate。
+- [x] 模板包包含 CommonMod、DTO 和 Perigon skill，且不包含根目录维护文档；从隔离模板包生成的 MiniApi 解决方案构建通过（0 警告、0 错误）。解决方案已加入 CommonMod 并移除不存在的 AotSmoke 项目引用。
+- [x] 隔离生成项目的 ApiTest 集成测试通过（1/1），使用该生成项目独有的测试数据库。
+- [x] 验证已发布的 Perigon.PostgreSQL 0.3.0，使用 `AddDbContextPool` 和 `EnableOpenTelemetry` 注册；连接和命令超时分别为 15 和 30 秒。
+- [x] `AuthEndpoints` 重命名为 `UserEndpoints`，源生成器成功发现新类型；Aspire 下连续三次登录成功，数据库 span 与每次请求关联。
+- [x] 重新打包并从隔离模板包生成 MiniApi 解决方案：构建 0 警告、0 错误，ApiTest 通过 1/1（独立测试数据库）；包内包含 `UserEndpoints` 与 CommonMod DTO。
+- [x] 池化版本完成 win-x64 Native AOT 发布并运行：健康检查为 200、连续三次登录成功；发布仍有 IL2026、IL3050、IL2091 等裁剪/动态代码警告（`artifacts/miniapi-pool-aot.log`），未验证 linux-musl-x64 原生发布。
+- 2026-11-05 核对 NuGet 已发布 0.3.0 包说明：注册选项启用 Npgsql 追踪与指标，OTLP 导出仍由现有 ServiceDefaults 提供；相邻 Perigon.PostgreSQL 源码检出版本较旧，不能替代已发布包的 API 事实。
+- [x] 登录接口改为 `POST /api/users/login`、`User` tag、`UserLogin` operationId，显式声明请求、200 和 400 的 JSON schema；移除与显式元数据冲突的 XML 注释。
+- [x] 从隔离模板包生成解决方案并构建（0 警告、0 错误），ApiTest 通过 2/2；集成测试检查新路由、旧路由缺失、摘要和请求/响应 schema。
+- [x] win-x64 Native AOT 发布及运行成功：健康检查为 200，新登录路由可用，OpenAPI 的 operationId 和摘要与代码一致。发布仍有 IL 裁剪和动态代码警告（`artifacts/miniapi-user-openapi-aot.log`），未验证 linux-musl-x64 原生发布。
+- 中英文 MiniApi 快速入门已更新新路由和 OpenAPI 信息，Perigon.docs 构建与文档验证通过。
+- [x] 非生产环境加入 Swagger UI 10.3.0，使用现有 OpenAPI JSON；Aspire 下 UI 页面、脚本和 OpenAPI 文档均返回 200。
+- [x] 排查 Angular：本地 `node_modules` 不完整导致 Angular CLI 和包文件缺失，原 `pnpm install` 未恢复缺失文件；使用项目锁定版本执行 `pnpm install --force --frozen-lockfile` 后，Aspire 前端重启成功，页面和 main.js 返回 200，`pnpm build` 成功。缺失文件的最初成因未确认。
+- [x] 从模板包分别生成 `frontType=None` 和 `frontType=Angular` 项目，两套解决方案均以 0 警告、0 错误构建；无前端项目的隔离 ApiTest 通过 2/2，验证 Swagger 页面、静态脚本、OpenAPI 配置及接口契约。
+- [x] win-x64 Native AOT 发布和运行验证通过：Swagger 页面、配置脚本、静态资源、OpenAPI 文档和登录接口正常；发布仍有裁剪警告（`artifacts/miniapi-swagger-aot.log`），未验证 linux-musl-x64 原生发布。
+- 中英文快速入门、版本特性及 FAQ 已同步，Perigon.docs 构建与文档验证通过。原本运行的 AppHost 已恢复，Angular 与 ApiService 均正常提供服务。
+- [x] 曾使用 `Task<UserLoginResult>` 文件级别名简化登录接口，后续已由 `ApiResult<T>` 替换；请求和 200/400 响应 schema 保持一致。
+- [x] Aspire 开发环境实际请求成功，登录返回 200、无效请求返回带 `status=400` 的 JSON；OpenAPI 请求和两种响应 schema 均与原契约一致。开发监视进程在修改类型签名后出现过类型加载错误，停止并重新启动 AppHost 后未复现。
+- [x] 文件级 `UserLoginResult` 别名简化方法签名；按模板包生成的隔离项目构建 0 警告、0 错误，ApiTest 通过 2/2（隔离数据库、临时端口）。中英文 MiniApi 快速入门和项目 Perigon skill 同步，文档构建通过。
+- [x] 别名版本 win-x64 Native AOT 发布及运行成功：登录 200、无效请求 400，OpenAPI 请求和 200/400 响应 schema 与 JIT 一致；发布存在 IL 裁剪和动态代码警告（`artifacts/miniapi-typed-alias-aot.log`），linux-musl-x64 未验证。
+- [x] 新增 `RestEndpointBase.ApiResult<T>`，登录接口直接返回成功 DTO 或原有错误 helper；默认生成 200/400 元数据，其他状态码按需显式声明。隔离模板的 ApiTest 通过 3/3，覆盖登录 OpenAPI、400 响应及不同错误结果的实际状态码和 JSON。
+- [x] win-x64 Native AOT 发布及运行通过：登录 200、无效请求 400，请求和 200/400 schema 正确；发布存在 IL2026、IL2091、IL2104、IL3050、IL3053 警告（`artifacts/apiresult-aot.log`），未验证 linux-musl-x64。中英文快速入门的文档校验和构建通过。
+- [x] 错误 helper 延迟至响应执行时读取请求 `TraceIdentifier`；登录 handler 不再接收 `HttpContext`。隔离模板测试 5/5，覆盖五种错误状态、每次执行的标识以及直接返回的 400/404/409 元数据；登录 OpenAPI 的 200/400 schema 保持一致。
+- [x] win-x64 Native AOT 发布并实际请求成功：登录 200、错误 400 且包含 traceId，OpenAPI schema 正确。错误结果使用已注册的 JSON 类型元数据，未产生与 `ErrorHttpResult` 相关的 AOT 警告；其他原有 IL 警告仍存在（`artifacts/deferred-error-aot.log`）。中英文快速入门校验及构建通过，linux-musl-x64 未验证。
+- [x] 上述自定义错误结果方案已替换为 ASP.NET Core `ProblemDetails`；`Problem` helper 只负责默认状态码和本地化，ApiResult 包装框架结果，异常及 JWT 中间件使用同一格式。登录 400 使用 `application/problem+json` 和 `ProblemDetails` OpenAPI schema，由 `AddProblemDetails` 默认 writer 添加 traceId。
+- [x] 从隔离模板包生成的项目测试通过 7/7，覆盖登录契约、框架结果转换、Problem 多语言和异常中间件；win-x64 Native AOT 发布和实际请求通过，OpenAPI 200/400 schema 与运行结果一致。发布仍有原有 IL 裁剪警告（`artifacts/standard-problem-aot.log`），未验证 linux-musl-x64。中英文快速入门校验与构建通过。
+- [x] 启用 .NET 10 自动验证，ApiService 和 CommonMod 分别调用 `AddValidation`；检查 CommonMod 实际生成代码，确认登录 DTO 的必填与长度规则被发现。`[ValidatableType]` 在 .NET 10 带实验性诊断 ASP0029，针对该标记局部抑制；现有 ASP.NET Core 框架引用已提供生成器，无需额外包。
+- [x] 统一为基于 `HttpValidationProblemDetails` 的 `ErrorResult`，验证错误包含字段 `errors`，业务错误和空状态码响应使用同一结构且 `errors` 为空；traceId 与 errors 均有 OpenAPI schema。隔离生成项目 ApiTest 通过 7/7，覆盖登录成功、必填/长度、业务错误、格式错误、404 和 OpenAPI。
+- [x] win-x64 Native AOT 发布及 HTTP 验证通过，成功登录 200、验证与业务错误 400，字段错误、traceId 及 OpenAPI schema 正确；AOT 发布仍有原有裁剪警告（`artifacts/validation-aot.log`），未验证 linux-musl-x64。中英文快速入门校验与构建通过。
+- [x] 审核全局异常、验证、业务错误及状态码页面。使用统一 `IProblemDetailsWriter`，解决 `Accept: text/plain` 时框架回退绕过 `ErrorResult` 的问题；生产异常详情不再返回客户端，服务端记录异常，已开始响应和取消请求向上抛出。隔离项目测试 12/12，覆盖异常、验证、不同 Accept、401/403/429、已开始响应和取消；最终模板包内容已核对。
+- [x] win-x64 Native AOT 发布并实际验证成功登录、模型验证、业务错误和 404；即使 `Accept: text/plain`，错误仍是 `application/problem+json` 且包含 traceId。发布保留既有 IL 警告（`artifacts/error-audit-aot.log`），未验证 linux-musl-x64。中英文快速入门构建及文档校验通过。
+- [x] Aspire 开发进程需要重建 ApiService 才加载最新实现；使用资源重建后再次确认 `Accept: text/plain` 的 400 响应包含 traceId 和 errors，ApiService 已恢复健康。
+- 2026-11-05 核对 Request Delegate Generator 的实际生成结果及 Roslyn 生成器执行规则：RDG 从已注册的 JSON resolver 读取类型元数据，不能自动生成 DTO 的 `JsonSerializerContext`；一个普通源生成器生成的 `[JsonSerializable]` 代码不能作为同轮 System.Text.Json 生成器的输入。
+- 2026-11-06：此前的编译前 JSON 元数据扫描实验已弃用；该实验使用本地 `Perigon.AspNetCore.SourceGeneration` 项目引用，曾验证模块、Endpoint 泛型和 Native AOT，但不再作为实现路径。其他源生成能力已切回已发布的 NuGet 包。
+- 当前 JSON context 改由 Perigon CLI 的 `aot jsonContext` 命令显式生成；隔离 MiniApi 副本验证了 CLI 生成、编译及 win-x64 Native AOT 的 HTTP 400 和 OpenAPI，CLI 发布版本尚未确认。修改 Endpoint、模块模型或服务结构后需要重新运行；动态、反射、非泛型 `IResult`、运行时多态及无法确定的类型仍手动注册。
+- 在隔离 MiniApi 副本新增跨模块 DTO 和 Endpoint，用本地打包安装的 `perigon aot jsonContext` 验证生成的 using 与短类型名、手写声明保留、重复运行内容和修改时间不变；实际 HTTP 和 OpenAPI 均正常。同名模型通过 using 别名区分，并有回归测试覆盖。
+- [x] 恢复基类 `BadRequest`、`NotFound`、`Forbid`、`Conflict` 等 helper：资源键直接写入 ProblemDetails 的 detail，统一 writer 通过构造函数注入 Localizer，并按请求语言翻译；找不到资源时保留原文。格式参数仅用于本地化，不出现在响应中；登录接口不再注入 Localizer，保留用户不存在 404、密码错误 403，补充 OpenAPI schema。
+- [x] 隔离生成项目测试通过 15/15，覆盖中英文、格式参数、未知资源、原始 Problem detail、同一结果的多语言执行以及 400/403/404/409/500。win-x64 Native AOT 发布与实际请求通过：中文 403、英文 404、自动验证 400 和 OpenAPI 403/404 schema 均正确；发布仍有原有 IL 警告（`artifacts/localized-detail-aot.log`），未验证 linux-musl-x64。Aspire ApiService 已重建并验证，双语文档校验和构建通过。
+- MiniApi 的 CommonMod 提供接收 DefaultDbContext 的静态种子方法。ApiService 在 EnsureCreatedAsync 成功后调用。移除未注册的模块后台任务，两个模板的 Perigon skill 同步宿主生命周期规则。MiniApi ApiService 构建通过，保留既有 ASP0038。
+- 隔离 PostgreSQL 验证 MiniApi 模板首次和重复启动均只有一条演示用户记录。模板打包通过。
+- 统一种子数据入口为 CommonMod 根目录 InitModule.cs，MiniApi 构建和模板打包通过。

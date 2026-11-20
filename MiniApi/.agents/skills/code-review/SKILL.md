@@ -16,7 +16,7 @@ description: 对 MiniApi 代码或变更执行只读审查，检查需求符合�
 
 ## 审查顺序
 
-1. **Completeness**：需求、场景和任务是否有实现证据；PT、`ProjectTracking.md`、PD 是否同步；是否有范围漂移。
+1. **Completeness**：需求、场景和任务是否有实现证据；PT、当前个人月度进度文件、PD 是否同步；是否有范围漂移。
 2. **Minimal API contracts**：endpoint group、路由约束、参数绑定来源、授权与 metadata 顺序、OperationId、状态码、ProblemDetails 和 OpenAPI 是否稳定；handler 是否保持静态可分析。
 3. **Native AOT and Trim**：Request Delegate Generator、JSON 元数据、反射/动态代码、DI 注册、EF 模型和第三方依赖是否兼容；是否有未解释 linker/AOT warning；AOT-sensitive 变化是否有 publish 和运行证据。
 4. **Correctness and security**：正常/边界/失败/并发/幂等行为、输入验证、鉴权授权、敏感信息和数据破坏风险。

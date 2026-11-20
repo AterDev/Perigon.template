@@ -1,38 +1,33 @@
-# Project Tracking
+# 项目跟踪
 
-> Perigon.template 仓库迭代、PD/PT、总进度和实现验证记录。本文档只位于仓库根目录，不进入 ApiStandard 或 MiniApi 模板。
+- 2026-11-19：MiniApi 模板 Angular 前端升级至 22.3.0，锁定 CLI/Build/Material/CDK/Compiler CLI、TypeScript 6.0.3 及 Node/pnpm engines；同步 Angular reference 的 Agent Skills、业务模块拆分和入口路由约定，验证冻结安装与 `pnpm build`，详见 PT0010。
 
-## 当前状态
+- 2026-11-19：MiniApi 改用 Native AOT 兼容的 `DbSet` 自动属性，方案与验证见 PT0012。
 
-- CurrentIteration: `Iter3-DependencyRefresh`
-- CurrentPD: `PD0004-DependencyRefresh`
-- CurrentPT: `PT0005-DependencyRefresh`
-- CurrentTask: ApiStandard 依赖升级与模板包 1.3.17 已发布
-- Status: `complete`
-- Progress: `4/4`
-- LastUpdated: `2026-10-08`
+- 2026-11-13：MiniApi 数据库初始化改用 `FirstOrDefaultAsync`，修复 async-only PostgreSQL 查询提供程序拒绝同步执行的问题；验证见 PT0011。
+- 2026-11-13：修复 MiniApi Angular 登录仍调用旧 Admin API 的问题，启用开发服务器代理转发到 ApiService；验证见 PT0010。
+- 2026-11-12：MiniApi 升级至 .NET 11、Aspire 13.6.5 和最新依赖，MailKit 5 兼容性已适配；验证见 PT0007、PT0008。
+- 2026-11-12：ApiStandard 与 MiniApi 的邮件发送服务适配 MailKit 5；两套解决方案构建验证见 PT0009。
+- 2026-11-11：MiniApi 显式启用 .NET 11 Runtime Async，WSL Containers 运行验证见 PT0008。
+- 2026-11-12：MiniApi 将 Perigon.PostgreSQL 升级至 0.3.1，验证数据库不存在时的创建路径见 PT0008。
+- 2026-11-12：MiniApi 移除 Mapster 和运行时映射扩展，转换规则写入 backend skill；验证见 PT0008。
+- 2026-11-11：MiniApi 升级至 .NET 11，SDK、运行时包、镜像和 CI 同步；验证见 PT0008。
+- 2026-11-06：MiniApi 源生成器切回包引用，Native AOT 和 Docker 发布默认改用 `linux-x64`。
+- 2026-11-06：撤销 MiniApi 编译前 JSON 自动扫描实验，改由 Perigon CLI 的 `aot jsonContext` 命令显式生成 `ApiJsonSerializerContext`；CLI 命令仍处于开发阶段，验证和发布版本待完成。
+- 2026-10-30：两套模板统一内置 PostgreSQL；ApiStandard 移除 SQL Server 支持，验证见 PT0006。
 
-## 迭代进度
-
-| Iteration | Product designs | Plan tasks | Status | Progress | Blocker | Next action |
-|---|---|---|---|---|---|---|
-| `Iter0-Initial` | [PD0001-Initial](../UserStory/Iter0-Initial/PD0001-Initial.md) | [PT0001-Initial](./Iter0-Initial/PT0001-Initial.md); [PT0002-SourceGeneratorPackage](./Iter0-Initial/PT0002-SourceGeneratorPackage.md) | complete | 3/3 | none | 无 |
-| `Iter1-DataAccess` | [PD0002](../UserStory/Iter1-DataAccess/PD0002-ApiStandardDataAccess.md) | [PT0003](./Iter1-DataAccess/PT0003-DataAccess.md) | in-progress | 首批 6/6 | none | 优先处理 DA-01，剩余问题按 PD 分批实施 |
-| `Iter2-ApiBehavior` | [PD0003](../UserStory/Iter2-ApiBehavior/PD0003-ApiBehavior.md) | [PT0004](./Iter2-ApiBehavior/PT0004-ApiBehavior.md) | complete | 2/2 | none | 无 |
-| `Iter3-DependencyRefresh` | [PD0004](../UserStory/Iter3-DependencyRefresh/PD0004-DependencyRefresh.md) | [PT0005](./Iter3-DependencyRefresh/PT0005-DependencyRefresh.md) | complete | 4/4 | none | 无 |
-
-## 最近实现记录
-
-| Date | Plan task | Result | Verification | Remaining |
-|---|---|---|---|---|
-| 2026-09-24 | PT0004-ApiBehavior | 在两套模板增加 `IUserContext.RoleIds`，为 ApiStandard 自动模型验证错误增加结构化 HTTP 400 响应，并发布模板包 1.3.16 | 两套 Release build；ApiStandard 22/22；MiniApi Aspire smoke test 1/1；包内容核验通过；双语文档校验 191 篇并构建通过；GitHub Actions 发布成功且 NuGet 版本页已列出 1.3.16 | 无 |
-| 2026-10-08 | PT0005-DependencyRefresh | ApiStandard 升级 Aspire 13.6.1 和 .NET 10 依赖，EF Core Design 设为私有传递依赖；发布模板包 1.3.17 | 两套 Release build（0 警告/错误）；ApiStandard 22/22、MiniApi 1/1；包内容 1.3.17 校验通过；双语文档校验 199 篇并构建通过；GitHub Actions #37720390207 发布成功，NuGet 页面已列出 1.3.17 | 无 |
-| 2026-09-22 | PT0003-DataAccess | 整理数据访问改进说明，修复局部更新受保护字段、批量重复枚举和嵌套范围查询 | ApiStandard 22/22；两套 solution build；本地 pack/内容检查；双语文档校验/构建通过 | DA-01 等后续项仍未修复；未运行正式数据库批量集成测试 |
-| 2026-09-03 | PT0001-Initial | 移除模板图形验证码实现及 SixLabors 依赖 | 两套 solution build、ApiStandard 20/20 测试、Perigon.docs 校验/构建通过 | 外部调用方需迁移已删除公开 helper |
-| 2026-09-14 | PT0002-SourceGeneratorPackage | 两套模板和 CLI 切换到 `Perigon.AspNetCore.SourceGeneration` 1.1.1，并合并 Manager、Module、Localizer 与 Minimal API endpoint group 生成能力 | 两套 solution build、CLI 155/155 测试、MiniApi Native AOT 运行验证、包构建和文档校验通过；1.1.1 已发布 | 无 |
-
-## 维护规则
-
-- PD/PT、ProjectTracking 和仓库 Changelog 只保存在根目录 `docs`。
-- 模板目录只保留生成项目所需文件，不新增仓库内部跟踪内容。
-- 每次代码修改后更新对应 PT 的任务、实现结果和验证证据。
+- 2026-10-29：MiniApi 升级 Perigon.PostgreSQL 至 0.2.0，统一数据库上下文；验证情况见 PT0005。
+- 2026-11-04：调整 MiniApi 用户业务逻辑至 `CommonMod`，通过源生成器自动注册模块与 Manager，修复启动失败；排除旧生成文件造成的误判，验证情况见 PT0005。
+- 2026-11-05：MiniApi 改用 Perigon.PostgreSQL 的上下文选项注入与实体索引特性，整理模块 DTO 和 Perigon skill；验证见 PT0005。
+- 2026-11-05：MiniApi 按实体命名 UserEndpoints，并启用 Perigon.PostgreSQL 上下文池、连接池与 OpenTelemetry；验证见 PT0005。
+- 2026-11-05：登录接口组改为 User，路由调整为 `/api/users/login` 并补充 OpenAPI 元数据；验证见 PT0005。
+- 2026-11-05：MiniApi 新增非生产环境 Swagger UI，修复本地 Angular 依赖安装并兼容无前端模板；验证见 PT0005。
+- 2026-11-05：登录接口使用强类型 Minimal API 返回值，去除可自动推断的 OpenAPI 元数据配置；验证见 PT0005。
+- 2026-11-05：MiniApi 增加 `ApiResult<T>`，简化成功与统一错误结果并集中提供 OpenAPI 元数据；验证见 PT0005。
+- 2026-11-05：MiniApi 错误 helper 延迟获取请求标识，移除登录 Endpoint 对 `HttpContext` 的依赖；验证见 PT0005。
+- 2026-11-05：MiniApi 移除自定义错误类型并改用 ASP.NET Core Problem Details；验证见 PT0005。
+- 2026-11-05：MiniApi 启用跨程序集自动验证，并以基于 Problem Details 的 `ErrorResult` 统一错误响应；验证见 PT0005。
+- 2026-11-05：审核 MiniApi 异常与错误响应，修复内容协商回退及异常处理中断场景，评估 AOT JSON 源生成方案；验证见 PT0005。
+- 2026-11-05：MiniApi 错误 helper 改为传入资源键，由统一 writer 解析本地化详情；验证见 PT0005。
+- 2026-11-06：此前的 MiniApi 编译前 JSON 自动扫描实验标记为已弃用；MiniApi 的其他源生成能力已恢复使用已发布的 NuGet 包。JSON context 改由 Perigon CLI 的 `aot jsonContext` 显式生成，CLI 尚未完成验证和发布。
+- 2026-11-19：MiniApi 补齐 CMSMod、ResourceMod 依赖的数据库工厂和授权策略，限制 PostgreSQL 实体生成器作用范围。使用本地模板包和 CLI 在全新项目中安装两模块，通过 Windows x64 Native AOT 发布、原生启动、OpenAPI 和 PostgreSQL 冒烟验证。

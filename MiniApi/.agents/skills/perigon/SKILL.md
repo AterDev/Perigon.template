@@ -17,9 +17,9 @@ description: MiniApi 项目开发入口。用于 Perigon CLI/MCP、Minimal API E
 
 ## 模板边界
 
-- 业务默认位于 `ApiService` 的 `Endpoints/Managers/Models/Services`，使用一个 ApiService、PostgreSQL，且不含内置 EF migration 资源。
+- 业务逻辑和 DTO 位于 `src/Modules/<Module>`；ApiService 的 `Endpoints` 负责 HTTP 接口。模板使用 PostgreSQL，且不含内置 EF migration 资源。
 - Endpoint group 继承 `RestEndpointBase` 并声明静态 `MapEndpoints`；Manager 和 Endpoint 注册由源码生成器完成。
-- 不要假设存在 `AdminService`、Controller、`src/Modules`、Standard 生成器或多数据库切换。
+- 不要假设存在 `AdminService`、Controller、Standard 生成器或多数据库切换。
 - 新增能力必须检查 Request Delegate Generator、AOT、Trim、反射、依赖和序列化兼容性。
 
 ## Reference routing
@@ -43,4 +43,8 @@ description: MiniApi 项目开发入口。用于 Perigon CLI/MCP、Minimal API E
 3. 按 Minimal API 架构边界补齐业务代码，并审查静态绑定、公开契约和所有生成内容。
 4. 若实体或公开接口变化，依次处理迁移/OpenAPI/客户端，不跳过契约同步。
 5. 运行最小充分验证；AOT-sensitive 变更必须包含 Native AOT publish 和必要的运行验证，报告任何未执行项。
-6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前 PT 的实现结果、验证/AOT 证据、`ProjectTracking.md` 总进度和受影响 PD；文档未同步不属于完成。
+6. 任何 AI coding 后使用 `docs` 和 `delivery-loop` 同步当前 PT 的实现结果、验证/AOT 证据、当前个人月度进度和受影响 PD；文档未同步不属于完成。
+
+## 后台任务与初始化
+
+- 模块提供可调用的执行方法。实际发布的宿主实现并注册后台任务，负责调度、日志和取消。数据库种子数据统一在模块根目录 `InitModule.cs` 的 `InitModule` 静态类中定义，种子方法接收现有 DbContext 与 CancellationToken，宿主在数据库结构就绪后调用。

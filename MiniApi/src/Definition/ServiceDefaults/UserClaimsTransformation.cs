@@ -25,7 +25,7 @@ public class UserClaimsTransformation(DefaultDbContext context, CacheService cac
             return principal;
         }
 
-        var cacheKey = $"local-user-info:{userIdentity}";
+        var cacheKey = $"local-user-info:bin-v1:{userIdentity}";
 
         // the sample of get user roles from local system, you can replace it with your own implementation, such as query from database or call external service.
         var roles = await cache.GetOrCreateAsync(

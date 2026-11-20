@@ -1,4 +1,3 @@
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Perigon.AspNetCore.Models;
@@ -59,11 +58,6 @@ public static class EfCoreErrorHelper
 {
     public static bool IsUniqueConstraintViolation(DbUpdateException ex)
     {
-        if (ex.InnerException is SqlException sqlEx)
-        {
-            // SQL Server: 2627=主键冲突, 2601=唯一约束冲突
-            return sqlEx.Number is 2627 or 2601;
-        }
         if (ex.InnerException is PostgresException pgEx)
         {
             // PostgreSQL: 23505=unique_violation

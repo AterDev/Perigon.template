@@ -12,8 +12,8 @@ param(
 
     [switch]$InstallFonts,
 
-    [ValidateSet('font-wqy-zenhei', 'font-noto-cjk')]
-    [string]$CjkFontPackage = 'font-wqy-zenhei',
+    [ValidateSet('fonts-wqy-zenhei', 'fonts-noto-cjk')]
+    [string]$CjkFontPackage = 'fonts-wqy-zenhei',
 
     [switch]$NoRestore
 )
@@ -37,7 +37,7 @@ use the Aspire AppHost instead of this script.
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$runtimeIdentifier = 'linux-musl-x64'
+$runtimeIdentifier = 'linux-x64'
 
 function Format-ImageSize {
     param([long]$Bytes)
@@ -90,6 +90,9 @@ if ($NoRestore) {
 try {
     Write-Host "Publishing $Service..."
     & dotnet @publishArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet publish failed with exit code $LASTEXITCODE."
+    }
 
     Write-Host "Building $imageTag..."
     $dockerBuildArgs = @(
@@ -103,8 +106,21 @@ try {
     )
 
     & docker @dockerBuildArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "docker build failed with exit code $LASTEXITCODE."
+    }
 
-    $sizeBytes = [long](& docker image inspect $imageTag --format '{{.Size}}')
+    $imageSizeOutput = & docker image inspect $imageTag --format '{{.Size}}'
+    if ($LASTEXITCODE -ne 0) {
+        throw "docker image inspect failed with exit code $LASTEXITCODE."
+    }
+
+    $imageSizeText = ([string]$imageSizeOutput).Trim()
+    if ($imageSizeText -notmatch '^\d+$') {
+        throw "docker image inspect returned an invalid image size: '$imageSizeText'."
+    }
+
+    $sizeBytes = [long]$imageSizeText
     Write-Host "$imageTag size: $(Format-ImageSize $sizeBytes)"
 }
 finally {

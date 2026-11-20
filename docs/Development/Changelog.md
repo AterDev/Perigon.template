@@ -98,3 +98,4 @@
 ## 1.3.18 - 2026-11-20
 
 - MiniApi 更新 Perigon.PostgreSQL 至 0.3.8，纳入模块安装兼容、Native AOT JSON 契约与 Angular 前端修复。
+- MiniApi 在 CommonMod 注册登录 DTO 源生成验证，确保无效登录请求返回 HTTP 400。

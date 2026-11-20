@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Validation;
+
 namespace CommonMod;
 
 [DisplayName("AuthorName::ModuleDisplayName")]
@@ -17,6 +19,7 @@ public static class ModuleExtensions
     // The module services registration
     private static IHostApplicationBuilder AddModServices(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddValidation();
         return builder;
     }
 

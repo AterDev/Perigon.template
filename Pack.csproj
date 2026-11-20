@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <Version>1.3.17</Version>
+        <Version>1.3.18</Version>
         <PackageId>Perigon.templates</PackageId>
         <Title>Perigon Templates</Title>
         <Authors>Ater.NilTor</Authors>
@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Upgrade both templates to Aspire 13.6.4 and MiniApi to Perigon.PostgreSQL and Perigon.PostgreSQL.Tools 0.3.0; consolidate the MiniApi database context, and standardize both templates on PostgreSQL.</PackageReleaseNotes>
+        <PackageReleaseNotes>Refresh the .NET 11 templates and update MiniApi module compatibility, Native AOT setup, and the Angular frontend.</PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128;NU5110;NU5111</NoWarn>
         <NoDefaultExcludes>true</NoDefaultExcludes>
     </PropertyGroup>

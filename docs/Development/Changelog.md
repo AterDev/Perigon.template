@@ -94,3 +94,7 @@
 - ApiStandard 的自动模型验证错误现在返回 `{ title, detail, status, traceId }` 结构，客户端若依赖旧的 ASP.NET Core 默认验证响应形状，需要调整解析逻辑。
 - 使用 MiniApi 时，endpoint group 仍需继承 `RestEndpointBase` 并提供符合约定的 `MapEndpoints` 方法。
 
+
+## 1.3.18 - 2026-11-20
+
+- MiniApi 更新 Perigon.PostgreSQL 至 0.3.8，纳入模块安装兼容、Native AOT JSON 契约与 Angular 前端修复。

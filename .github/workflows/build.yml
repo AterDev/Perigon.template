@@ -12,6 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: perigon-ci
+          POSTGRES_DB: MyProjectName_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
 
     steps:
       - name: Checkout code
@@ -23,6 +37,16 @@ jobs:
           dotnet-version: |
             10.0.x
             11.0.x
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: MiniApi/src/ClientApp/WebApp/package.json
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Restore template solutions
         run: |
@@ -41,6 +65,9 @@ jobs:
 
       - name: Run MiniApi integration tests
         working-directory: MiniApi
+        env:
+          ConnectionStrings__Default: Host=127.0.0.1;Port=5432;Username=postgres;Password=perigon-ci;Database=MyProjectName_test
+          ConnectionStrings__Cache: 127.0.0.1:6379
         run: dotnet test --project tests/ApiTest/ApiTest.csproj --configuration Release --no-restore --no-build
 
       - name: Pack NuGet package

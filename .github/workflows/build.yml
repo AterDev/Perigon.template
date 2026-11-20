@@ -63,6 +63,12 @@ jobs:
         working-directory: ApiStandard
         run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
 
+      - name: Trust MiniApi development certificate
+        run: |
+          dotnet dev-certs https --export-path "$RUNNER_TEMP/perigon-dev.crt" --format PEM
+          sudo install -m 0644 "$RUNNER_TEMP/perigon-dev.crt" /usr/local/share/ca-certificates/perigon-dev.crt
+          sudo update-ca-certificates
+
       - name: Run MiniApi integration tests
         working-directory: MiniApi
         env:

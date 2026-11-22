@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net11.0</TargetFramework>
@@ -8,13 +8,14 @@
         <UserSecretsId>9b1d6f21-0b5f-4a9e-9e3a-2f33a05d5f2d</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" />
+        <PackageReference Include="Aspire.Hosting.Dotnet" />
         <PackageReference Include="Aspire.Hosting.Nats" />
         <PackageReference Include="Aspire.Hosting.JavaScript" />
         <PackageReference Include="Aspire.Hosting.Redis" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" IsAspireProjectResource="false" />
-        <ProjectReference Include="..\Services\ApiService\ApiService.csproj" />
+        <ProjectReference Include="..\Perigon\Perigon.AspNetCore\Perigon.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

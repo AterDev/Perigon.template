@@ -1,5 +1,7 @@
 # 项目跟踪
 
+- 2026-11-22：MiniApi 升级到 Aspire 17.0.0，迁移 AppHost SDK 和 ApiService 项目注册，并启用 PostgreSQL 和 Redis REPL。方案与验证见 PD0005、PT0005。
+
 - 2026-11-19：MiniApi 模板 Angular 前端升级至 22.3.0，锁定 CLI/Build/Material/CDK/Compiler CLI、TypeScript 6.0.3 及 Node/pnpm engines；同步 Angular reference 的 Agent Skills、业务模块拆分和入口路由约定，验证冻结安装与 `pnpm build`，详见 PT0010。
 
 - 2026-11-19：MiniApi 改用 Native AOT 兼容的 `DbSet` 自动属性，方案与验证见 PT0012。

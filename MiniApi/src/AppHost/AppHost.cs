@@ -6,38 +6,41 @@ var aspireSetting = AppSettingsHelper.LoadAspireSettings(builder.Configuration);
 var isTesting = builder.Configuration["ASPIRE_ENVIRONMENT"]?.ToLowerInvariant() == "testing";
 
 // using exist database for development
-var database = builder.AddConnectionString(AppConst.Default);
-var cache = builder.AddConnectionString(AppConst.Cache);
+// var database = builder.AddConnectionString(AppConst.Default);
+// var cache = builder.AddConnectionString(AppConst.Cache);
 
 #region use local container
 
-// var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
-// var devPassword = builder.AddParameter(
-//     "dev-password",
-//     value: aspireSetting.DevPassword,
-//     secret: true
-// );
+var defaultName = isTesting ? "MyProjectName_test" : "MyProjectName_dev";
+var devPassword = builder.AddParameter(
+    "dev-password",
+    value: aspireSetting.DevPassword,
+    secret: true
+);
 
-// database = builder
-//     .AddPostgres(name: "Database", password: devPassword, port: aspireSetting.DbPort)
-//     .WithImageTag("18.1-alpine")
-//     .WithDataVolume()
-//     .AddDatabase(AppConst.Default, databaseName: defaultName);
+var database = builder
+    .AddPostgres(name: "Database", password: devPassword, port: aspireSetting.DbPort)
+    .WithImageTag("18.1-alpine")
+    .WithDataVolume()
+    .WithRepl()
+    .AddDatabase(AppConst.Default, databaseName: defaultName);
 
-// if (aspireSetting.UsesRedis)
-// {
-//     cache = builder
-//         .AddRedis("Cache", password: devPassword, port: aspireSetting.CachePort)
-//         .WithImageTag("8.2-alpine")
-//         .WithDataVolume()
-//         .WithPersistence(interval: TimeSpan.FromMinutes(5));
-// }
+IResourceBuilder<RedisResource>? cache = null;
+if (aspireSetting.UsesRedis)
+{
+    cache = builder
+        .AddRedis("Cache", password: devPassword, port: aspireSetting.CachePort)
+        .WithImageTag("8.2-alpine")
+        .WithDataVolume()
+        .WithRepl()
+        .WithPersistence(interval: TimeSpan.FromMinutes(5));
+}
 
 #endregion
 
 #region services
 var serviceGroup = builder.AddGroup("Services", "Globe");
-var apiService = builder.AddProject<Projects.ApiService>("ApiService")
+var apiService = builder.AddDotnetProject("ApiService", "../Services/ApiService/ApiService.csproj")
     .WithEnvironment("Components__Cache", aspireSetting.CacheType)
     .WithParentRelationship(serviceGroup);
 

@@ -6,6 +6,8 @@
 
 ### Changed
 
+- MiniApi 的 Aspire 集成与测试包统一升级到 17.0.0，AppHost 改用 `Microsoft.NET.Sdk` 并通过 `AddDotnetProject` 注册 ApiService。本地 PostgreSQL 和 Redis 在 Dashboard 提供交互式 REPL。
+
 - MiniApi 模板 Angular 前端升级至 22.3.0，Angular CLI/Build/Material/CDK/Compiler CLI 同步至 22.3.0，TypeScript 固定为 6.0.3，并声明 Node.js `^22.22.3 || ^24.15.0 || ^26.0.0` 与 pnpm 10.33.2；模板 Angular reference 同步 Angular Agent Skills、业务模块拆分和 `app.routes.ts` 入口懒加载约定。
 
 - MiniApi 将 `Perigon.PostgreSQL` 升级至 0.3.4，使用源生成初始化 `DbSet` 自动属性，并直接使用公开的 `Set<TEntity>()`。模板继续使用 snake_case 数据库命名。

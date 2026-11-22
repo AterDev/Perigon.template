@@ -4,7 +4,9 @@
 
 ## MiniApi 模板的作用
 
-此模板需要 .NET 11 SDK（11.0.100 或兼容版本）及与 Aspire 13.6.5 匹配的 Aspire CLI。
+启用 Angular 前端时，Aspire 会自动运行 `pnpm install`。如果 pnpm 需要重建 `node_modules`，安装会自动继续，无需终端确认。
+
+此模板需要 .NET 11 SDK（11.0.100 或兼容版本）及与 Aspire 17.0.0 匹配的 Aspire CLI。
 
 MiniApi 模板主要用于快速生成一套以 Minimal API 为核心的轻量后端工程，强调：
 

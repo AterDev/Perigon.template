@@ -1,5 +1,7 @@
 # PD0005：Aspire 与 MiniApi PostgreSQL
 
+- MiniApi 的 AppHost 使用 `Microsoft.NET.Sdk` 和 Aspire 17.0.0 的 `Aspire.Hosting.AppHost`、`Aspire.Hosting.Dotnet`。通过 `AddDotnetProject` 按相对路径注册 ApiService。对本地 PostgreSQL 服务和启用时的 Redis 注册 `WithRepl()`，可从 Dashboard 资源菜单打开 `psql` 或 `redis-cli`。容器镜像继续使用显式指定的标签。
+
 - MiniApi 使用已发布的 `Perigon.AspNetCore.SourceGeneration` 包；Release 默认 RID 为 `linux-x64`，Docker 使用兼容 glibc 的运行镜像。
 
 - 两套模板使用 Aspire 13.6.4；MiniApi 使用 Perigon.PostgreSQL 0.3.0，本地工具使用 0.3.0。

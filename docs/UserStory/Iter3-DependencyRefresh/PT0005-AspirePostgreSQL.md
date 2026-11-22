@@ -1,5 +1,7 @@
 # PT0005：依赖与上下文调整
 
+- 2026-11-22：MiniApi 使用 Aspire 17.0.0，AppHost 迁移到 `Microsoft.NET.Sdk` 和 `AddDotnetProject` 后，解决方案构建为 0 警告、0 错误。模板打包及内容检查通过，隔离副本 ApiTest 通过 15/15。实际 `aspire start` 后 ApiService 和 Angular 前端均健康，`Database` 和 `Cache` 的 `repl` 命令均执行成功。
+
 - 2026-11-06：MiniApi 源生成器切回已发布的 NuGet 包，Release 和 Docker 发布改用 `linux-x64`。
 - 隔离副本 Debug 构建通过；Linux Noble SDK 下 `linux-x64` Native AOT 发布成功，Noble runtime-deps 镜像构建并启动后 OpenAPI 返回 200。发布仍有既有裁剪警告。
 - 无额外字体的 AOT 镜像 `docker image inspect .Size` 为 81,517,682 字节（约 77.74 MiB）；Docker Desktop 镜像列表显示约 331 MB，二者口径不同。独立容器在 Development 模式响应 OpenAPI 请求后，`docker stats` 一次采样为 34.13 MiB；该值不包含数据库和 Redis，测试未连接数据库。

@@ -1,89 +1,25 @@
-name: Build and Publish to NuGet
-
+name: Publish SourceGeneration 1.1.2
 on:
   push:
     branches:
-      - nuget
-    tags:
-      - 'v*'
-
+      - dev/sourcegen-1.1.2-release
 jobs:
-  build-and-publish:
+  publish-source-generation:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       id-token: write
-    services:
-      postgres:
-        image: postgres:18
-        env:
-          POSTGRES_PASSWORD: perigon-ci
-          POSTGRES_DB: MyProjectName_test
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
-      redis:
-        image: redis:8-alpine
-        ports:
-          - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            10.0.x
-            11.0.x
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          package_json_file: MiniApi/src/ClientApp/WebApp/package.json
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Restore template solutions
-        run: |
-          dotnet restore ApiStandard/MyProjectName.slnx -p:Configuration=Release
-          dotnet restore MiniApi/MyProjectName.slnx -p:Configuration=Release
-          dotnet restore Pack.csproj
-
-      - name: Build template solutions
-        run: |
-          dotnet build ApiStandard/MyProjectName.slnx --configuration Release --no-restore
-          dotnet build MiniApi/MyProjectName.slnx --configuration Release --no-restore
-
-      - name: Run ApiStandard unit tests
-        working-directory: ApiStandard
-        run: dotnet test --project tests/UnitTest/UnitTest.csproj --configuration Release --no-restore --no-build
-
-      - name: Trust MiniApi development certificate
-        run: |
-          dotnet dev-certs https --export-path "$RUNNER_TEMP/perigon-dev.crt" --format PEM
-          sudo install -m 0644 "$RUNNER_TEMP/perigon-dev.crt" /usr/local/share/ca-certificates/perigon-dev.crt
-          sudo update-ca-certificates
-
-      - name: Run MiniApi integration tests
-        working-directory: MiniApi
-        env:
-          ConnectionStrings__Default: Host=127.0.0.1;Port=5432;Username=postgres;Password=perigon-ci;Database=MyProjectName_test
-          ConnectionStrings__Cache: 127.0.0.1:6379
-        run: dotnet test --project tests/ApiTest/ApiTest.csproj --configuration Release --no-restore --no-build
-
-      - name: Pack NuGet package
-        run: dotnet pack Pack.csproj -c Release --output ./artifacts --no-restore
-
-      - name: NuGet login (OIDC → temp API key)
+          dotnet-version: 11.0.x
+      - name: Pack SourceGeneration 1.1.2
+        run: dotnet pack MiniApi/src/Perigon/Perigon.AspNetCore.SourceGeneration/Perigon.AspNetCore.SourceGeneration.csproj -c Release -o ./artifacts
+      - name: NuGet login (OIDC)
         uses: NuGet/login@v1
         id: nuget-login
         with:
           user: ${{ secrets.NUGET_USER }}
-
-      - name: Publish to NuGet
-        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Publish SourceGeneration only
+        run: dotnet nuget push ./artifacts/Perigon.AspNetCore.SourceGeneration.1.1.2.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

@@ -1,0 +1,38 @@
+<Project>
+  <UsingTask TaskName="Perigon.AspNetCore.SourceGeneration.Build.GenerateEnumMetadata"
+             AssemblyFile="$(MSBuildThisFileDirectory)Perigon.AspNetCore.SourceGeneration.Build.dll" />
+
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <PerigonEnumMetadataFile>$(IntermediateOutputPath)Perigon.EnumMetadata.enum-meta.generated.xml</PerigonEnumMetadataFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <EmbeddedResource Include="$(PerigonEnumMetadataFile)" LogicalName="Perigon.EnumMetadata.enum-meta.generated.xml" WithCulture="false" />
+  </ItemGroup>
+  <Target Name="PerigonGenerateEnumMetadata"
+          BeforeTargets="AssignTargetPaths;PrepareResources;PrepareResourceNames;CoreCompile"
+          DependsOnTargets="ResolveReferences;GenerateGlobalUsings"
+          Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <Perigon.AspNetCore.SourceGeneration.Build.GenerateEnumMetadata
+        OutputPath="$(PerigonEnumMetadataFile)"
+        AssemblyName="$(AssemblyName)"
+        DefineConstants="$(DefineConstants)"
+        LangVersion="$(LangVersion)"
+        Compile="@(Compile)"
+        References="@(ReferencePath)" />
+  </Target>
+
+  <Target Name="PerigonCopyEnumMetadataToOutput"
+          AfterTargets="CoreCompile"
+          DependsOnTargets="PerigonGenerateEnumMetadata"
+          Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true'">
+    <Copy SourceFiles="$(PerigonEnumMetadataFile)" DestinationFiles="$(TargetDir)enum-meta.generated.xml" />
+  </Target>
+
+  <Target Name="PerigonCopyEnumMetadataToPublish"
+          BeforeTargets="PrepareForPublish"
+          DependsOnTargets="PerigonGenerateEnumMetadata"
+          Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true' and '$(PublishDir)' != ''">
+    <Copy SourceFiles="$(PerigonEnumMetadataFile)" DestinationFiles="$(PublishDir)enum-meta.generated.xml" />
+  </Target>
+</Project>

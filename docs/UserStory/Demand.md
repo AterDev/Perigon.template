@@ -43,6 +43,8 @@ Perigon.template 维护 ApiStandard 和 MiniApi 两套 .NET 项目模板，并�
 | `Iter7-MiniApiDatabaseInitialization` | [PD0011-MiniApiDatabaseInitialization](./Iter7-MiniApiDatabaseInitialization/PD0011-MiniApiDatabaseInitialization.md) | DataAccess | complete | 修复 MiniApi 数据库初始化对同步查询的调用 |
 | `Iter8-MiniApiDbSet` | [PD0012-MiniApiDbSet](./Iter8-MiniApiDbSet/PD0012-MiniApiDbSet.md) | DataAccess | in progress | 支持 Native AOT 下的 DbSet 自动属性 |
 
+| `Iter9-AnnotatedEnums` | [PD0013-AnnotatedEnums](./Iter9-AnnotatedEnums/PD0013-AnnotatedEnums.md) | OpenAPI | in progress | 使用标准 schema 描述 MiniApi 枚举 |
+
 ## 编号规则
 
 - 迭代目录：`Iter<number>-<IterationName>`。

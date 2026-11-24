@@ -33,3 +33,14 @@
 - 2026-11-05：MiniApi 错误 helper 改为传入资源键，由统一 writer 解析本地化详情；验证见 PT0005。
 - 2026-11-06：此前的 MiniApi 编译前 JSON 自动扫描实验标记为已弃用；MiniApi 的其他源生成能力已恢复使用已发布的 NuGet 包。JSON context 改由 Perigon CLI 的 `aot jsonContext` 显式生成，CLI 尚未完成验证和发布。
 - 2026-11-19：MiniApi 补齐 CMSMod、ResourceMod 依赖的数据库工厂和授权策略，限制 PostgreSQL 实体生成器作用范围。使用本地模板包和 CLI 在全新项目中安装两模块，通过 Windows x64 Native AOT 发布、原生启动、OpenAPI 和 PostgreSQL 冒烟验证。
+
+- 2026-11-24：MiniApi 切换标准 annotated enumerations，设计和验证见 PT0013。
+
+- 2026-11-24：共享生成器增加 MiniApi 枚举编译期发现；新版包尚未发布，模板暂用手动回退，验证见 PT0013。
+- 2026-11-24：确定以跨平台 MSBuild target/task 生成 `enum-meta.generated.xml`，并让 Web 项目嵌入及输出该文件；新版包发布前不切换默认依赖，构建产物和发布后 AOT 验证待 PT0013 完成。
+
+- 2026-11-24：两套模板依赖改为 SourceGeneration 1.1.2；专用工作流已上传该包，1.1.2 公开包验证失败，随后以修复版本取代。
+
+- 2026-11-24：公开源验证发现 SourceGeneration 1.1.2 缺构建任务 DLL，模板恢复 1.1.1，修复冷构建打包后需另发新版本。
+
+- 2026-11-24：SourceGeneration 1.1.3 在 Linux 干净检出下验证包内容和 Web 项目 XML 生成后成功上传 NuGet；两套模板已切换，纯公开 NuGet 源和全新缓存的新项目构建、发布 XML 验证通过。

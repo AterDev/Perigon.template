@@ -32,6 +32,7 @@
 | `Iter6-MiniApiFrontend` | [PD0010-MiniApiFrontend](./Iter6-MiniApiFrontend/PD0010-MiniApiFrontend.md) | MiniApi Angular 前端通过本地代理调用 MiniApi 登录 Endpoint，并基于实际用户响应维护界面登录状态 | complete |
 | `Iter7-MiniApiDatabaseInitialization` | [PD0011-MiniApiDatabaseInitialization](./Iter7-MiniApiDatabaseInitialization/PD0011-MiniApiDatabaseInitialization.md) | MiniApi 数据库初始化通过异步查询检查演示用户，避免调用 Perigon.PostgreSQL 不支持的同步查询 | complete |
 | `Iter8-MiniApiDbSet` | [PD0012-MiniApiDbSet](./Iter8-MiniApiDbSet/PD0012-MiniApiDbSet.md) | 源生成初始化 DbSet 自动属性并按池租约重新绑定 | in progress |
+| `Iter9-AnnotatedEnums` | [PD0013-AnnotatedEnums](./Iter9-AnnotatedEnums/PD0013-AnnotatedEnums.md) | MiniApi OpenAPI annotated enumerations | in-progress |
 
 ## 全局设计决策
 

@@ -145,7 +145,10 @@ public class UserEndpointTests
         await Assert.That(errorSchema["properties"]!["traceId"]).IsNotNull();
         await Assert.That(paths["/api/auth/login"]).IsNull();
         var genderSchema = document["components"]!["schemas"]!["GenderType"]!;
-        var enumData = genderSchema["x-enumData"]!.AsArray();
-        await Assert.That(enumData.Any(item => item!["description"]!.GetValue<string>() == "男性")).IsTrue();
+        await Assert.That(document["openapi"]!.GetValue<string>().StartsWith("3.1.")).IsTrue();
+        await Assert.That(genderSchema["x-enumData"]).IsNull();
+        var enumData = genderSchema["oneOf"]!.AsArray();
+        await Assert.That(enumData.Any(item => item!["const"]!.GetValue<int>() == 0 && item["title"]!.GetValue<string>() == "Male" && item["description"]!.GetValue<string>() == "男性")).IsTrue();
+        await Assert.That(enumData.Count).IsEqualTo(3);
     }
 }

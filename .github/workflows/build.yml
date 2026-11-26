@@ -1,4 +1,4 @@
-name: Publish SourceGeneration 1.1.3
+name: Publish SourceGeneration 1.1.4
 on:
   push:
     branches:
@@ -16,19 +16,19 @@ jobs:
           dotnet-version: |
             10.0.401
             11.0.x
-      - name: Pack SourceGeneration 1.1.3 from clean checkout
+      - name: Pack SourceGeneration 1.1.4 from clean checkout
         run: dotnet pack MiniApi/src/Perigon/Perigon.AspNetCore.SourceGeneration/Perigon.AspNetCore.SourceGeneration.csproj -c Release -o ./artifacts
       - name: Verify task and dependency files in package
         run: |
-          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.3.nupkg | grep -F 'build/Perigon.AspNetCore.SourceGeneration.Build.dll'
-          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.3.nupkg | grep -F 'build/Microsoft.CodeAnalysis.CSharp.dll'
-          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.3.nupkg | grep -F 'build/Microsoft.CodeAnalysis.dll'
+          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.4.nupkg | grep -F 'build/Perigon.AspNetCore.SourceGeneration.Build.dll'
+          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.4.nupkg | grep -F 'build/Microsoft.CodeAnalysis.CSharp.dll'
+          unzip -l artifacts/Perigon.AspNetCore.SourceGeneration.1.1.4.nupkg | grep -F 'build/Microsoft.CodeAnalysis.dll'
       - name: Verify generated Web project metadata
-        run: dotnet run --project tests/EnumMetaBuildTests/EnumMetaBuildTests.csproj -c Release -- "$PWD/artifacts/Perigon.AspNetCore.SourceGeneration.1.1.3.nupkg"
+        run: dotnet run --project tests/EnumMetaBuildTests/EnumMetaBuildTests.csproj -c Release -- "$PWD/artifacts/Perigon.AspNetCore.SourceGeneration.1.1.4.nupkg"
       - name: NuGet login (OIDC)
         uses: NuGet/login@v1
         id: nuget-login
         with:
           user: ${{ secrets.NUGET_USER }}
       - name: Publish SourceGeneration only
-        run: dotnet nuget push ./artifacts/Perigon.AspNetCore.SourceGeneration.1.1.3.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./artifacts/Perigon.AspNetCore.SourceGeneration.1.1.4.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

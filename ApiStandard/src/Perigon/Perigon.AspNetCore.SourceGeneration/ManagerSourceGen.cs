@@ -39,6 +39,43 @@ public class ManagerSourceGen : IIncrementalGenerator
             )
             .Where(static info => !string.IsNullOrEmpty(info.FullName));
 
+        // Step 1b: 从宿主程序集的 ModuleDemand 目录中查找模块需求实现。
+        var localDemandsProvider = context
+            .SyntaxProvider.CreateSyntaxProvider(
+                predicate: static (node, _) => HasBaseList(node),
+                transform: static (ctx, cancellationToken) =>
+                {
+                    var classDecl = (ClassDeclarationSyntax)ctx.Node;
+                    var moduleName = GetDemandModuleName(classDecl.SyntaxTree.FilePath);
+                    if (moduleName is null)
+                    {
+                        return default;
+                    }
+
+                    if (
+                        ctx.SemanticModel.GetDeclaredSymbol(classDecl, cancellationToken)
+                            is INamedTypeSymbol symbol
+                        && symbol.ContainingType is null
+                        && !symbol.IsAbstract
+                        && !symbol.IsGenericType
+                        && symbol.Name == moduleName.Substring(0, moduleName.Length - 3) + "Demand"
+                    )
+                    {
+                        var interfaces = symbol.AllInterfaces
+                            .Where(contract => contract.ContainingAssembly.Name == moduleName)
+                            .Select(GetFullyQualifiedName)
+                            .OrderBy(name => name, StringComparer.Ordinal)
+                            .ToImmutableArray();
+                        return interfaces.Length == 0
+                            ? default
+                            : new DemandInfo(GetFullyQualifiedName(symbol), interfaces);
+                    }
+
+                    return default;
+                }
+            )
+            .Where(static info => !string.IsNullOrEmpty(info.ImplementationName));
+
         var localEndpointGroupsProvider = context
             .SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, _) => HasBaseList(node),
@@ -140,6 +177,7 @@ public class ManagerSourceGen : IIncrementalGenerator
         // Step 4: 合并所有数据
         var combinedData = localManagersProvider
             .Collect()
+            .Combine(localDemandsProvider.Collect())
             .Combine(localEndpointGroupsProvider.Collect())
             .Combine(referencedDataProvider)
             .Combine(assemblyNameProvider);
@@ -149,7 +187,7 @@ public class ManagerSourceGen : IIncrementalGenerator
             combinedData,
             static (spc, data) =>
             {
-                var (((localManagers, localEndpointGroups), referencedData), assemblyName) = data;
+                var ((((localManagers, localDemands), localEndpointGroups), referencedData), assemblyName) = data;
 
                 // 过滤 Share 程序集
                 if (assemblyName == "Share")
@@ -181,7 +219,7 @@ public class ManagerSourceGen : IIncrementalGenerator
                 }
 
                 // 生成模块扩展
-                var modSource = GenerateModuleExtensions(assemblyName, referencedData.Modules);
+                var modSource = GenerateModuleExtensions(assemblyName, referencedData.Modules, localDemands);
                 if (!string.IsNullOrWhiteSpace(modSource))
                 {
                     spc.AddSource(
@@ -300,6 +338,31 @@ public class ManagerSourceGen : IIncrementalGenerator
             && CanRegisterLocalEndpointGroup(symbol);
     }
 
+    private static string? GetDemandModuleName(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return null;
+        }
+
+        var directories = filePath.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+        for (var index = directories.Length - 3; index >= 0; index--)
+        {
+            if (directories[index] == "ModuleDemand"
+                && directories[index + 1].EndsWith("Mod", StringComparison.Ordinal))
+            {
+                return directories[index + 1];
+            }
+        }
+
+        return null;
+    }
+
+    private static string GetFullyQualifiedName(ITypeSymbol symbol)
+    {
+        return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+    }
+
     /// <summary>
     /// 生成 Manager 扩展方法
     /// </summary>
@@ -337,7 +400,8 @@ public class ManagerSourceGen : IIncrementalGenerator
     /// </summary>
     private static string? GenerateModuleExtensions(
         string namespaceName,
-        ImmutableArray<ModuleInfo> modules
+        ImmutableArray<ModuleInfo> modules,
+        ImmutableArray<DemandInfo> demands
     )
     {
         var usingSb = new StringBuilder();
@@ -347,6 +411,25 @@ public class ManagerSourceGen : IIncrementalGenerator
         {
             usingSb.AppendLine($"using {module.AssemblyName};");
             registrationSb.AppendLine($"        builder.Add{module.AssemblyName}();");
+        }
+
+        foreach (var demand in demands.Distinct().OrderBy(demand => demand.ImplementationName, StringComparer.Ordinal))
+        {
+            if (demand.InterfaceNames.Length == 1)
+            {
+                registrationSb.AppendLine(
+                    $"        builder.Services.AddScoped<{demand.InterfaceNames[0]}, {demand.ImplementationName}>();"
+                );
+                continue;
+            }
+
+            registrationSb.AppendLine($"        builder.Services.AddScoped<{demand.ImplementationName}>();");
+            foreach (var interfaceName in demand.InterfaceNames)
+            {
+                registrationSb.AppendLine(
+                    $"        builder.Services.AddScoped<{interfaceName}>(services => services.GetRequiredService<{demand.ImplementationName}>());"
+                );
+            }
         }
 
         return $$"""
@@ -417,6 +500,42 @@ public class ManagerSourceGen : IIncrementalGenerator
         public override bool Equals(object obj) => obj is ManagerInfo other && Equals(other);
 
         public override int GetHashCode() => FullName?.GetHashCode() ?? 0;
+    }
+
+    /// <summary>
+    /// 宿主程序集中的模块需求实现信息。
+    /// </summary>
+    private readonly struct DemandInfo : IEquatable<DemandInfo>
+    {
+        public string ImplementationName { get; }
+        public ImmutableArray<string> InterfaceNames { get; }
+
+        public DemandInfo(string implementationName, ImmutableArray<string> interfaceNames)
+        {
+            ImplementationName = implementationName;
+            InterfaceNames = interfaceNames;
+        }
+
+        public bool Equals(DemandInfo other)
+        {
+            return ImplementationName == other.ImplementationName
+                && (InterfaceNames.IsDefault
+                    ? other.InterfaceNames.IsDefault
+                    : !other.InterfaceNames.IsDefault && InterfaceNames.SequenceEqual(other.InterfaceNames));
+        }
+
+        public override bool Equals(object obj) => obj is DemandInfo other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            var hash = ImplementationName?.GetHashCode() ?? 0;
+            foreach (var interfaceName in InterfaceNames)
+            {
+                hash = (hash * 31) + interfaceName.GetHashCode();
+            }
+
+            return hash;
+        }
     }
 
     /// <summary>

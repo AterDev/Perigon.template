@@ -8,14 +8,14 @@
 		<PackageId>Perigon.AspNetCore.SourceGeneration</PackageId>
 		<Title>Perigon.AspNetCore.SourceGeneration</Title>
 		<Authors>niltor</Authors>
-		<Version>1.1.1</Version>
+		<Version>1.1.4</Version>
 		<PackageTags>analyzer;web framework;ater;webapi;source generator</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Unify the ApiStandard and MiniApi source generators; add compile-time discovery and registration of Minimal API endpoint groups through MapEndpointGroups.</PackageReleaseNotes>
+		<PackageReleaseNotes>Register host-provided ModuleDemand implementations in generated AddModules.</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<AnalysisLevel>none</AnalysisLevel>
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
@@ -25,6 +25,8 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Update="Perigon.AspNetCore.SourceGeneration.targets" Pack="true" PackagePath="build/Perigon.AspNetCore.SourceGeneration.targets" />
+		<ProjectReference Include="..\..\..\..\Perigon.AspNetCore.SourceGeneration.Build\Perigon.AspNetCore.SourceGeneration.Build.csproj" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
@@ -41,4 +43,15 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
+	<Target Name="PrepareSourceGenerationBuildTask" BeforeTargets="_GetPackageFiles">
+		<MSBuild Projects="..\..\..\..\Perigon.AspNetCore.SourceGeneration.Build\Perigon.AspNetCore.SourceGeneration.Build.csproj"
+		         Targets="Build"
+		         Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0" />
+		<ItemGroup>
+			<None Include="..\..\..\..\Perigon.AspNetCore.SourceGeneration.Build\bin\$(Configuration)\netstandard2.0\**\*.dll"
+			      Pack="true"
+			      PackagePath="build/"
+			      Visible="false" />
+		</ItemGroup>
+	</Target>
 </Project>

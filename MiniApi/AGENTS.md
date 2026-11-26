@@ -12,10 +12,10 @@
 
 ## 技术栈与架构边界
 
-1. C# 14、.NET 10、ASP.NET Core Minimal API, Perigon.Postgres。
+1. C# 14、.NET 11、ASP.NET Core Minimal API, Perigon.Postgres。
 2. ApiService 默认启用 Native AOT、Trim、Request Delegate Generator。
-3. Aspire 13+ 负责 PostgreSQL、缓存、服务编排和可观测性。
-4. 前端默认使用 Angular，具体以仓库现有代码和版本为准。
+3. Aspire 17+ 负责 PostgreSQL、缓存、服务编排和可观测性。
+4. 前端默认使用 Angular 22+，具体以仓库现有代码和版本为准。
 
 ## 项目结构
 
@@ -56,6 +56,7 @@
 
 ## 工具与 skill 路由
 
+- 当前AI工具中要安装 aspire 插件,`https://github.com/microsoft/aspire-skills`
 - Perigon 架构、CLI、生成、Endpoint/Manager/模型和模板约定：`perigon`。
 - Native AOT、Trim、RDG、JSON、反射、依赖和发布兼容：`native-aot`。
 - AppHost、资源、启停、状态、日志或部署：使用环境中可用的 Aspire skill；普通构建/测试直接使用 `dotnet`。

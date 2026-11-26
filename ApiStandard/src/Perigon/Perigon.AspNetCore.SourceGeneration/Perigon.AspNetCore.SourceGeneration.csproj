@@ -8,14 +8,14 @@
 		<PackageId>Perigon.AspNetCore.SourceGeneration</PackageId>
 		<Title>Perigon.AspNetCore.SourceGeneration</Title>
 		<Authors>niltor</Authors>
-		<Version>1.1.3</Version>
+		<Version>1.1.4</Version>
 		<PackageTags>analyzer;web framework;ater;webapi;source generator</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/AterDev/Perigon.template</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/AterDev/Perigon.template</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Add compile-time enum metadata discovery for MiniApi OpenAPI annotated enumerations.</PackageReleaseNotes>
+		<PackageReleaseNotes>Register host-provided ModuleDemand implementations in generated AddModules.</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<AnalysisLevel>none</AnalysisLevel>
 		<NoWarn>$(NoWarn);NU5128</NoWarn>

@@ -11,6 +11,7 @@
 - `ApiStandard` 面向传统 ASP.NET Core Web API。
 - `MiniApi` 面向 Minimal API 和 Native AOT。
 - `Perigon.AspNetCore.SourceGeneration` 是独立 NuGet analyzer 包，不作为生成项目复制到新项目中。
+- 宿主可在 `ModuleDemand/<ModuleName>` 提供 `<ModuleName 去掉 Mod 后缀>Demand` 类。源码生成器在 `AddModules` 中注册该类实现的同名模块程序集接口，多个接口共享同一个 scoped 实例。
 - 仓库维护文档只位于根目录 `docs`。
 
 ## 功能设计索引

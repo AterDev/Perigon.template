@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### Added
+
+- 源码生成器支持在 `AddModules` 中注册宿主 `ModuleDemand/<ModuleName>` 下的模块依赖实现。同一实现的多个模块接口共享 scoped 实例。该功能已通过本地包验证，尚未发布分析器包。
+
 ### Changed
 
 - MiniApi OpenAPI 改用 3.1 annotated enumerations 描述整数枚举，移除 `x-enumData` 和专用源生成器。共享生成器新增 Web 项目枚举自动发现与 `enum-meta.generated.xml` 构建产物；两套模板依赖已切换至 1.1.3；1.1.2 曾因缺少构建任务 DLL 而不可用。

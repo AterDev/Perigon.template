@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <PerigonSourceGenerationVersion Condition="'$(PerigonSourceGenerationVersion)' == ''">1.1.3</PerigonSourceGenerationVersion>
+    <PerigonSourceGenerationVersion Condition="'$(PerigonSourceGenerationVersion)' == ''">1.1.5</PerigonSourceGenerationVersion>
     <HotReloadAutoRestart>true</HotReloadAutoRestart>
   </PropertyGroup>
   <ItemGroup>

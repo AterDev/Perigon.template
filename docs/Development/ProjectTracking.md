@@ -46,3 +46,5 @@
 - 2026-11-24：SourceGeneration 1.1.3 在 Linux 干净检出下验证包内容和 Web 项目 XML 生成后成功上传 NuGet；两套模板已切换，纯公开 NuGet 源和全新缓存的新项目构建、发布 XML 验证通过。
 
 - 2026-11-26：两个模板的分析器源码支持从 `ModuleDemand/<ModuleName>` 生成 scoped 注册。本地包 `1.1.4-local` 的隔离项目通过 Debug 和 Windows x64 Native AOT 发布运行，覆盖多接口共享实例及不同作用域隔离。公开依赖仍为 1.1.3。
+
+- 2026-11-26：SourceGeneration 1.1.4 已通过独立发布工作流。随后将接口匹配收紧为 `I<模块名>…Demand`，MiniApi 和 ApiStandard 以 1.1.5 为依赖。

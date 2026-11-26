@@ -58,6 +58,7 @@ try
     }
 
     RunSdk10Fixture(root, version, feed);
+    RunDemandFixture(root, version, feed);
 
     // A second build must refresh the XML when a new enum is added; this guards against stale incremental outputs.
     File.AppendAllText(Path.Combine(root, "Web", "Program.cs"), "\npublic enum IncrementalEnum { IncrementalValue = 303 }\n");
@@ -154,6 +155,104 @@ static void RunSdk10Fixture(string root, string version, string feed)
     {
         File.Delete(globalJson);
     }
+}
+
+static void RunDemandFixture(string root, string version, string feed)
+{
+    var fixture = Path.Combine(root, "Demand");
+    Directory.CreateDirectory(Path.Combine(fixture, "AuditMod"));
+    Directory.CreateDirectory(Path.Combine(fixture, "OtherMod"));
+    Directory.CreateDirectory(Path.Combine(fixture, "Host", "ModuleDemand", "AuditMod"));
+    Directory.CreateDirectory(Path.Combine(fixture, "Host", "WrongDirectory"));
+
+    File.WriteAllText(Path.Combine(fixture, "AuditMod", "AuditMod.csproj"), """
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup><TargetFramework>net11.0</TargetFramework></PropertyGroup>
+          <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
+        </Project>
+        """);
+    File.WriteAllText(Path.Combine(fixture, "AuditMod", "Contracts.cs"), """
+        using Microsoft.Extensions.Hosting;
+        namespace AuditMod;
+        public interface IAuditDemand { string Name(); }
+        public interface IAuditUserDemand { string UserName(); }
+        public interface IAuditService { }
+        public interface IUnrelatedDemand { }
+        public static class ModuleExtensions
+        {
+            public static IHostApplicationBuilder AddAuditMod(this IHostApplicationBuilder builder) => builder;
+        }
+        """);
+
+    File.WriteAllText(Path.Combine(fixture, "OtherMod", "OtherMod.csproj"), """
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup><TargetFramework>net11.0</TargetFramework></PropertyGroup>
+        </Project>
+        """);
+    File.WriteAllText(Path.Combine(fixture, "OtherMod", "Contracts.cs"), """
+        namespace OtherMod;
+        public interface IAuditExternalDemand { }
+        """);
+
+    File.WriteAllText(Path.Combine(fixture, "Host", "Host.csproj"), $"""
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net11.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+          <ItemGroup>
+            <FrameworkReference Include="Microsoft.AspNetCore.App" />
+            <PackageReference Include="Perigon.AspNetCore.SourceGeneration" Version="{version}" />
+            <ProjectReference Include="../AuditMod/AuditMod.csproj" />
+            <ProjectReference Include="../OtherMod/OtherMod.csproj" />
+          </ItemGroup>
+        </Project>
+        """);
+    File.WriteAllText(Path.Combine(fixture, "Host", "ModuleDemand", "AuditMod", "AuditDemand.cs"), """
+        using AuditMod;
+        using OtherMod;
+        namespace Host.ModuleDemand.AuditMod;
+        public sealed class AuditDemand : IAuditDemand, IAuditUserDemand, IAuditService, IUnrelatedDemand, IAuditExternalDemand
+        {
+            public string Name() => "audit";
+            public string UserName() => "user";
+        }
+        """);
+    File.WriteAllText(Path.Combine(fixture, "Host", "ModuleDemand", "AuditMod", "WrongDemand.cs"), """
+        using AuditMod;
+        namespace Host.ModuleDemand.AuditMod;
+        public sealed class WrongDemand : IAuditDemand { public string Name() => "wrong"; }
+        """);
+    File.WriteAllText(Path.Combine(fixture, "Host", "WrongDirectory", "AuditDemand.cs"), """
+        using AuditMod;
+        namespace Host.WrongDirectory;
+        public sealed class AuditDemand : IAuditUserDemand { public string UserName() => "wrong"; }
+        """);
+    File.WriteAllText(Path.Combine(fixture, "Host", "Program.cs"), """
+        using AuditMod;
+        using Host.Extension;
+        using Microsoft.Extensions.DependencyInjection;
+        using OtherMod;
+
+        var builder = global::Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder();
+        builder.AddModules();
+        using var provider = builder.Services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var services = scope.ServiceProvider;
+        var audit = services.GetServices<IAuditDemand>().Single();
+        var users = services.GetServices<IAuditUserDemand>().Single();
+        if (audit is not Host.ModuleDemand.AuditMod.AuditDemand || !ReferenceEquals(audit, users))
+        {
+            throw new InvalidOperationException("Matching Demand interfaces did not share the expected implementation.");
+        }
+        if (services.GetService<IAuditService>() is not null ||
+            services.GetService<IUnrelatedDemand>() is not null ||
+            services.GetService<IAuditExternalDemand>() is not null)
+        {
+            throw new InvalidOperationException("An unrelated interface received a Demand registration.");
+        }
+        Console.WriteLine("Demand registration matching passed.");
+        """);
+
+    RunDotnet(fixture, $"restore Host/Host.csproj --source \"{feed}\" --ignore-failed-sources");
+    RunDotnet(fixture, "run --project Host/Host.csproj -c Release --no-restore");
 }
 
 static void AssertMetadata(XDocument document)

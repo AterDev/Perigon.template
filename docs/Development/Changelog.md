@@ -6,7 +6,7 @@
 
 ### Added
 
-- 源码生成器支持在 `AddModules` 中注册宿主 `ModuleDemand/<ModuleName>` 下的模块依赖实现。同一实现的多个模块接口共享 scoped 实例。该功能已通过本地包验证，尚未发布分析器包。
+- 两套模板使用 SourceGeneration 1.1.5。源码生成器仅在宿主 `ModuleDemand/<ModuleName>` 下找到对应实现类和同模块的同名 Demand 接口时生成注册。同一实现的多个接口共享 scoped 实例。
 
 ### Changed
 

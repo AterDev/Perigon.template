@@ -52,17 +52,21 @@ public class ManagerSourceGen : IIncrementalGenerator
                         return default;
                     }
 
+                    var modulePrefix = moduleName.Substring(0, moduleName.Length - 3);
                     if (
                         ctx.SemanticModel.GetDeclaredSymbol(classDecl, cancellationToken)
                             is INamedTypeSymbol symbol
                         && symbol.ContainingType is null
                         && !symbol.IsAbstract
                         && !symbol.IsGenericType
-                        && symbol.Name == moduleName.Substring(0, moduleName.Length - 3) + "Demand"
+                        && symbol.Name == modulePrefix + "Demand"
                     )
                     {
                         var interfaces = symbol.AllInterfaces
-                            .Where(contract => contract.ContainingAssembly.Name == moduleName)
+                            .Where(contract =>
+                                contract.ContainingAssembly.Name == moduleName
+                                && contract.Name.StartsWith("I" + modulePrefix, StringComparison.Ordinal)
+                                && contract.Name.EndsWith("Demand", StringComparison.Ordinal))
                             .Select(GetFullyQualifiedName)
                             .OrderBy(name => name, StringComparer.Ordinal)
                             .ToImmutableArray();
@@ -349,6 +353,7 @@ public class ManagerSourceGen : IIncrementalGenerator
         for (var index = directories.Length - 3; index >= 0; index--)
         {
             if (directories[index] == "ModuleDemand"
+                && directories[index + 1].Length > 3
                 && directories[index + 1].EndsWith("Mod", StringComparison.Ordinal))
             {
                 return directories[index + 1];

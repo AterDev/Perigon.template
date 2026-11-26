@@ -49,4 +49,4 @@
 
 - 2026-11-26：SourceGeneration 1.1.4 已通过独立发布工作流。随后将接口匹配收紧为 `I<模块名>…Demand`，MiniApi 和 ApiStandard 以 1.1.5 为依赖。
 
-- 2026-11-26：本地使用 1.1.5 候选包验证枚举元数据、Demand 的正反匹配及两个模板宿主构建，`Perigon.templates 11.0.0` 打包通过。NuGet 接收 SourceGeneration 1.1.5 的上传后，模板发布两次在公开源还原时报 NU1102。模板发布等待 NuGet 可下载依赖版本。[模板发布运行记录](https://github.com/AterDev/Perigon.template/actions/runs/45794479468)
+- 2026-11-26：本地使用 1.1.5 候选包验证枚举元数据、Demand 的正反匹配及两个模板宿主构建，`Perigon.templates 11.0.0` 打包通过。前两次发布因 1.1.5 尚未进入公开源索引而失败。确认 1.1.5 可下载后，第三次完成公开源还原、构建、测试和 NuGet 发布。[模板发布运行记录](https://github.com/AterDev/Perigon.template/actions/runs/45794479468)
